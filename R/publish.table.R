@@ -1,16 +1,13 @@
 publish.table <- function(x,title,level,...){
-  if ((NM=length(dim(x)))>2){
+  if ((NM=length(dim(x)))==3){
     if (missing(title)) title <- ""
     stopifnot(NM<=4)
     invisibleOut=lapply(1:(dim(x)[NM]),function(m){
-      if (NM==3){
-        newtitle=paste(title,"\n",paste(names(dimnames(x))[NM],dimnames(x)[[NM]][m],sep="="))
-        publish(x[,,m],title=newtitle)
-      }
-      else{
-        newtitle=paste(title,"\n",paste(names(dimnames(x))[NM],dimnames(x)[[NM]][m],sep="="))
-        publish(x[,,,m],title=newtitle)
-      }
+      newtitle=paste(title,paste(names(dimnames(x))[NM],dimnames(x)[[NM]][m],sep=":"))
+      xm <- x[,,m]
+      colnames(xm) <- paste(names(dimnames(x))[2],dimnames(x)[[2]],sep=":")
+      rownames(xm) <- paste(names(dimnames(x))[1],dimnames(x)[[1]],sep=":")
+      publish(xm,title=newtitle,level=level)
     })
   }
   else{

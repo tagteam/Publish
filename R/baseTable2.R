@@ -15,7 +15,8 @@ baseTable2 <- function(formula,
                        dignum=2,
                        printMissing=TRUE,
                        removeMissingUnits=TRUE,
-                       longlevelnames=TRUE){
+                       longlevelnames=TRUE,
+                       Totals=TRUE){
   # }}}
   # {{{ specify the data
   m <- model.frame(formula,data,na.action=na.pass)
@@ -47,7 +48,8 @@ baseTable2 <- function(formula,
       if (typeVar=="character") valueVar <- factor(valueVar)
       L <- levels(valueVar)
       tF <- table(valueVar)
-      tF <- c(tF,total=sum(tF))
+      if (Totals)
+        tF <- c(tF,total=sum(tF))
       if (freq) tF <- paste(tF," (",round(100*tF/NF,2),"%)",sep="")
       else tF <- as.numeric(as.character(tF))
       if (minmax)
@@ -55,7 +57,12 @@ baseTable2 <- function(formula,
       if (longlevelnames==TRUE)
         lln=paste(V,L,sep="=")
       else lln= L
-      outV <- data.frame(V=c(lln,"Total"),
+      if(Totals){
+        V <- c(lln,"Total")
+      }else{
+        V <- lln
+      }
+      outV <- data.frame(V=V,
                          tF=tF,
                          stringsAsFactors=FALSE)
       if (median) outV <- cbind(outV,median=L[median(1:length(L))])

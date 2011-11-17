@@ -18,7 +18,8 @@ crossTable <- function(formula,
                        sampleSize=TRUE,
                        eps=0.0001,
                        pdigits=4,
-                       longlevelnames=TRUE){
+                       longlevelnames=TRUE,
+                       transpose=FALSE){
   # }}}
   # {{{ specify factor and split data into groups 
   stopifnot(is.logical(longlevelnames))
@@ -45,13 +46,13 @@ crossTable <- function(formula,
     if (median)
       baseTableMedian(formula=rhs,data=x,freq=freq,method=1,order=FALSE,minmax=minmax,longlevelnames=longlevelnames,printMissing=printMissing)
     else
-      baseTable2(formula=rhs,asFactor=asFactor,asNumeric=asNumeric,data=x,sd=sd,se=se,freq=freq,method=1,order=FALSE,minmax=minmax,median=median,IQR=IQR,longlevelnames=longlevelnames,printMissing=printMissing)
+      baseTable2(formula=rhs,asFactor=asFactor,asNumeric=asNumeric,data=x,sd=sd,se=se,freq=freq,method=1,order=FALSE,minmax=minmax,median=median,IQR=IQR,longlevelnames=longlevelnames,printMissing=printMissing,Totals=Totals)
   })
   factorNames <- baseL[[1]][,1]
   outL <- lapply(baseL,function(xxx){
     xxx[,grep("Mean|Freq|Median|Min|SE",names(xxx)),drop=TRUE]
   })
-# }}}
+  # }}}
   # {{{ adding the sample size
   out <- do.call("rbind",outL)
   nnn <- sapply(groups,NROW)
@@ -126,8 +127,13 @@ crossTable <- function(formula,
     ## out[out$Fname==levelName,] <- newVal
     ## }
   }
-# }}}
+  # }}}
   class(out) <- c("crossTable","data.frame")
+  if (transpose) {
+    tout <- t(out[,-1])
+    colnames(tout) <- paste(names(out)[1],out[,1],sep=":")
+    out <- tout
+  }
   out
 }
 

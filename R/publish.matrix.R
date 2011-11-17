@@ -12,8 +12,9 @@ publish.matrix <- function(x,
                            style="muse",
                            latex=FALSE,
                            wiki=FALSE,
+                           environment=TRUE,
                            ...){
-
+ 
   ccc <- colnames(x)
   rrr <- rownames(x)
 
@@ -98,7 +99,7 @@ publish.matrix <- function(x,
     publish(title,level=level,hrule=hrule)
     cat("\n")
   }
-  if (latex) {
+  if (latex && environment==TRUE) {
     cat("\\begin{tabular}{",rep("l",NCOL(x)),"}","\n")
   }
   if (wiki){
@@ -126,7 +127,10 @@ publish.matrix <- function(x,
   })}
   # }}}
   # {{{ footer
-  cat(endtable)
+  if(latex && environment==FALSE)
+    NULL
+  else
+    cat(endtable)
   # }}}
   invisible(x)
 }
