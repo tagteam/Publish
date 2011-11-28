@@ -10,15 +10,22 @@ publish.glm <- function(object,
                         transform=NULL,
                         profile=TRUE,
                         ...){
-  if (!is.null(object$family$family) && object$family$family=="binomial"){
+  logisticRegression <- (!is.null(object$family$family) && object$family$family=="binomial")
+  # {{{ Table response for logisticRegression 
+  if (logisticRegression){
     D <- object$model
     response <- D[,as.character(object$formula[[2]])]
     tmp <- as.matrix(table(response))
     tmp <- cbind(rownames(tmp),tmp)
     colnames(tmp) <- c("Response","N")
+    if (missing)
+      tmp <- rbind(tmp,c("Missing",length(object$na.action)))
     publish(tmp,rownames=FALSE,...)
     cat("\n")
   }
+  # }}}
+  # {{{ prepare table with confidence limits
+
   x <- data.frame(summary(object)$coefficients)
   names(x) <- c("Estimate","StandardError","tValue","pValue")
   x$Estimate=round(x$Estimate,digits)
@@ -31,9 +38,9 @@ publish.glm <- function(object,
     upper <- ctable[,1]+ qnorm(.975)*ctable[,2]
     ciX <- cbind(lower,upper)
   }
-  if (((!is.null(object$family$family)) && object$family$family=="binomial" && object$family$link=="logit")||((!is.null(transform)) &&(transform=="exp"))){
+  if (logisticRegression||((!is.null(transform)) &&(transform=="exp"))){
     if (is.null(sel)){
-      sel <- c("OddsRatio","StandardError","CI.95","pValue","missing")
+      sel <- c("OddsRatio","StandardError","CI.95","pValue","Missing")
     }
     names(x)[1] <- "OddsRatio"
     x$OddsRatio=round(exp(x$OddsRatio),digits)
@@ -41,26 +48,83 @@ publish.glm <- function(object,
   }
   else{
     if (is.null(sel)){
-      sel <- c("Estimate","StandardError","CI.95","pValue","missing")
+      sel <- c("Estimate","StandardError","CI.95","pValue","Missing")
     }
   }
   x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=2)
   x$tValue=round(x$tValue,digits)
   x$pValue=sapply(x$pValue,format.pval,digits=pvalDigits,eps=eps)
-  if (missing==TRUE && length(object$na.action)>0){ 
-    x$missing=0
+
+  # }}}
+  # {{{ treat predictors and missings
+  varNames <- all.vars(object$formula)[-1]
+  Nmiss <- sapply(varNames,function(v){sum(is.na(object$data[,v]))})
+  names(Nmiss) <- varNames
+  factorLevels <- object$xlevels
+  factorNames <- names(factorLevels)
+  ## oldnames <- lapply(1:length(factorLevels),function(i){
+  ## paste(factorNames[i],factorLevels[[i]],sep="")})
+  newnames <- lapply(1:length(factorLevels),function(i){
+    paste(factorNames[i],factorLevels[[i]],sep="=")})
+  names(newnames) <- factorNames
+  # {{{ if intercept take it out
+  if (found <- match("(Intercept)",rownames(x),nomatch=0)){
+    inter <- x[found,,drop=FALSE]
+    x <- x[-found,,drop=FALSE]
+    if (missing)
+      inter <- cbind(inter,Missing="--")
   }
-  if (match("missing",sel,nomatch=FALSE) && length(object$na.action)>0){
-    x$missing=length(object$na.action)
-  }
+  # }}}
+  splitty <- unlist(lapply(varNames,function(vn){
+    rep(vn,length(grep(vn,rownames(x))))
+  }))
+  xlist <- split(x,factor(splitty,levels=unique(splitty)))
+  xfixed <- lapply(1:length(xlist),function(v){
+    ## factors
+    if (found <- match(names(xlist)[v],factorNames,nomatch=0)){
+      if (missing){
+        add <- c(ifelse(logisticRegression,1,0),rep("--",ncol(x)-1),Missing=Nmiss[v])
+        old <- cbind(xlist[[v]],Missing=rep("--",NROW(xlist[[v]])))
+        old$Missing <- as.character(old$Missing)
+        xlist[[v]] <- rbind(add,old)
+        xlist[[v]]
+      }
+      else{
+        xlist[[v]] <- rbind(c(ifelse(logisticRegression,1,0),rep("--",ncol(x)-1)),
+                            xlist[[v]])
+      }
+      rownames(xlist[[v]]) <- newnames[[found]]
+      xlist[[v]]
+    }
+    else{ ## numeric
+      if (missing)
+        cbind(xlist[[v]],Missing=Nmiss[v])
+      else
+        xlist[[v]]
+    }
+  })
+  x <- do.call("rbind",xfixed)
+  ## if (missing==TRUE && length(object$na.action)>0){ 
+  ## x$missing=0
+  ## }
+  ## if (match("missing",sel,nomatch=FALSE) && length(object$na.action)>0){
+  ## x$missing=length(object$na.action)
+  ## }
+  # }}}
+  # {{{ add intercept if wanted
+  if (intercept!=0)
+    x <- rbind(inter,x)
+  # }}}
+  
+  # {{{ remove unwanted columns
   found <- match(sel,names(x),nomatch=FALSE)!=0
   sel <- sel[found]
   if (!missing(drop)) x=x[-drop,sel]
   else
-    if (intercept==0) x=x[-1,sel]
-    else x=x[,sel]
+    x=x[,sel]
   if (print==TRUE){
     out <- publish.matrix(x,col1name="Factor",...)
   }
+  # }}}
   invisible(x)  
 }

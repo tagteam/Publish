@@ -70,8 +70,11 @@ crossTable <- function(formula,
         }
         else{
           if (type[nn]=="character") m[[nn]] <- factor(m[[nn]])
+          ## pf <- chisq.test(m[[nn]],m[[Fname]])$p.value
           pf <- chisq.test(m[[nn]],m[[Fname]])$p.value
-          pf <- c(rep("--",length(levels(m[[nn]]))-1),signif(pf,digits=2))
+          pf <- c(rep("--",length(levels(m[[nn]]))-1),
+                  format.pval(pf,digits=pdigits,eps=eps))
+                  ## signif(pf,digits=2))
         }
         pf
       })
