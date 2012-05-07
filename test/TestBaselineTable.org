@@ -1,0 +1,28 @@
+#+BEGIN_SRC R 
+  library(Publish)
+  set.seed(18)
+  N <- 100
+  d <- data.frame(Y=rnorm(N),Y2=rnorm(N),X=rbinom(N,1,.4),X2=factor(rbinom(N,3,.4)),S=rbinom(N,1,.4))
+  BaselineTable(S~Y+Y2+X+X2,data=d)
+  BaselineTable(S~Y+Y2+X2+X,data=d)
+  
+  
+  klaus <- function(x) 1
+  BaselineTable(S~Y+Y2+X2+X,
+                data=d,
+                summary.continuous="median(x) [klaus(x)]")
+  
+  
+  
+  
+  
+  
+  
+  
+  d$X2[3] <- NA
+  d$Y2[5] <- NA
+  BaselineTable(S~Y+Y2+X2+X,data=d)
+  
+  BaselineTable(S~Y+Y2+X2+X,data=d,summary.continuous="mean(x) median: median(x)")
+  
+#+END_SRC

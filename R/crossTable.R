@@ -19,6 +19,7 @@ crossTable <- function(formula,
                        eps=0.0001,
                        pdigits=4,
                        longlevelnames=TRUE,
+                       longlevelcolnames=TRUE,
                        transpose=FALSE){
   # }}}
   # {{{ specify factor and split data into groups 
@@ -46,7 +47,7 @@ crossTable <- function(formula,
     if (median)
       baseTableMedian(formula=rhs,data=x,freq=freq,method=1,order=FALSE,minmax=minmax,longlevelnames=longlevelnames,printMissing=printMissing)
     else
-      baseTable2(formula=rhs,asFactor=asFactor,asNumeric=asNumeric,data=x,sd=sd,se=se,freq=freq,method=1,order=FALSE,minmax=minmax,median=median,IQR=IQR,longlevelnames=longlevelnames,printMissing=printMissing,Totals=Totals)
+      baseTable2(formula=rhs,asFactor=asFactor,asNumeric=asNumeric,data=x,sd=sd,se=se,freq=(freq=="row"),method=1,order=FALSE,minmax=minmax,median=median,IQR=IQR,longlevelnames=longlevelnames,printMissing=printMissing,Totals=Totals)
   })
   factorNames <- baseL[[1]][,1]
   outL <- lapply(baseL,function(xxx){
@@ -93,7 +94,7 @@ crossTable <- function(formula,
           pVal <- do.call("rbind",lapply(names(type),function(nn){
             ff <- formula(paste(nn,"~",Fname))
             fam <- if (type[nn]=="numeric") "gaussian" else "binomial"
-            pf <- summary(glm(ff,data=dd,family=fam))$coef
+            pf <- mmary(glm(ff,data=dd,family=fam))$coef
             pf <- pf[2:NROW(pf),4]
             pf <- format.pval(pf,digits=pdigits,eps=eps)
             ##           pf <- chisq.test(m[[nn]],m[[Fname]])$p.value
@@ -107,7 +108,6 @@ crossTable <- function(formula,
       names(controlPval) <- theLevels
     }
   }
-
   # }}}
   # {{{ adding the group names
   
@@ -115,7 +115,7 @@ crossTable <- function(formula,
   firstCol <- unlist(lapply(1:NL,function(i){
     c(theLevels[i],rep("",outRowsL[i]-1))
   }))
-
+  
   pName <- if(pValues && match("ANOVA",pvalMethod,nomatch=FALSE)) "p-values" else NULL
   out <- data.frame(cbind(c(firstCol,pName),out),
                     stringsAsFactors=FALSE)
@@ -134,7 +134,10 @@ crossTable <- function(formula,
   class(out) <- c("crossTable","data.frame")
   if (transpose) {
     tout <- t(out[,-1])
+    if (longlevelcolnames==TRUE)
     colnames(tout) <- paste(names(out)[1],out[,1],sep=":")
+    else
+    colnames(tout) <- paste(out[,1])
     out <- tout
   }
   out

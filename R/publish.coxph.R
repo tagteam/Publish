@@ -7,12 +7,11 @@ publish.coxph <- function(object,
                           StandardError=FALSE,
                           print=TRUE,
                           missing=TRUE,
+                          sum=FALSE,
                           ...) {
+  # {{{ create a data frame 
+
   beta <- object$coef
-  ##   print(names(beta))
-  ##   varnames <- attr(mRD$terms,"term.labels")
-  ##   lapply(varnames,function(v){
-  ##   }
   nabeta <- !(is.na(beta))
   beta2 <- beta[nabeta]
   if (is.null(beta) | is.null(object$var)) stop("Input is not valid")
@@ -23,16 +22,17 @@ publish.coxph <- function(object,
   se <- se * scale
   if (StandardError==TRUE)
     x <- data.frame("Hazard ratio"=format(round(exp(beta),digits)),
-                      "Standard error"=format(round(se,digits)),
-                      "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
-                      "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
+                    "Standard error"=format(round(se,digits)),
+                    "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
+                    "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
   else
     x <- data.frame("Hazard ratio"=format(round(exp(beta),digits)),
                     "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
                     "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
-  
-  
-  # {{{ treat predictors and missings
+
+  # }}}
+  # {{{ missing values 
+
   varNames <- all.vars(delete.response(terms(object$formula)))
   if (missing){
     dd <- try(eval(object$call$data),silent=TRUE)
@@ -44,6 +44,9 @@ publish.coxph <- function(object,
       names(Nmiss) <- varNames
     }
   }
+
+  # }}}
+  # {{{ factors with a reference level
   factorLevels <- object$xlevels
   factorNames <- names(factorLevels)
   ## oldnames <- lapply(1:length(factorLevels),function(i){
@@ -51,6 +54,24 @@ publish.coxph <- function(object,
   newnames <- lapply(1:length(factorLevels),function(i){
     paste(factorNames[i],factorLevels[[i]],sep="=")})
   names(newnames) <- factorNames
+  # {{{ summary: mean (sd) for numeric, count for factors with levels
+  if (sum){
+    dd <- try(eval(object$call$data),silent=TRUE)
+    if (class(dd)=="try-error"){
+      sum <- FALSE
+    }
+    else{
+      sumInfo <- lapply(varNames,function(v){
+        if (v %in% names(object$xlevels)){
+          table(dd[,v])
+        }
+        else{
+          paste(round(mean(dd[,v],na.rm=TRUE),digits)," (",round(sd(dd[,v],na.rm=TRUE),digits),")",sep="")
+        }})
+      names(sumInfo) <- varNames
+    }
+  }
+  # }}}
   # {{{ if intercept take it out
 
   if (found <- match("(Intercept)",rownames(x),nomatch=0)){
@@ -76,18 +97,27 @@ publish.coxph <- function(object,
         xlist[[v]]
       }
       else{
-        xlist[[v]] <- rbind(c(1,rep("--",ncol(x)-1)),
-                            xlist[[v]])
+        xlist[[v]] <- rbind(c(1,rep("--",ncol(x)-1)), xlist[[v]])
       }
       rownames(xlist[[v]]) <- newnames[[found]]
       xlist[[v]]
     }
     else{ ## numeric
       if (missing)
-        cbind(xlist[[v]],Missing=Nmiss[v])
+        xlist[[v]] <- cbind(xlist[[v]],Missing=Nmiss[v])
       else
         xlist[[v]]
     }
+    if (sum){
+      ## if (v %in% names(object$xlevels)){
+      xlist[[v]] <- cbind("N or mean(sd)"=as.character(sumInfo[[v]]),xlist[[v]])
+      if (length(names(object$xlevels))==length(varNames))
+        names(xlist[[v]])[1] = "N"
+      else 
+        if (length(names(object$xlevels))==0)
+          names(xlist[[v]])[1] = "mean(sd)"
+    }
+    xlist[[v]]
   })
   x <- do.call("rbind",xfixed)
   ## if (missing==TRUE && length(object$na.action)>0){ 
@@ -97,7 +127,7 @@ publish.coxph <- function(object,
   ## x$missing=length(object$na.action)
   ## }
   # }}}
-
+  # {{{ print result
   if (print==TRUE){
     publish(x,...)
     if (length(z <- object$na.action)){
@@ -112,6 +142,7 @@ publish.coxph <- function(object,
       }
     }
   }
+  # }}}
   invisible(x)
 }
 

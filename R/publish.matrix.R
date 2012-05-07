@@ -13,6 +13,9 @@ publish.matrix <- function(x,
                            latex=FALSE,
                            wiki=FALSE,
                            environment=TRUE,
+                           latexTableFormat=NA,
+                           latexHline=1,
+                           latexNoDollar=FALSE,
                            ...){
  
   ccc <- colnames(x)
@@ -44,11 +47,15 @@ publish.matrix <- function(x,
            muse <- FALSE
            starthead <- ""
            collapse.head <- "&"
-           endhead <- "\\\\\n"
+           if (is.na(latexHline))
+             endhead <- "\\\\\n"
+           else
+             endhead <- "\\\\\\hline\n"
            startrow <- ""
            collapse.row <- "&"
-           endrow <- "\\\\\n"
-           endtable <- "\n\\end{tabular}\n"
+           if (missing(endrow))
+             endrow <- "\\\\\n"
+           endtable <- "\\end{tabular}\n"
          },
          "wiki"={
            wiki <- TRUE
@@ -59,6 +66,7 @@ publish.matrix <- function(x,
            endhead <- "\n"
            startrow <- "|-\n| "
            collapse.row <- " || "
+           if (missing(endrow))
            endrow <- "\n"
            endtable <- "|}\n"
          },
@@ -71,7 +79,8 @@ publish.matrix <- function(x,
            endhead <- "\n"
            startrow <- " "
            collapse.row <- " | "
-           endrow <- "\n"
+           if (missing(endrow))
+             endrow <- "\n"
            endtable <- "\n"
          })
   # }}}
@@ -100,10 +109,13 @@ publish.matrix <- function(x,
     cat("\n")
   }
   if (latex && environment==TRUE) {
-    cat("\\begin{tabular}{",rep("l",NCOL(x)),"}","\n")
+    if (is.na(latexTableFormat))
+      cat("\\begin{tabular}{",c("l|",rep("c",NCOL(x)-1)),"}","\n")
+    else
+      cat("\\begin{tabular}{",latexTableFormat,"}","\n")
   }
   if (wiki){
-    cat("{|","class=\"",control$wiki$class,"\"\n")
+    cat("{|","class=\"",controlwiki$class,"\"\n")
     if (!missing(title))
       cat("|+",title,"\n")
   }
@@ -116,15 +128,19 @@ publish.matrix <- function(x,
   # }}}
   # {{{ Cat by row
   if (is.null(dim(x))){
-    if (latex) x[grep("<|>|[0-9.]+",x)]=paste("$",x[grep("<|>|[0-9.]+",x)],"$")
+    if (latex && latexNoDollar==FALSE){
+      x[grep("<|>|[0-9.]+",x)] <- paste("$",x[grep("<|>|[0-9.]+",x)],"$")
+    }
     cat(startrow,paste(x,collapse=collapse.row),endrow)
   }
   else{
-  apply(x,1,function(x){
-    ## protect numbers
-    if (latex) x[grep("<|>|[0-9.]+",x)]=paste("$",x[grep("<|>|[0-9.]+",x)],"$")
-    cat(startrow,paste(x,collapse=collapse.row),endrow)
-  })}
+    apply(x,1,function(x){
+      ## protect numbers
+      if (latex && latexNoDollar==FALSE){#      if (latex)
+        x[grep("<|>|[0-9.]+",x)]=paste("$",x[grep("<|>|[0-9.]+",x)],"$")
+      }
+      cat(startrow,paste(x,collapse=collapse.row),endrow)
+    })}
   # }}}
   # {{{ footer
   if(latex && environment==FALSE)
