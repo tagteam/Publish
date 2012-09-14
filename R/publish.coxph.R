@@ -42,6 +42,8 @@ publish.coxph <- function(object,
     else{
       Nmiss <- sapply(varNames,function(v){sum(is.na(dd[,v]))})
       names(Nmiss) <- varNames
+      if (all(Nmiss==0))
+        missing <- FALSE
     }
   }
 

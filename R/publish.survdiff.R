@@ -33,7 +33,7 @@ publish.survdiff <- function (x, digits = max(options()$digits - 4, 3), verbose=
     temp <- cbind(x$n, otmp, etmp, ((otmp - etmp)^2)/etmp, 
                   ((otmp - etmp)^2)/diag(x$var))
     dimnames(temp) <- list(names(x$n), c("N", "Observed", 
-                                         "Expected", "(O-E)^2/E", "(O-E)^2/V"))
+                                         "Expected", "squared(O-E)/E", "squared(O-E)/V"))
     if (verbose==TRUE){
       publish(temp,digits=digits,col1name="Log-rank test")
       cat("\n Chisq=",

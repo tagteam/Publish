@@ -5,9 +5,11 @@ BaselineTable <- function(formula,
                           summary.discrete="count(x) (percent(x))",
                           format.numeric="%1.2f",
                           strataIsOutcome=FALSE,
+                          preferOR=FALSE,
                           pvalue.nonpar=FALSE,
                           pvalue.eps=0.0001,
                           pvalue.digits=4,
+                          pvalue.stars=FALSE,
                           sep="-",
                           ...){
 
@@ -18,24 +20,31 @@ BaselineTable <- function(formula,
   # {{{ parse data 
   m <- model.frame(formula,data,na.action=na.pass)
   groupname <- names(m)[1]
-  groupvar <- factor(m[,1])
+  ## deal with missing values in group var
+  groupvar <- as.character(m[,1])
+  groupvar[is.na(groupvar)] <- "Missing"
+  groupvar <- factor(groupvar)
   groups <- levels(groupvar)
   if (strataIsOutcome==TRUE & (length(groups)!=2))
     stop("strataIsOutcome can only be TRUE when there are exactly two groups. You have ",length(groups)," groups")
   grouplabels <- paste(names(m)[1],"=",groups)
   variables <- m[,-1,drop=FALSE]
   NVARS <- length(variables)
-  if (missing(type)) type <- sapply(variables,function(x){is.factor(x)+2*is.numeric(x)})
+  if (missing(type)) type <- sapply(variables,function(x){is.factor(x)+2*is.numeric(x)+3*is.logical(x)})
+  # treat logical as factors
+  ## print(type)
+  type[type==3] <- 1
   ## force variables with less than 3 distinc values to be discrete
   type[sapply(variables,function(v)length(unique(v)))<3] <- 1
   # }}}
   #  type 0=character
   #       1=factor
   #       2=numeric
+  #       3=logical
   # {{{ summary numeric variables
   # {{{ prepare format
   tmp.cont <- strsplit(summary.continuous,"[ \t]+|\\(|\\{|\\[|\\)",perl=TRUE)[[1]]
-  stats.cont <- tmp.cont[grep("x",tmp.cont)-1]
+  stats.cont <- tmp.cont[grep("^x$",tmp.cont)-1]
   outclass.cont <- sapply(stats.cont,function(s)class(do.call(s,list(1:2))))
   outlen.cont <- sapply(stats.cont,function(s)length(do.call(s,list(1:2))))
   for(s in 1:length(stats.cont)){
@@ -79,7 +88,7 @@ BaselineTable <- function(formula,
   # {{{ discrete variables (factors)
   # {{{ prepare format 
   tmp.disc <- strsplit(summary.discrete,"[ \t]+|\\(|\\{|\\[|\\)",perl=TRUE)[[1]]
-  stats.disc <- tmp.disc[grep("x",tmp.disc)-1]
+  stats.disc <- tmp.disc[grep("^x$",tmp.disc)-1]
   for(s in 1:length(stats.disc)){
     subs <- switch(stats.disc[s],"count"="%d","percent"="%1.1f",stop("Can only do count and percent for discrete variables"))
     summary.discrete <- gsub(paste(stats.disc[s],"(x)",sep=""),subs,summary.discrete,fixed=TRUE)
@@ -129,13 +138,28 @@ BaselineTable <- function(formula,
   # {{{ p-values
   p.cont <- sapply(names(type.cont),function(v){
     if (strataIsOutcome==TRUE){
-      format.pval(anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2],eps=pvalue.eps,digits=pvalue.digits)
+      px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+      if (pvalue.stars==TRUE)
+        px <- symnum(px,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+      else
+        px <- format.pval(px,eps=pvalue.eps,digits=pvalue.digits)
+      px
     }
     else {
       if (pvalue.nonpar==TRUE){
-        format.pval(kruskal.test(formula(paste(v,"~",groupname)),data=data)$p.value,eps=pvalue.eps,digits=pvalue.digits)
+        px <- kruskal.test(formula(paste(v,"~",groupname)),data=data)$p.value
+        if (pvalue.stars==TRUE)
+          px <- symnum(px,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+        else
+          px <- format.pval(px,eps=pvalue.eps,digits=pvalue.digits)
+        px
       } else {
-        format.pval(anova(glm(formula(paste(v,"~",groupname)),data=data),test="Chisq")$"Pr(>Chi)"[2],eps=pvalue.eps,digits=pvalue.digits)
+        px <- anova(glm(formula(paste(v,"~",groupname)),data=data),test="Chisq")$"Pr(>Chi)"[2]
+        if (pvalue.stars==TRUE)
+          px <- symnum(px,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+        else
+          px <- format.pval(px,eps=pvalue.eps,digits=pvalue.digits)
+        px
       }
     }
   })
@@ -144,38 +168,42 @@ BaselineTable <- function(formula,
       format.pval(anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2],eps=pvalue.eps,digits=pvalue.digits)}
     else{
       tabx <- table(variables[,v],groupvar)
-      if (all(dim(tabx)==2)){
-        a <- tabx[1,1]
-        b <- tabx[1,2]
-        c <- tabx[2,1]
-        d <- tabx[2,2]
-        alpha <- 0.05
-        orx <- (a*d)/(b*c)
-        orx.lower <- exp(log(orx) - qnorm(1-alpha/2)*sqrt(1/a+1/b+1/c+1/d))
-        orx.upper <- exp(log(orx) + qnorm(1-alpha/2)*sqrt(1/a+1/b+1/c+1/d))
-        ux <- paste(format.numeric, " [", format.numeric," - ", format.numeric,"] %s",sep="")
-        px <- chisq.test(tabx)$p.value
-        px <- symnum(px, corr = FALSE, na = FALSE, 
-                         cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-                         symbols = c("***", "**", "*", ".", " "))
-        sprintf(ux, orx,orx.lower,orx.upper,px)
+      if (preferOR==TRUE){
+        if (all(dim(tabx)==2)){
+          orx <- oddsRatio2x2(tabx)
+          ux <- paste(format.numeric, " [", format.numeric," - ", format.numeric,"] %s",sep="")
+          if (pvalue.stars==TRUE)
+            px <- symnum(orx$pvalue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+          else
+            px <- orx$pvalue
+          sprintf(ux, orx$or,orx$lower,orx$upper,px)
+        } else{
+          orx <- oddsRatioNx2(tabx)
+          ux <- paste(format.numeric, " [", format.numeric," - ", format.numeric,"] %s",sep="")
+          orx.tab <- do.call("rbind",lapply(orx,function(o){
+            if (pvalue.stars==TRUE)
+              if (is.na(o$pvalue))
+                p <- ""
+              else
+                p <- symnum(o$pvalue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+            else
+              p <- o$pvalue
+            sprintf(ux, o$or,o$lower,o$upper,p)
+          }))
+          orx.tab[1,] <- gsub("NA","",orx.tab[1,])
+          orx.tab
+        }
       }
       else{
         px <- format.pval(chisq.test(tabx)$p.value,eps=pvalue.eps,digits=pvalue.digits)
+        if (pvalue.stars==TRUE)
+          px <- symnum(px,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
         px
       }
     }
   })
   # }}}
-  out <- list(summary.groups=c(groups.disc,groups.cont),
-              summary.totals=c(totals.cont,totals.disc),
-              missing=list(group=group.missing,totals=totals.missing),
-              p.values=c(p.cont,p.disc),
-              formula=formula,
-              groups=grouplabels,
-              vartype=type,
-              xlevels=xlevels,
-              statistics=stats.cont)
+  out <- list(summary.groups=c(groups.disc,groups.cont),summary.totals=c(totals.cont,totals.disc),missing=list(group=group.missing,totals=totals.missing),p.values=c(p.cont,p.disc),formula=formula,groups=grouplabels,vartype=type,xlevels=xlevels,statistics=stats.cont)
   class(out) <- "BaselineTable"
   out
   # }}}

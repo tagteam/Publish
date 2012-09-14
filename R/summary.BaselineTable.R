@@ -22,15 +22,24 @@ summary.BaselineTable <- function(x,order,...){
       lev <- paste(x$statistics,collapse="/")
     }
     if (!is.null(miss)) lev <- c(lev,"missing")
-    if (is.null(miss)){
-      p <- c(rep("",NROW(sum)-1),x$p.values[[s]])
+    p <- x$p.values[[s]]
+
+    if (NROW(sum)>2 && NROW(p)==(NROW(sum)-1)){
+      sum <- cbind(sum,rbind(rep("",NROW(sum)-1),p=x$p.values[[s]]))
+      colnames(sum)[NCOL(sum)] <- "p"
     }
     else{
-      p <- c(rep("",NROW(sum)-2),x$p.values[[s]],"")
+      if (is.null(miss)){
+        p <- c(rep("",NROW(sum)-1),x$p.values[[s]])
+      }
+      else{
+        p <- c(rep("",NROW(sum)-2),x$p.values[[s]],"")
+      }
+      sum <- cbind(sum,p)
     }
-    sum <- cbind(sum,p)
     fac <- c(s,rep("",NROW(sum)-1))
     sum <- cbind(fac,lev,sum)
+    ## if (NROW(sum)>2)     browser()
     XXtab <- rbind(XXtab,data.frame(sum,stringsAsFactors=FALSE))
   }
   XXtab <- data.frame(XXtab,row.names=1:NROW(XXtab))

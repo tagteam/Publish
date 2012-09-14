@@ -6,21 +6,23 @@ publish.matrix <- function(x,
                            rownames=TRUE,
                            col1name="",
                            digits=4,
+                           sep=" ",
                            collapse.head,
                            collapse.row,
+                           endhead,
                            endrow,
-                           style="muse",
+                           style,
                            latex=FALSE,
                            wiki=FALSE,
+                           muse=FALSE,
+                           org=FALSE,
                            environment=TRUE,
                            latexTableFormat=NA,
                            latexHline=1,
                            latexNoDollar=FALSE,
                            ...){
- 
   ccc <- colnames(x)
   rrr <- rownames(x)
-
   # {{{ force vectors into matrix form
   if (is.null(dim(x))){
     x <- matrix(x,ncol=length(x))
@@ -29,28 +31,35 @@ publish.matrix <- function(x,
   # {{{ smartControl
   wiki.DefaultArgs <- list("class"="R-table")
   latex.DefaultArgs <- NULL
+  org.DefaultArgs <- NULL
   muse.DefaultArgs <- NULL
   control <- SmartControl(call=  list(...),
-                          keys=c("wiki","latex","muse"),
-                          defaults=list("wiki"=wiki.DefaultArgs,"latex"=latex.DefaultArgs,"muse"=muse.DefaultArgs),
+                          keys=c("wiki","latex","muse","org"),
+                          defaults=list("wiki"=wiki.DefaultArgs,"latex"=latex.DefaultArgs,"muse"=muse.DefaultArgs,"org"=org.DefaultArgs),
                           ignore.case=TRUE,
                           replaceDefaults=FALSE,
                           verbose=TRUE)
   # }}}
   # {{{ style dependent syntax
+  if (missing(style)) style <- "none"
   if (wiki==TRUE) style <- "wiki"
   if (latex==TRUE) style <- "latex"
+  if (org==TRUE) style <- "org"
+  if (muse==TRUE) style <- "muse"
   switch(style,
          "latex"={
            latex <- TRUE
            wiki <- FALSE
            muse <- FALSE
+           org <- FALSE
            starthead <- ""
            collapse.head <- "&"
-           if (is.na(latexHline))
-             endhead <- "\\\\\n"
-           else
-             endhead <- "\\\\\\hline\n"
+           if (missing(endhead)){
+             if (is.na(latexHline))
+               endhead <- "\\\\\n"
+             else
+               endhead <- "\\\\\\hline\n"
+           }
            startrow <- ""
            collapse.row <- "&"
            if (missing(endrow))
@@ -61,27 +70,62 @@ publish.matrix <- function(x,
            wiki <- TRUE
            latex <- FALSE
            muse <- FALSE
+           org <- FALSE
            starthead <- "|-\n! "
            collapse.head <- " !! "
-           endhead <- "\n"
+           if (missing(endhead)){
+           endhead <- "\n"}
            startrow <- "|-\n| "
            collapse.row <- " || "
            if (missing(endrow))
-           endrow <- "\n"
+             endrow <- "\n"
            endtable <- "|}\n"
          },
          "muse"={
            wiki <- FALSE
            latex <- FALSE
            muse <- TRUE
+           org <- FALSE
            starthead <- " "
            collapse.head <- " || "
-           endhead <- "\n"
+           if (missing(endhead)){
+           endhead <- "\n"}
            startrow <- " "
            collapse.row <- " | "
            if (missing(endrow))
              endrow <- "\n"
            endtable <- "\n"
+         },
+         "org"={
+           wiki <- FALSE
+           latex <- FALSE
+           muse <- FALSE
+           org <- TRUE
+           starthead <- "| "
+           collapse.head <- " | "
+           if (missing(endhead)){
+           endhead <- "\n|-----------------\n"
+         }
+           startrow <- "| "
+           collapse.row <- " | "
+           if (missing(endrow))
+             endrow <- "\n"
+           endtable <- "\n"
+         },
+         "none"={
+           wiki <- FALSE
+           latex <- FALSE
+           muse <- FALSE
+           org <- FALSE
+           starthead <- ""
+           collapse.head <- sep
+           if (missing(endhead)){
+           endhead <- "\n"
+         }
+           startrow <- ""
+           collapse.row <- sep
+           endrow <- "\n"
+           endtable <- ""
          })
   # }}}
   # {{{ round x
@@ -115,7 +159,7 @@ publish.matrix <- function(x,
       cat("\\begin{tabular}{",latexTableFormat,"}","\n")
   }
   if (wiki){
-    cat("{|","class=\"",controlwiki$class,"\"\n")
+    cat("{|","class=\"",control$wiki$class,"\"\n")
     if (!missing(title))
       cat("|+",title,"\n")
   }
@@ -139,6 +183,7 @@ publish.matrix <- function(x,
       if (latex && latexNoDollar==FALSE){#      if (latex)
         x[grep("<|>|[0-9.]+",x)]=paste("$",x[grep("<|>|[0-9.]+",x)],"$")
       }
+      if (latex && latexHline && x[[1]]!="") cat("\\hline\n")
       cat(startrow,paste(x,collapse=collapse.row),endrow)
     })}
   # }}}

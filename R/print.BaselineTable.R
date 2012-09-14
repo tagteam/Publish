@@ -1,4 +1,5 @@
 print.BaselineTable <- function(x,order,...){
-  print(summary(x))
-  invisible(summary(x))
+  sx <- summary(x)
+  print(sx)
+  invisible(sx)
 }

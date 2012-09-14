@@ -9,6 +9,9 @@ publish.glm <- function(object,
                         print=TRUE,
                         transform=NULL,
                         profile=TRUE,
+                        pvalue.stars=FALSE,
+                        missing.string="--",
+                        showResponseTable=FALSE,
                         ...){
   # {{{ formula and missing values?
   if (is.null(object$formula)){
@@ -40,7 +43,7 @@ publish.glm <- function(object,
   logisticRegression <- (!is.null(object$family$family) && object$family$family=="binomial")
   # }}}
   # {{{ Table response for logisticRegression 
-  if (print==TRUE && logisticRegression){
+  if (print==TRUE && logisticRegression && showResponseTable){
     D <- object$model
     response <- D[,as.character(formula[[2]])]
     tmp <- as.matrix(table(response))
@@ -80,8 +83,11 @@ publish.glm <- function(object,
   }
   x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=2)
   x$tValue=round(x$tValue,digits)
-  x$pValue=sapply(x$pValue,format.pval,digits=pvalDigits,eps=eps)
-
+  if (pvalue.stars==TRUE)
+    x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+  ## x$pValue=sapply(x$pValue,format.pval,digits=pvalDigits,eps=eps)
+  else
+    x$pValue=sapply(x$pValue,format.pval,digits=pvalDigits,eps=eps)
   # }}}
   # {{{ treat predictors and missings
   factorLevels <- object$xlevels
@@ -98,7 +104,7 @@ publish.glm <- function(object,
     inter <- x[found,,drop=FALSE]
     x <- x[-found,,drop=FALSE]
     if (missing)
-      inter <- cbind(inter,Missing="--")
+      inter <- cbind(inter,Missing=missing.string)
   }
   # }}}
   # {{{ missing values
@@ -113,14 +119,14 @@ publish.glm <- function(object,
     ## factors
     if (found <- match(names(xlist)[v],factorNames,nomatch=0)){
       if (missing){
-        add <- c(ifelse(logisticRegression,1,0),rep("--",ncol(x)-1),Missing=Nmiss[v])
-        old <- cbind(xlist[[v]],Missing=rep("--",NROW(xlist[[v]])))
+        add <- c(ifelse(logisticRegression,1,0),rep(missing.string,ncol(x)-1),Missing=Nmiss[v])
+        old <- cbind(xlist[[v]],Missing=rep(missing.string,NROW(xlist[[v]])))
         old$Missing <- as.character(old$Missing)
         xlist[[v]] <- rbind(add,old)
         xlist[[v]]
       }
       else{
-        xlist[[v]] <- rbind(c(ifelse(logisticRegression,1,0),rep("--",ncol(x)-1)),
+        xlist[[v]] <- rbind(c(ifelse(logisticRegression,1,0),rep(missing.string,ncol(x)-1)),
                             xlist[[v]])
       }
       rownames(xlist[[v]]) <- newnames[[found]]
