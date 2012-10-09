@@ -1,6 +1,8 @@
 publish.geeglm <- function(object,
                         digits=2,
-                        pvalDigits=4,
+                        pFormat=TRUE,
+                        pDigits=4,
+                        pStars=FALSE,
                         eps=0.0001,
                         missing=NULL,
                         sel=NULL,
@@ -9,7 +11,6 @@ publish.geeglm <- function(object,
                         print=TRUE,
                         transform=NULL,
                         profile=FALSE,
-                        pvalue.stars=FALSE,
                         missing.string="--",
                         ...){
     # {{{ formula and missing values?
@@ -72,11 +73,12 @@ publish.geeglm <- function(object,
   x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=2)
   x$tValue=round(x$tValue,digits)
 
-  if (pvalue.stars==TRUE)
-    x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
-  ## x$pValue=sapply(x$pValue,format.pval,digits=pvalDigits,eps=eps)
-  else
-    x$pValue=sapply(x$pValue,format.pval,digits=pvalDigits,eps=eps)
+  if (pFormat){
+    if (pStars==TRUE)
+      x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+    else
+      x$pValue=sapply(x$pValue,format.pval,digits=pDigits,eps=eps)
+  }
   # }}}
   # {{{ treat predictors and missings
   factorLevels <- object$xlevels
