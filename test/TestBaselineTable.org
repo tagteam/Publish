@@ -1,28 +1,13 @@
 #+BEGIN_SRC R 
   library(Publish)
   set.seed(18)
-  N <- 100
-  d <- data.frame(Y=rnorm(N),Y2=rnorm(N),X=rbinom(N,1,.4),X2=factor(rbinom(N,3,.4)),S=rbinom(N,1,.4))
-  BaselineTable(S~Y+Y2+X+X2,data=d)
-  BaselineTable(S~Y+Y2+X2+X,data=d)
-  
-  
-  klaus <- function(x) 1
-  BaselineTable(S~Y+Y2+X2+X,
-                data=d,
-                summary.continuous="median(x) [klaus(x)]")
-  
-  
-  
-  
-  
-  
-  
-  
-  d$X2[3] <- NA
-  d$Y2[5] <- NA
-  BaselineTable(S~Y+Y2+X2+X,data=d)
-  
-  BaselineTable(S~Y+Y2+X2+X,data=d,summary.continuous="mean(x) median: median(x)")
-  
+  N <- 20
+  d <- data.frame(Age=runif(N,20,80),Bloodpressure=rnorm(N,mean=140,sd=20),GeneMarker=rbinom(N,3,.4),Sex=factor(rbinom(N,1,.4)),Center=rbinom(N,1,.4))
+  d$treatment <- sample(letters[1:3],replace=TRUE,size=N)
+  d$Bloodpressure[c(7,9)] <- NA
+  u <- univariateTable(Center~Age+Bloodpressure+Sex+GeneMarker,data=d)
+  univariateTable(Center~Age+Bloodpressure+Sex+GeneMarker,data=d,frequency.format="count(x) colpercent(x)")
 #+END_SRC
+
+#+RESULTS:
+

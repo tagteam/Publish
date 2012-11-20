@@ -1,11 +1,11 @@
 Package: Publish
 Type: Package
 Title: Publish
-Version: 1.0.4
+Version: 1.0.5
 Date: 2009-06-08
 Author: Thomas Gerds
 Maintainer: Thomas Gerds <tag@biostat.ku.dk>
-Description: Publishing output from R using emacs muse
+Description: Formatting output from R for publication
 Depends: R (>= 1.9.1), prodlim
 License: Foo
 Packaged: Mon Jun 08 11:54:28 2009 ;tag

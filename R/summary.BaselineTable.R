@@ -9,7 +9,7 @@ summary.BaselineTable <- function(x,order,...){
     sum <- ordered.summary[[s]]
     sum <- cbind(sum,Totals=x$summary.totals[[s]])
     if (any(x$missing$totals[[s]]>0)){
-      miss <- c(x$missing$totals[[s]],unlist(x$missing$group[[s]]))
+      miss <- c(unlist(x$missing$group[[s]]),x$missing$totals[[s]])
     }
     else{
       miss <- NULL

@@ -90,8 +90,7 @@ BaselineTable <- function(formula,
   tmp.disc <- strsplit(summary.discrete,"[ \t]+|\\(|\\{|\\[|\\)",perl=TRUE)[[1]]
   stats.disc <- tmp.disc[grep("^x$",tmp.disc)-1]
   for(s in 1:length(stats.disc)){
-    subs <- switch(stats.disc[s],"count"="%d","percent"="%1.1f", "colpercent"="%1.1f",
-                   stop("Can only do count and percent for discrete variables"))
+    subs <- switch(stats.disc[s],"count"="%d","percent"="%1.1f",stop("Can only do count and percent for discrete variables"))
     summary.discrete <- gsub(paste(stats.disc[s],"(x)",sep=""),subs,summary.discrete,fixed=TRUE)
   }
   # }}}
@@ -116,31 +115,16 @@ BaselineTable <- function(formula,
     totals.disc[[v]] <- table(vvv)
     tables <- lapply(split(ggg,vvv),function(x){
       xtab <- data.frame(table(factor(x,levels=groups)))
-      if (match("percent",stats.disc,nomatch=FALSE)){
+      if (match("percent",stats.disc,nomatch=FALSE))
         xtab$Percent <- 100*xtab$Freq/sum(xtab$Freq)
-      }
       tab.out <- lapply(1:NROW(xtab),function(row){
         values <- xtab[row,-1]
-        if (match("colpercent",stats.disc,nomatch=FALSE)){
-          values
-        }
-        else{
-          do.call("sprintf",c(summary.discrete,as.list(unlist(values))))
-        }
+        do.call("sprintf",c(summary.discrete,as.list(unlist(values))))
       })
       names(tab.out) <- grouplabels
       tab.out
     })
     groups.disc[[v]] <- do.call("rbind",tables)
-    if (match("colpercent",stats.disc,nomatch=FALSE)){
-      groups.disc[[v]] <- apply(groups.disc[[v]],2,function(x){
-        val <- as.numeric(x)
-        colp <- 100*val/sum(val)
-        sapply(1:length(val),function(i){
-          do.call("sprintf",c(summary.discrete,as.list(c(val[i],colp[i]))))
-        })
-      })
-    }
   }
   # }}}
   # {{{ missing values
