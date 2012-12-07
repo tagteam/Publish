@@ -32,11 +32,10 @@ publish.coxph <- function(object,
 
   # }}}
   # {{{ missing values 
-
   varNames <- all.vars(delete.response(terms(object$formula)))
   if (missing){
     dd <- try(eval(object$call$data),silent=TRUE)
-    if (class(dd)=="try-error"){
+    if (class(dd)=="function" || class(dd)=="try-error" || is.null(dd)){
       missing <- FALSE
     }
     else{
@@ -46,7 +45,6 @@ publish.coxph <- function(object,
         missing <- FALSE
     }
   }
-
   # }}}
   # {{{ factors with a reference level
   factorLevels <- object$xlevels
@@ -59,7 +57,7 @@ publish.coxph <- function(object,
   # {{{ summary: mean (sd) for numeric, count for factors with levels
   if (sum){
     dd <- try(eval(object$call$data),silent=TRUE)
-    if (class(dd)=="try-error"){
+    if (class(dd)=="function" || class(dd)=="try-error" || is.null(dd)){
       sum <- FALSE
     }
     else{

@@ -112,7 +112,8 @@ publish.glm <- function(object,
   # }}}
   # {{{ variable names factor levels
   splitty <- unlist(lapply(varNames,function(vn){
-    rep(vn,length(grep(vn,rownames(x))))
+    ## the rowname is either vnLev or vn
+    rep(vn,length(grep(paste("^",vn,sep=""),rownames(x))))
   }))
   xlist <- split(x,factor(splitty,levels=unique(splitty)))
   xfixed <- lapply(1:length(xlist),function(v){

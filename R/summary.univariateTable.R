@@ -11,8 +11,8 @@ summary.univariateTable <- function(x,order,...){
   ## factornames, levels
   XXtab <- NULL
   for (s in names(ordered.summary)){
-    sum <- as.matrix(ordered.summary[[s]])
     if (!is.null(x$groups)){
+      sum <- as.matrix(ordered.summary[[s]])
       sum <- cbind(sum,Totals=x$summary.totals[[s]])
     }
     else{
