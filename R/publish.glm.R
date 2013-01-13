@@ -10,6 +10,7 @@ publish.glm <- function(object,
                         transform=NULL,
                         profile=TRUE,
                         pvalue.stars=FALSE,
+                        ci.format,
                         missing.string="--",
                         showResponseTable=FALSE,
                         ...){
@@ -41,6 +42,12 @@ publish.glm <- function(object,
   # }}}
   # {{{ logisticRegression?
   logisticRegression <- (!is.null(object$family$family) && object$family$family=="binomial")
+  if (missing(ci.format)){
+    if (logisticRegression)
+      ci.format <- paste("[",paste("%1.",digits,"f",sep=""),"-",paste("%1.",digits,"f",sep=""),"]",sep="")
+    else
+      ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
+  }
   # }}}
   # {{{ Table response for logisticRegression 
   if (print==TRUE && logisticRegression && showResponseTable){
@@ -74,14 +81,16 @@ publish.glm <- function(object,
     }
     names(x)[1] <- "OddsRatio"
     x$OddsRatio=round(exp(x$OddsRatio),digits)
-    ciX <- round(exp(ciX),digits)
+    ciX <- exp(ciX)
   }
   else{
     if (is.null(sel)){
       sel <- c("Estimate","StandardError","CI.95","pValue","Missing")
     }
   }
-  x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=2)
+  ## x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=ci.style)
+  x$CI.95=apply(ciX[,c(1,2)],1,function(x){
+    sprintf(ci.format,x[1],x[2])})
   x$tValue=round(x$tValue,digits)
   if (pvalue.stars==TRUE)
     x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
