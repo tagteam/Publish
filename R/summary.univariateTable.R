@@ -30,7 +30,6 @@ summary.univariateTable <- function(x,missing=c("ifany","always","never"),order,
     else{
       miss <- NULL
     }
-    print(miss)
     sum <- rbind(sum,miss)
     if (x$vartype[[s]]=="factor"){
       lev <- x$xlevels[[s]]
@@ -70,6 +69,5 @@ summary.univariateTable <- function(x,missing=c("ifany","always","never"),order,
     colnames(XXtab) <- c("Factor","Levels",x$groups,"Totals","Pvalues")
   }
   rownames(XXtab) <- NULL
-  ## print(XXtab,quote=FALSE)
   XXtab
 }
