@@ -1,4 +1,5 @@
-summary.univariateTable <- function(x,order,...){
+summary.univariateTable <- function(x,missing=c("ifany","always","never"),order,...){
+  missing <- match.arg(missing,c("ifany","always","never"),several.ok=FALSE)
   if (is.null(x$groups)){
     XX <- all.vars(x$formula)
   }
@@ -18,7 +19,7 @@ summary.univariateTable <- function(x,order,...){
     else{
       sum <- data.frame(Totals=x$summary.totals[[s]],stringsAsFactors = FALSE)
     }
-    if (any(x$missing$totals[[s]]>0)){
+    if (missing!="never" && (missing=="always" || any(x$missing$totals[[s]]>0))){
       if (is.null(x$groups)){
         miss <- x$missing$totals[[s]]
       }
@@ -29,6 +30,7 @@ summary.univariateTable <- function(x,order,...){
     else{
       miss <- NULL
     }
+    print(miss)
     sum <- rbind(sum,miss)
     if (x$vartype[[s]]=="factor"){
       lev <- x$xlevels[[s]]
