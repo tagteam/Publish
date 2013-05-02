@@ -12,6 +12,7 @@ publish.matrix <- function(x,
                            endhead,
                            endrow,
                            style,
+                           interLines,
                            latex=FALSE,
                            wiki=FALSE,
                            muse=FALSE,
@@ -178,14 +179,19 @@ publish.matrix <- function(x,
     cat(startrow,paste(x,collapse=collapse.row),endrow)
   }
   else{
-    apply(x,1,function(x){
+    for (r in 1:NROW(x)){
+    ## apply(x,1,function(x){
+      row.x <- x[r,,drop=TRUE]
+      ## extra lines
+      if (!is.null(interLines[[as.character(r)]]))
+        cat(interLines[[as.character(r)]])
       ## protect numbers
       if (latex && latexNoDollar==FALSE){#      if (latex)
-        x[grep("<|>|[0-9.]+",x)]=paste("$",x[grep("<|>|[0-9.]+",x)],"$")
+        row.x[grep("<|>|[0-9.]+",row.x)]=paste("$",row.x[grep("<|>|[0-9.]+",row.x)],"$")
       }
       if (latex && latexHline && x[[1]]!="") cat("\\hline\n")
-      cat(startrow,paste(x,collapse=collapse.row),endrow)
-    })}
+      cat(startrow,paste(row.x,collapse=collapse.row),endrow)
+    }}
   # }}}
   # {{{ footer
   if(latex && environment==FALSE)

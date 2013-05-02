@@ -9,7 +9,7 @@ CoxList <- function(formula,data,vars,print=FALSE,...){
   u <- sapply(clist,NCOL)
   if (any(v <- (u<max(u)))){
     for (x in (1:length(clist))[v]){
-      clist[[x]] <- cbind(clist[[x]],"Missing"=rep("--",NROW(clist[[x]])))
+      clist[[x]] <- cbind(clist[[x]],data.frame("Missing"=rep("--",NROW(clist[[x]])),stringsAsFactors=FALSE))
     }
   }
   do.call("rbind",clist)
