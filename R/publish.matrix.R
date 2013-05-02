@@ -22,6 +22,8 @@ publish.matrix <- function(x,
                            latexHline=1,
                            latexNoDollar=FALSE,
                            ...){
+  if (missing(interLines))
+    interLines <- NULL
   ccc <- colnames(x)
   rrr <- rownames(x)
   # {{{ force vectors into matrix form
@@ -166,6 +168,8 @@ publish.matrix <- function(x,
   }
   # }}}
   # {{{ colunm names
+  if (!is.null(interLines[[as.character(0)]]))
+        cat(interLines[[as.character(0)]])
   if (!is.null(ccc) && colnames==TRUE)
     cat(starthead,paste(ccc,collapse=collapse.head),endhead)
   colnames(x) <- NULL
@@ -180,7 +184,7 @@ publish.matrix <- function(x,
   }
   else{
     for (r in 1:NROW(x)){
-    ## apply(x,1,function(x){
+      ## apply(x,1,function(x){
       row.x <- x[r,,drop=TRUE]
       ## extra lines
       if (!is.null(interLines[[as.character(r)]]))
