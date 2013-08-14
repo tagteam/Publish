@@ -8,8 +8,8 @@ publish.lme <- function (object, adjustSigma = TRUE, verbose = FALSE, digits=2, 
     stdFixed <- sqrt(object$dims$N/(object$dims$N - length(stdFixed))) * 
       stdFixed
   }
-  tTable <- data.frame(round(fixed,digits), round(stdFixed,digits), object$fixDF[["X"]], 
-                       round(fixed/stdFixed,digits), fixed)
+  tTable <- data.frame(format(fixed,digits=digits,nsmall=digits), format(stdFixed,digits=digits,nsmall=digits), object$fixDF[["X"]], 
+                       format(fixed/stdFixed,digits=digits,nsmall=digits), fixed)
   dimnames(tTable) <- list(names(fixed), c("Value", "Std.Error", 
                                            "DF", "t-value", "p-value"))
   tTable[, "p-value"] <- 2 * pt(-abs(tTable[, "t-value"]), 

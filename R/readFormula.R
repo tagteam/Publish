@@ -163,8 +163,8 @@ readFormula <- function(formula,
   }
   # }}}  
   # {{{ collect all variables
-  ## allForm <- formula(paste("~",paste(c(all.vars(rForm),rhsVars),collapse="+")))
-  formList <- c(formList,list(allVars=c(all.vars(rForm),rhsVars)))
+  allForm <- formula(paste("~",paste(c(all.vars(rForm),rhsVars),collapse="+")))
+  ## formList <- c(formList,list(allVars=c(all.vars(rForm),rhsVars)))
   # }}}
   formList
 }

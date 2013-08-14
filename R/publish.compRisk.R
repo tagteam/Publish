@@ -32,7 +32,7 @@ publish.compRisk <- function(object,
   coefMat <- do.call("rbind",lapply(cvars,function(v){
     covname <- strsplit(v,":")[[1]][[1]]
     if (is.null(Flevels[[covname]])){
-      ci=paste("[",format(round(exp(const.coef[v] - zVal * const.se[v]),2)),";",format(round(exp(const.coef[v] + zVal * const.se[v]),2)),"]",sep="")
+      ci=paste("[",format(exp(const.coef[v] - zVal * const.se[v]),digits=digits,nsmall=digits),";",format(exp(const.coef[v] + zVal * const.se[v]),digits=digits,nsmall=digits),"]",sep="")
       out <- c(v,signif(c(exp(const.coef[v])),digits),ci,format.waldp[v])
     }
     else{
@@ -42,7 +42,7 @@ publish.compRisk <- function(object,
         if (match(V,paste(covname,rlev,sep=":"),nomatch=FALSE))
           c(paste(covname,rlev,sep=":"),"--","--","--")
         else{
-          ci=paste("[",format(round(exp(const.coef[V] - zVal * const.se[V]),2)),";",format(round(exp(const.coef[V] + zVal * const.se[V]),2)),"]",sep="")
+          ci=paste("[",format(exp(const.coef[V] - zVal * const.se[V]),digits=digits,nsmall=digits),";",format(exp(const.coef[V] + zVal * const.se[V]),digits=digits,nsmall=digits),"]",sep="")
         c(V,signif(c(exp(const.coef[V])),digits),ci,format.waldp[V])
         }
       }))

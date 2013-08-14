@@ -46,8 +46,8 @@ publish.geeglm <- function(object,
   sumobj <- summary(object)$coefficients
   x <- data.frame(sumobj)
   names(x) <- c("Estimate","StandardError","tValue","pValue")
-  x$Estimate=round(x$Estimate,digits)
-  x$StandardError=round(x$StandardError,digits)
+  x$Estimate=format(x$Estimate,digits=digits,nsmall=digits)
+  x$StandardError=format(x$StandardError,digits=digits,nsmall=digits)
   if (profile==TRUE)
     ciX <- suppressMessages(confint(object))
   else{
@@ -61,8 +61,8 @@ publish.geeglm <- function(object,
       sel <- c("OddsRatio","StandardError","CI.95","pValue","Missing")
     }
     names(x)[1] <- "OddsRatio"
-    x$OddsRatio=round(exp(x$OddsRatio),digits)
-    ciX <- round(exp(ciX),digits)
+    x$OddsRatio=format(exp(x$OddsRatio),digits=digits,nsmall=digits)
+    ciX <- format(exp(ciX),digits=digits,nsmall=digits)
 
   }
   else{
@@ -71,7 +71,7 @@ publish.geeglm <- function(object,
     }
   }
   x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=2)
-  x$tValue=round(x$tValue,digits)
+  x$tValue=format(x$tValue,digits=digits,nsmall=digits)
 
   if (pFormat){
     if (pStars==TRUE)

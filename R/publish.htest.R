@@ -14,22 +14,22 @@ publish.htest <- function(x,title,digits=3,peps=0.0001,pdigits=4,...){
   else cistring=""
   switch(printmethod,
          "Two Sample t-test"={
-           outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a mean difference of ",-round(diff(x$estimate),digits),cistring,sep="")
+           outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a mean difference of ",-format(diff(x$estimate),digits=digits,nsmall=digits),cistring,sep="")
          },
          "Wilcoxon rank sum test"={
            if (is.null(x$conf.int))
              outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a p-value of ",format.pval(x$p.value,digits=pdigits,eps=peps),".",sep="")
            else
-             outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a ",names(x$estimate)," of ",round(x$estimate,digits),cistring,sep="")
+             outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a ",names(x$estimate)," of ",format(x$estimate,digits=digits,nsmall=digits),cistring,sep="")
          },
          "Paired t-test"={
-           outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a mean of the differences of ",round(x$estimate,digits),cistring,sep="")
+           outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a mean of the differences of ",format(x$estimate,digits=digits,nsmall=digits),cistring,sep="")
          },
          "Wilcoxon signed rank test"={
            if (is.null(x$conf.int))
              outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a p-value of ",format.pval(x$p.value,digits=pdigits,eps=peps),".",sep="")
            else
-             outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a ",names(x$estimate)," of ",round(x$estimate,digits),cistring,sep="")
+             outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a ",names(x$estimate)," of ",format(x$estimate,digits=digits,nsmall=digits),cistring,sep="")
          })
   outstring=gsub('[[:space:]]+',' ',gsub('[[:space:]]$','',outstring))
   if (missing(title))

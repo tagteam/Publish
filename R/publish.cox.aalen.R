@@ -36,9 +36,9 @@ publish.cox.aalen <- function(object,
     })    
   }
   out <- data.frame("Var"=covNames,
-               "HR"=format(round(exp(beta),digits)),
-               "Std.err"=format(round(se,digits)),
-               "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
+               "HR"=format(exp(beta),digits=digits,nsmall=digits),
+               "Std.err"=format(format(se,digits=digits,nsmall=digits)),
+               "CI.95"=paste("[",format(exp(beta - z * se),digits=digits,nsmall=digits),";",format(exp(beta + z * se),digits=digits,nsmall=digits),"]",sep=""),
                "P-value"=pValue)
   rownames(out) <- rep("",NROW(out))
   if (print==TRUE)

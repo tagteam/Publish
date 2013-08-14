@@ -6,6 +6,7 @@ univariateTable <- function(formula,
                             digits.freq=1,
                             strataIsOutcome=FALSE,
                             preferOR=FALSE,
+                            shortGroupNames=FALSE,
                             pvalue.nonpar=FALSE,
                             pvalue.eps=0.0001,
                             pvalue.digits=4,
@@ -13,8 +14,8 @@ univariateTable <- function(formula,
                             sep="-",
                             ...){
   # {{{helper functions
-  S <- function(x,format,digits)x
-  F <- function(x,ref,digits)x
+  S <- function(x,format,digits,nsmall)x
+  F <- function(x,ref,digits,nsmall)x
   iqr <- function(x)quantile(x,c(0.25,0.75))
   minmax <- function(x)quantile(x,c(0,1))
   # }}}
@@ -38,18 +39,25 @@ univariateTable <- function(formula,
     groups <- NULL
   }
   else{
-    groupvar <- as.character(model.response(model.frame(formula=formList$Response,data=theData,na.action="na.pass")))
-    ## m <- model.frame(formula,data,na.action=na.pass)
-    ## groupname <- names(m)[1]
+    mr <- model.response(model.frame(formula=formList$Response,data=theData,drop.unused.levels = TRUE,na.action="na.pass"))
     groupname <- all.vars(formList$Response)
+    groupvar <- as.character(model.response(model.frame(formula=formList$Response,data=theData,na.action="na.pass")))
     ## deal with missing values in group var
-    ## groupvar <- as.character(m[,1])
     groupvar[is.na(groupvar)] <- "Missing"
-    groupvar <- factor(groupvar)
-    groups <- levels(groupvar)
+    if (is.factor(mr))
+      if (any(is.na(groupvar)))
+        groups <- c(levels(mr),"Missing")
+      else 
+        groups <- levels(mr)
+    else
+      groups <- unique(groupvar)
+    groupvar <- factor(groupvar,levels=groups)
     if (strataIsOutcome==TRUE & (length(groups)!=2))
       stop("strataIsOutcome can only be TRUE when there are exactly two groups. You have ",length(groups)," groups")
     ## if (length(groups)>30) stop("More than 30 groups")
+    if (shortGroupNames==TRUE)
+    grouplabels <- groups
+    else
     grouplabels <- paste(groupname,"=",groups)
   }
   # }}}
@@ -94,6 +102,7 @@ univariateTable <- function(formula,
   NVARS <- NCOL(continuous.matrix)+NCOL(factor.matrix)
   # }}}
   # {{{ summary numeric variables
+
   if (!is.null(continuous.matrix)){
     # prepare format
     sumformat <- parseSummaryFormat(format=summary.format,digits=digits.summary)
@@ -110,8 +119,10 @@ univariateTable <- function(formula,
     sumformat <- NULL
     summaryNumeric <- NULL
   }
+
   # }}}  
   # {{{ discrete variables (factors)
+
   if (!is.null(factor.matrix)){
     # prepare format
     freqformat <- parseFrequencyFormat(format=freq.format,digits=digits.freq)  
@@ -122,8 +133,10 @@ univariateTable <- function(formula,
     freqformat <- NULL
     freqFactor <- NULL
   }
+
   # }}}
   # {{{ missing values
+
   if (is.null(continuous.matrix)){
     allmatrix <- factor.matrix
   }
@@ -145,6 +158,7 @@ univariateTable <- function(formula,
   else {
     group.missing <- NULL
   }
+
   # }}}
   # {{{ p-values
   p.cont <- NULL
@@ -155,7 +169,7 @@ univariateTable <- function(formula,
         if (strataIsOutcome==TRUE){
           px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
           if (pvalue.stars==TRUE)
-            px <- symnum(px,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+              px <- symnum(px,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
           else
             px <- format.pval(px,eps=pvalue.eps,digits=pvalue.digits)
           px

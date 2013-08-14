@@ -65,8 +65,8 @@ publish.glm <- function(object,
   # {{{ prepare table with confidence limits
   x <- data.frame(summary(object)$coefficients)
   names(x) <- c("Estimate","StandardError","tValue","pValue")
-  x$Estimate=round(x$Estimate,digits)
-  x$StandardError=round(x$StandardError,digits)
+  x$Estimate=format(x$Estimate,digits=digits,nsmall=digits)
+  x$StandardError=format(x$StandardError,digits=digits,nsmall=digits)
   if (profile==TRUE)
     ciX <- suppressMessages(confint(object))
   else{
@@ -80,7 +80,7 @@ publish.glm <- function(object,
       sel <- c("OddsRatio","StandardError","CI.95","pValue","Missing")
     }
     names(x)[1] <- "OddsRatio"
-    x$OddsRatio=round(exp(x$OddsRatio),digits)
+    x$OddsRatio=format(exp(x$OddsRatio),digits=digits,nsmall=digits)
     ciX <- exp(ciX)
   }
   else{
@@ -91,7 +91,7 @@ publish.glm <- function(object,
   ## x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=ci.style)
   x$CI.95=apply(ciX[,c(1,2)],1,function(x){
     sprintf(ci.format,x[1],x[2])})
-  x$tValue=round(x$tValue,digits)
+  x$tValue=format(x$tValue,digits=digits,nsmall=digits)
   if (pvalue.stars==TRUE)
     x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
   ## x$pValue=sapply(x$pValue,format.pval,digits=pvalDigits,eps=eps)

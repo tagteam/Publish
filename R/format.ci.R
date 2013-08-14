@@ -1,6 +1,6 @@
 format.ci <- function(lower,upper,style=1,coll=";",degenerated="--",digits=3,sep=""){
-  lower <- round(lower,digits)
-  upper <- round(upper,digits)
+  lower <- format(lower,digits=digits,nsmall=digits)
+  upper <- round(upper,digits=digits,nsmall=digits)
   out <- switch(as.character(style),
                 "1"=c("lower"=lower,"upper"=upper),
                 "2"=paste("[",lower,coll,upper,"]",sep=sep),

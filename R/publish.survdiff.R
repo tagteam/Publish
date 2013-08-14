@@ -37,11 +37,11 @@ publish.survdiff <- function (x, digits = max(options()$digits - 4, 3), verbose=
     if (verbose==TRUE){
       publish(temp,digits=digits,col1name="Log-rank test")
       cat("\n Chisq=",
-          format(round(x$chisq, 1)),
+          format(x$chisq, digits=1),
           " on",
           df, 
           "degrees of freedom, p=",
-          format(signif(1 - pchisq(x$chisq,df), digits)),
+          format(signif(1 - pchisq(x$chisq,df), digits=digits,nsmall=nsmall)),
           "\n")
     }
   }

@@ -2,6 +2,8 @@ publish.coxph <- function(object,
                           conf.int = 0.95,
                           scale = 1,
                           digits = 2,
+                          ci.format=4,
+                          ci.digits=2,
                           pvalDigits=4,
                           eps=.0001,
                           StandardError=FALSE,
@@ -11,24 +13,26 @@ publish.coxph <- function(object,
                           ...) {
   # {{{ create a data frame 
 
-  beta <- object$coef
-  nabeta <- !(is.na(beta))
-  beta2 <- beta[nabeta]
-  if (is.null(beta) | is.null(object$var)) stop("Input is not valid")
-  se <- sqrt(diag(object$var))
-  if (!is.null(object$naive.var)) nse <- sqrt(diag(object$naive.var))
-  z <- qnorm((1 + conf.int)/2, 0, 1)
-  beta <- beta * scale
-  se <- se * scale
-  if (StandardError==TRUE)
-    x <- data.frame("Hazard ratio"=format(round(exp(beta),digits)),
-                    "Standard error"=format(round(se,digits)),
-                    "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
-                    "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
-  else
-    x <- data.frame("Hazard ratio"=format(round(exp(beta),digits)),
-                    "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
-                    "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
+    beta <- object$coef
+    nabeta <- !(is.na(beta))
+    beta2 <- beta[nabeta]
+    if (is.null(beta) | is.null(object$var)) stop("Input is not valid")
+    se <- sqrt(diag(object$var))
+    if (!is.null(object$naive.var)) nse <- sqrt(diag(object$naive.var))
+    z <- qnorm((1 + conf.int)/2, 0, 1)
+    beta <- beta * scale
+    se <- se * scale
+    if (StandardError==TRUE)
+        x <- data.frame("Hazard ratio"=format(exp(beta),digits=digits,nsmall=digits),
+                        "Standard error"=format(se,digits=digits,nsmall=digits),
+                        "CI.95"=format.ci(lower=exp(beta - z * se),2,upper=exp(beta + z * se),style=ci.format,digits=ci.digits),
+                            ## paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
+                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
+    else
+        x <- data.frame("Hazard ratio"=format(exp(beta),digits=digits,nsmall=digits),
+                        "CI.95"=format.ci(lower=exp(beta - z * se),2,upper=exp(beta + z * se),style=ci.format,digits=ci.digits),
+                        ## "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
+                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
 
   # }}}
   # {{{ missing values 
@@ -66,7 +70,7 @@ publish.coxph <- function(object,
           table(dd[,v])
         }
         else{
-          paste(round(mean(dd[,v],na.rm=TRUE),digits)," (",round(sd(dd[,v],na.rm=TRUE),digits),")",sep="")
+          paste(format(mean(dd[,v],na.rm=TRUE),digits=digits,nsmall=digits)," (",format(sd(dd[,v],na.rm=TRUE),digits=digits,nsmall=digits),")",sep="")
         }})
       names(sumInfo) <- varNames
     }

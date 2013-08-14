@@ -1,0 +1,72 @@
+export("ci.geomean",
+       "ci.geomean.formula",
+       "ci.mean",
+       "ci.mean.data.frame",
+       "ci.mean.default",
+       "ci.mean.formula",
+       "ci.prop",
+       "format.ci",
+       "contrast",
+       "contrast.character",
+       "contrast.default",
+       "contrast.factor",
+       "contrast.integer",
+       "contrast.logical",
+       "contrast.matrix",
+       "contrast.numeric",
+       "CoxList",
+       "crossTable",
+       "getFrequency",
+       "getSummary",
+       "getType",
+       "glmList",
+       "iqr",
+       "lhs",
+       "modelMatrix",
+       "oddsRatio2x2",
+       "oddsRatioNx2",
+       "ORplot",
+       "parseFrequencyFormat",
+       "parseSummaryFormat",
+       "plot.ci",
+       "plot.or",
+       "print.ci",
+       "print.proc_time",
+       "publish",
+       "readFormula",
+       "rhs",
+       "smart.ciplot.formula",
+       "univariateTable")
+
+S3method(summary,univariateTable)
+S3method(print,univariateTable)
+
+S3method(format,ci)
+S3method(plot,ci)
+S3method(plot,or)
+
+S3method(publish,anova)
+S3method(publish,ci.prop)
+S3method(publish,compRisk)
+S3method(publish,cox.aalen)
+S3method(publish,coxph)
+S3method(publish,crossTable)
+S3method(publish,data.frame)
+S3method(publish,default)
+S3method(publish,FGR)
+S3method(publish,geeglm)
+S3method(publish,glm)
+S3method(publish,htest)
+S3method(publish,list)
+S3method(publish,lm)
+S3method(publish,lme)
+S3method(publish,lrm)
+S3method(publish,matrix)
+S3method(publish,pec)
+S3method(publish,prodlim)
+S3method(publish,summary.aov)
+S3method(publish,summary.prodlim)
+S3method(publish,survdiff)
+S3method(publish,table)
+S3method(publish,univariateTable)
+
