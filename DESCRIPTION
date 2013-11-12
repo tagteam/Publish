@@ -1,11 +1,68 @@
 Package: Publish
 Type: Package
 Title: Publish
-Version: 1.0.8
+Version: 1.0.9
 Date: 2009-06-08
 Author: Thomas Gerds
 Maintainer: Thomas Gerds <tag@biostat.ku.dk>
 Description: Formatting output from R for publication
-Depends: R (>= 1.9.1), prodlim
-License: Foo
+Depends:
+    R (>= 1.9.1),
+    prodlim, lava
+License: GPL (>= 2)
 Packaged: Mon Jun 08 11:54:28 2009 ;tag
+Collate:
+    'canbe.numeric.R'
+    'ci.geomean.formula.R'
+    'ci.geomean.R'
+    'ci.mean.data.frame.R'
+    'ci.mean.default.R'
+    'ci.mean.formula.R'
+    'ci.mean.R'
+    'ci.prop.R'
+    'contrastMethods.R'
+    'CoxList.R'
+    'format.ci.R'
+    'getFrequency.R'
+    'getSummary.R'
+    'getType.R'
+    'glmList.R'
+    'iqr.R'
+    'lhs.R'
+    'modelMatrix.R'
+    'oddsRatio2x2.R'
+    'oddsRatioNx2.R'
+    'org.R'
+    'parseFrequencyFormat.R'
+    'parseSummaryFormat.R'
+    'print.ci.R'
+    'print.univariateTable.R'
+    'publish.anova.R'
+    'publish.BaselineTable.R'
+    'publish.ci.prop.R'
+    'publish.compRisk.R'
+    'publish.cox.aalen.R'
+    'publish.coxph.R'
+    'publish.data.frame.R'
+    'publish.default.R'
+    'publish.FGR.R'
+    'publish.geeglm.R'
+    'publish.glm.R'
+    'publish.htest.R'
+    'publish.list.R'
+    'publish.lme.R'
+    'publish.lm.R'
+    'publish.lrm.R'
+    'publish.matrix.R'
+    'publish.pec.R'
+    'publish.prodlim.R'
+    'publish.R'
+    'publish.summary.aov.R'
+    'publish.summary.prodlim.R'
+    'publish.survdiff.R'
+    'publish.table.R'
+    'publish.univariateTable.R'
+    'readFormula.R'
+    'rhs.R'
+    'summary.univariateTable.R'
+    'univariateTable.R'
