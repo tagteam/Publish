@@ -67,9 +67,9 @@ org(tab1)
 #+LATEX_HEADER: \usepackage{amsmath}
 #+LATEX_HEADER: \usepackage{attrib}
 #+LATEX_HEADER: \Plainauthor{}
-#+LATEX_HEADER: \author{Thomas A. Gerds\\University of Copenhagen \And Klaus K"ahler Holst\\University of Copenhagen}
-#+LATEX_HEADER: \title{Promoting R for publishable tables and figures: the \pkg{Publish} package for \proglang{R}}
-#+LATEX_HEADER: \Shorttitle{Illness-Death Model for Interval-Censored Data: The  \pkg{SmoothHazard} Package for \proglang{R}}
+#+LATEX_HEADER: \author{Thomas Alexander Gerds\\Department of Biostatistics\\University of Copenhagen \And Klaus K\"ahler Holst\\Department of Biostatistics\\University of Copenhagen}
+#+LATEX_HEADER: \title{Promoting for \proglang{R} for publishable tables and figures: the \pkg{Publish} package}
+#+LATEX_HEADER: \Shorttitle{Promoting \proglang{R}}
 #+LATEX_HEADER: \Keywords{Convenience, Emacs, Org mode, R, Regression results, Reproducible research}
 #+LATEX_HEADER: \Address{Thomas A. Gerds\\Department of Biostatistics\\University of Copenhagen\\\O sterfarimagsgade 5\\1014 Copenhagen\\Denmark\\E-mail: tag@biostat.ku.dk}
 #+LATEX_HEADER: \Abstract{\input{jss-abstract.tex}}
@@ -77,7 +77,7 @@ org(tab1)
 #+LATEX_HEADER: keywordstyle=\color{blue},
 #+LATEX_HEADER: commentstyle=\color{red},
 #+LATEX_HEADER: stringstyle=\color[rgb]{0,.5,0},
-#+LATEX_HEADER: basicstyle=\ttfamily\small,
+#+LATEX_HEADER: basicstyle=\tt\small,
 #+LATEX_HEADER: columns=fullflexible,
 #+LATEX_HEADER: breaklines=true,        % sets automatic line breaking
 #+LATEX_HEADER: breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace

@@ -1,3 +1,4 @@
+##' @S3method publish htest
 publish.htest <- function(x,title,digits=3,peps=0.0001,pdigits=4,...){
   printmethod=x$method
   printmethod[grep("Wilcoxon rank sum test",printmethod)]="Wilcoxon rank sum test"

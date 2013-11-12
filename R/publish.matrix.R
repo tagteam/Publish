@@ -1,3 +1,4 @@
+##' @S3method publish matrix
 publish.matrix <- function(x,
                            title,
                            level=1,

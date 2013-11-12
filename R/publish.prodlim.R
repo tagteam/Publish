@@ -1,3 +1,4 @@
+##' @S3method publish prodlim
 publish.prodlim <- function(object,times,intervals=TRUE,percent=TRUE,digits=ifelse(percent,1,3),cause=1,...){
     if (missing(times)) stop("Argument times is missing with no default.")
     so <- summary(object,times=times,intervals=intervals,percent=percent,cause=cause)$table

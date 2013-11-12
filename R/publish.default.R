@@ -1,3 +1,4 @@
+##' @S3method publish default
 publish.default <- function(x,digits=4,title,bold=TRUE,level=0,hrule=FALSE,title.level,title.hrule,...){
   if (missing(title.level)) title.level <- max(level-1,1)
   if (missing(title.hrule)) title.hrule <- 0

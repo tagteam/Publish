@@ -1,4 +1,5 @@
 ## based on a copy from print.survdiff, tag, 07 Aug 2009 (11:19)
+##' @S3method publish survdiff
 publish.survdiff <- function (x, digits = max(options()$digits - 4, 3), verbose=TRUE,...) {
   saveopt <- options(digits = digits)
   on.exit(options(saveopt))

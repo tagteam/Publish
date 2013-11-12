@@ -8,7 +8,8 @@ Maintainer: Thomas Gerds <tag@biostat.ku.dk>
 Description: Formatting output from R for publication
 Depends:
     R (>= 1.9.1),
-    prodlim, lava
+    prodlim,
+    lava
 License: GPL (>= 2)
 Packaged: Mon Jun 08 11:54:28 2009 ;tag
 Collate:
@@ -51,7 +52,6 @@ Collate:
     'publish.htest.R'
     'publish.list.R'
     'publish.lme.R'
-    'publish.lm.R'
     'publish.lrm.R'
     'publish.matrix.R'
     'publish.pec.R'

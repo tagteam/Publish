@@ -1,3 +1,4 @@
+##' @S3method publish ci.prop
 publish.ci.prop <- function(x,digits=2,percent=TRUE,style=2,...){
  e <- if(percent) format(100*x$estimate,digits=digits,nsmall=digits) else format(x$estimate,digits=digits,nsmall=digits)
  l <- if(percent) format(100*x$conf.int[1],digits=digits,nsmall=digits) else format(x$conf.int[1],digits=digits,nsmall=digits)

@@ -1,3 +1,4 @@
+##' @S3method publish lme
 publish.lme <- function (object, adjustSigma = TRUE, verbose = FALSE, digits=2, pvalDigits=4,eps=.0001, ...) 
 {
   fixed <- fixef(object)

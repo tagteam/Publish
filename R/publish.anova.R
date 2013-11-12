@@ -1,3 +1,4 @@
+##' @S3method publish anova
 publish.anova <- function(object,digits=2,pvalDigits=4,eps=0.0001,print=TRUE,residuals=FALSE,...){
   x <- object
   if (residuals==FALSE)

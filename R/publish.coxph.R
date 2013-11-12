@@ -1,3 +1,4 @@
+##' @S3method publish coxph
 publish.coxph <- function(object,
                           conf.int = 0.95,
                           scale = 1,

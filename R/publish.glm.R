@@ -1,3 +1,4 @@
+##' @S3method publish glm
 publish.glm <- function(object,
                         digits=2,
                         pvalDigits=4,
@@ -174,3 +175,5 @@ publish.glm <- function(object,
   # }}}
   invisible(x)  
 }
+##' @S3method publish lm
+publish.lm <- publish.glm

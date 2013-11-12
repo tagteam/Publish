@@ -1,3 +1,4 @@
+##' @S3method publish pec
 publish.pec <- function(x,times, digits=3,what=NULL,...){
   # FROM PRINT.PEC
   if (is.null(what))
