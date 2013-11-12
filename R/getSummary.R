@@ -28,7 +28,7 @@ getSummary <- function(matrix,varnames,groupvar,groups,labels,stats,format){
       ggg <- factor(groupvar[!missing.v],levels=groups)
       gsum.v <- lapply(groups,function(g){
         values <- lapply(stats,function(s){
-          do.call(s,list(vvv[ggg==g]))
+            do.call(s,list(vvv[ggg==g]))
         })
         do.call("sprintf",c(format, specialUnlist(values)))
       })

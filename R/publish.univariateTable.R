@@ -1,3 +1,3 @@
-publish.univariateTable <- function(x,missing=c("ifany","always","never"),order,...){
-  publish(summary(x,missing=missing,order=order),...)
+publish.univariateTable <- function(x,...){
+    publish(summary(x,...),...)
 }
