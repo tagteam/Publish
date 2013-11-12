@@ -46,7 +46,7 @@ publish.geeglm <- function(object,
   # {{{ prepare table with confidence limits
   sumobj <- summary(object)$coefficients
   x <- data.frame(sumobj)
-  names(x) <- c("Estimate","StandardError","tValue","pValue")
+  names(x) <- c("Estimate","StandardError","tValue","p-value")
   x$Estimate=format(x$Estimate,digits=digits,nsmall=digits)
   x$StandardError=format(x$StandardError,digits=digits,nsmall=digits)
   if (profile==TRUE)
@@ -59,7 +59,7 @@ publish.geeglm <- function(object,
   }
   if (logisticRegression||((!is.null(transform)) &&(transform=="exp"))){
     if (is.null(sel)){
-      sel <- c("OddsRatio","StandardError","CI.95","pValue","Missing")
+      sel <- c("OddsRatio","StandardError","CI.95","p-value","Missing")
     }
     names(x)[1] <- "OddsRatio"
     x$OddsRatio=format(exp(x$OddsRatio),digits=digits,nsmall=digits)
@@ -68,7 +68,7 @@ publish.geeglm <- function(object,
   }
   else{
     if (is.null(sel)){
-      sel <- c("Estimate","StandardError","CI.95","pValue","Missing")
+      sel <- c("Estimate","StandardError","CI.95","p-value","Missing")
     }
   }
   x$CI.95=format.ci(ciX[,1],ciX[,2],digits=digits,style=2)

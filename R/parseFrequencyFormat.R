@@ -6,7 +6,11 @@ parseFrequencyFormat <- function(format,digits){
                    "count"="%d",
                    "percent"=paste("%1.",digits,"f",sep=""),
                    "colpercent"=paste("%1.",digits,"f",sep=""),
-                   stop("Can only count and compute percentages for discrete variables"))
+                   stop(paste("Cannot parse function ",
+                              stats[s],
+                              ". ",
+                              "Can only count and compute percentages for discrete variables",
+                              sep="")))
     format <- gsub(paste(stats[s],"(x)",sep=""),subs,format,fixed=TRUE)
   }
   list(format=format,stats=stats)

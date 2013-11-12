@@ -1,21 +1,129 @@
 * Introduction
 
-#+BEGIN_SRC R :results silent  :exports none :session *R* :cache no
+This article is devoted to the growing group of \proglang{R} beginners
+who are interested in quick access to a high-end product. It
+illustrates by means of examples the functionality of the
+\pkg{Publish} package. The motivation for making the \pkg{Publish}
+package can be explained by inspecting the output of the summary
+function for a linear regression model fitted with the function
+\code{lm}:
+
+#+BEGIN_SRC R :exports both :results output example  :session *R* :cache no
 library(Publish)
 data(Diabetes)
-Diabetes$AgeGroups <- factor(cut(Diabetes$age,c(0,40,50,60,70,100)),
-			     levels=c("(0,40]","(40,50]","(50,60]","(60,70]","(70,100]"),
-			     labels=c("<40","40-50","50-60","60-70",">70"))
+fit <- lm(BMI~age+gender+chol,data=Diabetes)
+summary(fit)
 #+END_SRC
-  
+
+#+RESULTS[<2013-11-05 10:40:28> dba443ca78b4d17dfc3f2cc4d3a6f492bc574d48]:
+#+begin_example
+
+Call:
+lm(formula = BMI ~ age + gender + chol, data = Diabetes)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-13.8941  -4.2391  -0.8617   3.3557  25.7296 
+
+Coefficients:
+              Estimate Std. Error t value    Pr(>|t|)    
+(Intercept)  24.400319   1.691267  14.427     < 2e-16 ***
+age          -0.004350   0.020141  -0.216      0.8291    
+genderfemale  3.375742   0.649093   5.201 0.000000321 ***
+chol          0.012849   0.007476   1.719      0.0864 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 6.362 on 392 degrees of freedom
+  (7 observations deleted due to missingness)
+Multiple R-squared:  0.07224,	Adjusted R-squared:  0.06514 
+F-statistic: 10.17 on 3 and 392 DF,  p-value: 0.000001818
+#+end_example
+
+
+For many good reasons the \proglang{R} community has accepted that
+this function does not provide confidence intervals for the regression
+parameters. The advanced user calls \code{confint(fit)} and combines
+the result with the relevant columns of
+\code{coef(summary(fit))}. However, the newbie gets stuck at first
+attempt. Perhaps the best argument against ready made solutions is
+that a user who has not enough experience with the methods should not
+be able to produce results. However, also knowledgeable statisticians
+who are not sophisticated programmers will /solve/ the problem by an
+sudorific tour into the realm of copy-and-paste. But, copy-and-paste
+has to be avoided for the sake of making research reports
+reproducible. Thus, the function \code{publish.glm} is a wrapper
+function for the above steps:
+
+# publish(fit,org=TRUE,chol="Cholesterol",units.chol ="mmol/L",age="Age",units.age ="years",gender.female="Female",gender.Male="Male")
+
+#+BEGIN_SRC R :exports both :results output raw :session *R* :cache yes 
+ publish(fit,org=TRUE)
+#+END_SRC
+
+#+RESULTS[<2013-11-06 09:25:47> 922dd587000b9e52264f702d1a4c480ee49b3ba4]:
+| Variable | Units  | Missing | Estimate | CI.95        |  p-value | Missing.1 |
+|----------+--------+---------+----------+--------------+----------+-----------|
+| age      |        |       0 |  -0.0044 | [-0.04;0.04] |   0.8291 |         0 |
+| gender   | male   |       0 |        0 |              |          |         0 |
+|          | female |         |   3.3757 | [2.10;4.65]  | < 0.0001 |           |
+| chol     |        |       1 |   0.0128 | [-0.00;0.03] |  0.08644 |         1 |
+
+
 * Univariate tables
 
+** Total statistics
+
+*** Raw form   
 #+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes 
-org(univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes))
+org(univariateTable(~AgeGroups+gender+height+weight,data=Diabetes))
 #+END_SRC
 
-#+RESULTS[<2013-09-27 07:16:26> abc153bc8cc0f32cc2718a3f618129167349e6ed]:
-| Variable  | Level     | Buckingham   | Louisa       |        Total | P-value |
+#+RESULTS[<2013-11-05 10:24:10> 2cd86fef1f1e0e3b97e8e3228590bb460e8af6f2]:
+| Variable  | Levels    | Value        |
+|-----------+-----------+--------------|
+| AgeGroups | <40       | 160 (39.7)   |
+|           | 40-50     | 82 (20.3)    |
+|           | 50-60     | 69 (17.1)    |
+|           | 60-70     | 56 (13.9)    |
+|           | >70       | 36 (8.9)     |
+| gender    | male      | 169 (41.9)   |
+|           | female    | 234 (58.1)   |
+| height    | mean (sd) | 66.0 (3.9)   |
+|           | missing   | 5            |
+| weight    | mean (sd) | 177.6 (40.3) |
+|           | missing   | 1            |
+
+*** Fine-tuned form
+
+#+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes 
+org(univariateTable(~AgeGroups+gender+height+weight,data=Diabetes),weight="Weight (kg)","AgeGroups"="Age (years)",height="Height (cm)","gender"="Gender",gender.male="Male")
+#+END_SRC
+
+#+RESULTS[<2013-11-05 10:24:28> ab3abebc377f95c3a5905eb9a07763164218c524]:
+| Variable    | Levels    | Value        |
+|-------------+-----------+--------------|
+| Age (years) | <40       | 160 (39.7)   |
+|             | 40-50     | 82 (20.3)    |
+|             | 50-60     | 69 (17.1)    |
+|             | 60-70     | 56 (13.9)    |
+|             | >70       | 36 (8.9)     |
+| gender      | male      | 169 (41.9)   |
+|             | female    | 234 (58.1)   |
+| Height (cm) | mean (sd) | 66.0 (3.9)   |
+|             | missing   | 5            |
+| Weight (kg) | mean (sd) | 177.6 (40.3) |
+|             | missing   | 1            |
+
+   
+** By groups
+  
+#+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes 
+org(univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes),weight="Weight (kg)")
+#+END_SRC
+
+#+RESULTS[<2013-10-09 13:51:35> adc7400a9150f8c41787a7fa6f5fe257e36aca6e]:
+| Variable  | Level     | Buckingham   | Louisa       |        Total | p-value |
 |-----------+-----------+--------------+--------------+--------------+---------|
 | AgeGroups | <40       | 77 (48.1)    | 83 (51.9)    |          160 |         |
 |           | 40-50     | 43 (52.4)    | 39 (47.6)    |           82 |         |
@@ -26,7 +134,7 @@ org(univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes))
 |           | female    | 114 (48.7)   | 120 (51.3)   |          234 | 0.74223 |
 | height    | mean (sd) | 66.5 (4.0)   | 65.6 (3.8)   |   66.0 (3.9) | 0.01549 |
 |           | missing   | 3            | 2            |            5 |         |
-| weight    | mean (sd) | 178.7 (43.8) | 176.5 (36.7) | 177.6 (40.3) | 0.58067 |
+| Weigth    | mean (sd) | 178.7 (43.8) | 176.5 (36.7) | 177.6 (40.3) | 0.58067 |
 |           | missing   | 0            | 1            |            1 |         |
 
 #+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes 
@@ -51,13 +159,31 @@ org(tab1)
 | Weight (pounds) | mean (sd) | 178.7 (43.8) | 176.5 (36.7) | 177.6 (40.3) |   0.581 |
 |                 | missing   | 0            | 1            |            1 |         |
 
-  
 * Multiple regression tables
-
+** Generalized linear models
+** Cox regression models
+#+BEGIN_SRC R  :results output raw  :exports results  :session *R* :cache yes 
+library(survival)
+data(pbc)
+pbc$trt <- factor(pbc$trt,levels=c(1,2),labels=c("1","2"))
+pbc$edema <- factor(pbc$edema,levels=c(0,0.5,1),labels=c("0","0.5","1"))
+pbc$edema.test.it <- factor(pbc$edema,levels=c(0,0.5,1),labels=c("0","0.5","1"))
+pbc$stage <- factor(pbc$stage,levels=c(1,2,3,4),labels=c("1","2","3","4"))
+g <- glm(time~age+interaction(edema,sex)+log(bili)+log(protime),data=pbc)
+g <- glm(time~age+I(age^2)+interaction(edema,sex)+log(bili)+log(protime),data=pbc)
+g <- glm(time~age+I(age^2)+interaction(age,sex)+log(bili)+log(protime),data=pbc)
+g <- glm(time~age+edema+sex+log(bili)+log(protime),data=pbc)
+g <- glm(time~age+edema.test.it+sex+log(bili)+log(protime),data=pbc)
+publish(g)
+f <- coxph(Surv(time,status!=0)~age+edema.test.it+sex+log(bili)+log(protime),data=pbc)
+f <- coxph(Surv(time,status!=0)~age+edema*sex+log(bili)+log(protime),data=pbc)
+#+END_SRC
+  
+** A series of models
 * Confidence plots
   
 * COMMENT Latex header
-#+TITLE: 
+#+TITLE: The Publish package for R produces high-end tables and graphs for publications
 #+LANGUAGE:  en
 #+OPTIONS:   H:3 num:t toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
 #+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc author:nil creator:nil
@@ -68,7 +194,6 @@ org(tab1)
 #+LATEX_HEADER: \usepackage{attrib}
 #+LATEX_HEADER: \Plainauthor{}
 #+LATEX_HEADER: \author{Thomas Alexander Gerds\\Department of Biostatistics\\University of Copenhagen \And Klaus K\"ahler Holst\\Department of Biostatistics\\University of Copenhagen}
-#+LATEX_HEADER: \title{Promoting for \proglang{R} for publishable tables and figures: the \pkg{Publish} package}
 #+LATEX_HEADER: \Shorttitle{Promoting \proglang{R}}
 #+LATEX_HEADER: \Keywords{Convenience, Emacs, Org mode, R, Regression results, Reproducible research}
 #+LATEX_HEADER: \Address{Thomas A. Gerds\\Department of Biostatistics\\University of Copenhagen\\\O sterfarimagsgade 5\\1014 Copenhagen\\Denmark\\E-mail: tag@biostat.ku.dk}

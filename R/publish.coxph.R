@@ -1,11 +1,31 @@
+##' Tabulize the part of the result of a Cox regression analysis which is commonly shown in publications.
+##'
+##' Transforms the log hazard ratios to hazard ratios and returns them with confidence limits and p-values.
+##' @title Tabulize hazard ratios with confidence intervals and p-values.
 ##' @S3method publish coxph
+##' @param object A \code{coxph} object.
+##' @param conf.int Level of confidence. 
+##' @param scale Scaling factor multiplied to both the log-hazard ratio and its standard-error. Useful to change the units of the intepretation scale.
+##' @param digits 
+##' @param ci.format
+##' @param ci.digits
+##' @param pvalue.digits
+##' @param eps
+##' @param StandardError
+##' @param print
+##' @param missing
+##' @param sum
+##' @param ...
+##' @return Table with hazard ratios, confidence intervals and p-values.
+##' @author Thomas Alexander Gerds
+##' @export
 publish.coxph <- function(object,
                           conf.int = 0.95,
                           scale = 1,
                           digits = 2,
                           ci.format=4,
                           ci.digits=2,
-                          pvalDigits=4,
+                          pvalue.digits=4,
                           eps=.0001,
                           StandardError=FALSE,
                           print=TRUE,
@@ -28,12 +48,12 @@ publish.coxph <- function(object,
                         "Standard error"=format(se,digits=digits,nsmall=digits),
                         "CI.95"=format.ci(lower=exp(beta - z * se),2,upper=exp(beta + z * se),style=ci.format,digits=ci.digits),
                             ## paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
-                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
+                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalue.digits,eps=eps),stringsAsFactors=FALSE)
     else
         x <- data.frame("Hazard ratio"=format(exp(beta),digits=digits,nsmall=digits),
                         "CI.95"=format.ci(lower=exp(beta - z * se),2,upper=exp(beta + z * se),style=ci.format,digits=ci.digits),
                         ## "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
-                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalDigits,eps=eps),stringsAsFactors=FALSE)
+                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalue.digits,eps=eps),stringsAsFactors=FALSE)
 
   # }}}
   # {{{ missing values 

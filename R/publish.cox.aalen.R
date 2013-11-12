@@ -4,7 +4,7 @@ publish.cox.aalen <- function(object,
                               robust = FALSE,
                               scale=1,
                               digits = 2,
-                              pvalDigits=4,
+                              pvalue.digits=4,
                               eps=.0001,
                               mark.pval=FALSE,
                               print=TRUE,
@@ -29,7 +29,7 @@ publish.cox.aalen <- function(object,
   })
   # p-values
   pVal <- 1 - pchisq((beta/se)^2, 1)
-  pValue <- sapply(pVal,format.pval,digits=pvalDigits,eps=eps)
+  pValue <- sapply(pVal,format.pval,digits=pvalue.digits,eps=eps)
   if (mark.pval){
     pValue <- sapply(1: length(pVal), function(p){
       if (pVal[p] < 1-conf.int) paste("**",pValue[p],"**",sep="") 
@@ -40,7 +40,7 @@ publish.cox.aalen <- function(object,
                "HR"=format(exp(beta),digits=digits,nsmall=digits),
                "Std.err"=format(format(se,digits=digits,nsmall=digits)),
                "CI.95"=paste("[",format(exp(beta - z * se),digits=digits,nsmall=digits),";",format(exp(beta + z * se),digits=digits,nsmall=digits),"]",sep=""),
-               "P-value"=pValue)
+               "p-value"=pValue)
   rownames(out) <- rep("",NROW(out))
   if (print==TRUE)
     publish(out,...)

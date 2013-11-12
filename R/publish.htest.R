@@ -15,7 +15,18 @@ publish.htest <- function(x,title,digits=3,peps=0.0001,pdigits=4,...){
   else cistring=""
   switch(printmethod,
          "Two Sample t-test"={
-           outstring <- paste("The ",x$method," to compare the ",names(x$null.value)," for ",x$data.name," yields a mean difference of ",-format(diff(x$estimate),digits=digits,nsmall=digits),cistring,sep="")
+           outstring <- paste("The ",
+                              x$method,
+                              " to compare the ",
+                              names(x$null.value),
+                              " for ",
+                              x$data.name,
+                              " yields a mean difference of ",
+                              format(diff(x$estimate),
+                                     digits=digits,
+                                     nsmall=digits),
+                              cistring,
+                              sep="")
          },
          "Wilcoxon rank sum test"={
            if (is.null(x$conf.int))

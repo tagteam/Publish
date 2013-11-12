@@ -1,5 +1,5 @@
 ##' @S3method publish anova
-publish.anova <- function(object,digits=2,pvalDigits=4,eps=0.0001,print=TRUE,residuals=FALSE,...){
+publish.anova <- function(object,digits=2,pvalue.digits=4,eps=0.0001,print=TRUE,residuals=FALSE,...){
   x <- object
   if (residuals==FALSE)
     x=x[-NROW(x),]
@@ -7,7 +7,7 @@ publish.anova <- function(object,digits=2,pvalDigits=4,eps=0.0001,print=TRUE,res
   x$"Sum of squares"=format(x$"Sum of squares",digits=digits,nsmall=digits)
   x$"Mean of squares"=format(x$"Mean of squares",digits=digits,nsmall=digits)
   x$"F value"=format(x$"F value",digits=digits,nsmall=digits)
-  x$"p value"=sapply(x$"p value",format.pval,digits=pvalDigits,eps=eps)
+  x$"p value"=sapply(x$"p value",format.pval,digits=pvalue.digits,eps=eps)
   if (print==TRUE){
     out <- suppressMessages(publish.matrix(x,col1name="Factor",...))
   }

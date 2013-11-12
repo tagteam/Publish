@@ -1,5 +1,5 @@
 ##' @S3method publish lme
-publish.lme <- function (object, adjustSigma = TRUE, verbose = FALSE, digits=2, pvalDigits=4,eps=.0001, ...) 
+publish.lme <- function (object, adjustSigma = TRUE, verbose = FALSE, digits=2, pvalue.digits=4,eps=.0001, ...) 
 {
   fixed <- fixef(object)
   stdFixed <- sqrt(diag(as.matrix(object$varFix)))
@@ -15,7 +15,7 @@ publish.lme <- function (object, adjustSigma = TRUE, verbose = FALSE, digits=2, 
                                            "DF", "t-value", "p-value"))
   tTable[, "p-value"] <- 2 * pt(-abs(tTable[, "t-value"]), 
                                 tTable[, "DF"])
-  tTable[, "p-value"] <- sapply(tTable[, "p-value"],format.pval,digits=pvalDigits,eps=eps)
+  tTable[, "p-value"] <- sapply(tTable[, "p-value"],format.pval,digits=pvalue.digits,eps=eps)
 
   ##   resd <- resid(object, type = "pearson")
   ##   if (length(resd) > 5) {

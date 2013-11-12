@@ -1,6 +1,4 @@
-##' Create a univariate table, i.e. table one of a research report, which summarizes the characteristics of the subjects in a data set
-##'
-##' Categorical variables are summarized using counts and frequencies.
+##' ##' ##' ##' Categorical variables are summarized using counts and frequencies.
 ##' Continuous variables are summarized by means and standard deviations.
 ##' Deviations from the above defaults are obtained when the 
 ##' arguments summary.format and freq.format are combined with suitable
@@ -10,35 +8,35 @@
 ##' @title Univariate table
 ##'
 ##' @export
-##' @param formula 
-##' @param data 
-##' @param summary.format 
-##' @param freq.format 
-##' @param digits.summary 
-##' @param digits.freq 
-##' @param strataIsOutcome 
-##' @param anova 
-##' @param shortGroupNames 
-##' @param ... 
+##' @param formula
+##' @param data
+##' @param summary.format
+##' @param Q.format
+##' @param freq.format
+##' @param column.percent Logical, if \code{TRUE} and the default freq.format is used then column percentages are given instead of row percentages for discrete factors.
+##' @param digits.summary
+##' @param digits.freq
+##' @param strataIsOutcome
+##' @param shortGroupNames
+##' @param ... Not yet used
 ##' @return List 
 ##' @author Thomas A. Gerds
 ##' @seealso summary.univariateTable, publish.univariateTable
 ##' @examples
-##'
 ##' data(Diabetes)
 ##' univariateTable(~age+gender+ height+weight,data=Diabetes)
 ##' univariateTable(location~age+gender+height+weight,data=Diabetes)
 ##' 
 ##' ## Use quantiles and rank tests to summarize age
 ##' univariateTable(gender~Q(age)+location+height+weight,data=Diabetes)
-##'
+##' 
 ##' ## Factor with more than 2 levels
 ##' Diabetes$AgeGroups <- cut(Diabetes$age,c(19,29,39,49,59,69,92),include.lowest=TRUE)
 ##' univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes)
-##'
+##' 
 ##' ## Column percent
 ##' univariateTable(location~gender+age+AgeGroups, data=Diabetes,freq.format="count(x) (colpercent(x))")
-##'
+##' 
 ##' ## Labels
 ##' u <- univariateTable(location~gender+AgeGroups+ height + weight, data=Diabetes,freq.format="count(x) (colpercent(x))")
 ##' summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
@@ -47,6 +45,7 @@ univariateTable <- function(formula,
                             summary.format="mean(x) (sd(x))",
                             Q.format="median(x) [iqr(x)]",
                             freq.format="count(x) (percent(x))",
+                            column.percent=TRUE,
                             digits.summary=1,
                             digits.freq=1,
                             strataIsOutcome=FALSE,
@@ -65,7 +64,7 @@ univariateTable <- function(formula,
     theData <- eval(m, parent.frame())
     # }}}
     # {{{ extract grouping variable
-
+   
     if (is.null(formList$Response)){
         groupvar <- NULL
         groupname <- NULL
@@ -93,7 +92,7 @@ univariateTable <- function(formula,
             stop("strataIsOutcome can only be TRUE when there are exactly two groups. You have ",length(groups)," groups")
         ## if (length(groups)>30) stop("More than 30 groups")
         if (missing(shortGroupNames)){
-            if(all(nchar(groups)<2))
+            if(all(nchar(groups)<2) || all(groups %in% c(TRUE,FALSE)))
                 shortGroupNames <- FALSE
             else
                 shortGroupNames <- TRUE
@@ -103,7 +102,7 @@ univariateTable <- function(formula,
         else
             grouplabels <- paste(groupname,"=",groups)
     }
-
+   
     # }}}
     # {{{ classify variables into continuous numerics and grouping factors
     unspecified <- all.vars(formList$auto$formula)
@@ -161,7 +160,8 @@ univariateTable <- function(formula,
                                      groups=groups,
                                      labels=grouplabels,
                                      stats=sumformat$stats,
-                                     format=sumformat$format)
+                                     format=sumformat$format,
+                                     digits=digits.summary)
     }
     else{
         sumformat <- NULL
@@ -185,49 +185,50 @@ univariateTable <- function(formula,
     }
     # }}}  
     # {{{ discrete variables (factors)
-
-  if (!is.null(factor.matrix)){
-    # prepare format
-    freqformat <- parseFrequencyFormat(format=freq.format,digits=digits.freq)  
-    #  get frequencies excluding missing in groups and in totals
-    freqFactor <- getFrequency(matrix=factor.matrix,
-                               varnames=names(factor.matrix),
-                               groupvar=groupvar,
-                               groups=groups,
-                               labels=grouplabels,
-                               stats=freqformat$stats,
-                               format=freqformat$format)
-  }
-  else{
-    freqformat <- NULL
-    freqFactor <- NULL
-  }
-
-  # }}}
-    # {{{ missing values
-
-  if (is.null(continuous.matrix)){
-    allmatrix <- factor.matrix
-  }
-  else{
-    if (is.null(factor.matrix)){
-      allmatrix <- continuous.matrix
+    if (!is.null(factor.matrix)){
+        if (column.percent==TRUE){
+            freq.format <- sub("percent","colpercent",freq.format)
+            freq.format <- sub("colcolpercent","colpercent",freq.format)
+        }
+        # prepare format
+        freqformat <- parseFrequencyFormat(format=freq.format,digits=digits.freq)  
+        #  get frequencies excluding missing in groups and in totals
+        freqFactor <- getFrequency(matrix=factor.matrix,
+                                   varnames=names(factor.matrix),
+                                   groupvar=groupvar,
+                                   groups=groups,
+                                   labels=grouplabels,
+                                   stats=freqformat$stats,
+                                   format=freqformat$format)
     }
     else{
-      allmatrix <- cbind(continuous.matrix,factor.matrix)
+        freqformat <- NULL
+        freqFactor <- NULL
     }
-  }
-  totals.missing <- lapply(allmatrix,function(v){sum(is.na(v))})
-  if (!is.null(groups)){
-    group.missing <- lapply(allmatrix,function(v){
-      lapply(groups,function(g){
-        sum(is.na(v[groupvar==g]))
-      })
-    })}
-  else {
-    group.missing <- NULL
-  }
-
+    # }}}
+    # {{{ missing values
+    if (is.null(continuous.matrix)){
+        allmatrix <- factor.matrix
+    }
+    else{
+        if (is.null(factor.matrix)){
+            allmatrix <- continuous.matrix
+        }
+        else{
+            allmatrix <- cbind(continuous.matrix,factor.matrix)
+        }
+    }
+    totals.missing <- lapply(allmatrix,function(v){sum(is.na(v))})
+    if (!is.null(groups)){
+        group.missing <- lapply(allmatrix,function(v){
+            lapply(groups,function(g){
+                sum(is.na(v[groupvar==g]))
+            })
+        })}
+    else {
+        group.missing <- NULL
+    }
+   
     # }}}
     # {{{ p-values
     p.cont <- NULL
@@ -267,8 +268,12 @@ univariateTable <- function(formula,
                     format.pval(anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2],eps=pvalue.eps,digits=pvalue.digits)}
                 else{
                     tabx <- table(factor.matrix[,v],groupvar)
-                    suppressWarnings(test <- chisq.test(tabx))
-                    px <- test$p.value
+                    if (sum(tabx)==0) {
+                        px <- NA
+                    } else{
+                        suppressWarnings(test <- chisq.test(tabx))
+                        px <- test$p.value
+                    }
                     ## FIXME: need to catch and pass the warnings 
                     ## test <- suppressWarnings(fisher.test(tabx))
                     ## if (any(test$expected < 5) && is.finite(test$parameter))
@@ -285,9 +290,19 @@ univariateTable <- function(formula,
     })
     vartypes <- rep(c("numeric","Q","factor"),c(length(names(continuous.matrix)),length(names(Q.matrix)),length(names(factor.matrix))))
     names(vartypes) <- c(names(continuous.matrix),names(Q.matrix),names(factor.matrix))
-    out <- list(summary.groups=c(freqFactor$groupfreq,summaryNumeric$groupsummary,qNumeric$groupsummary),summary.totals=c(freqFactor$totals,summaryNumeric$totals,qNumeric$totals),missing=list(group=group.missing,totals=totals.missing),n.groups=n.groups,p.values=c(p.cont,p.Q,p.freq),formula=formula,groups=grouplabels,vartype=vartypes,xlevels=xlevels,Q.format=Q.format,summary.format=summary.format,freq.format=freq.format)
+    out <- list(summary.groups=c(freqFactor$groupfreq,summaryNumeric$groupsummary,qNumeric$groupsummary),
+                summary.totals=c(freqFactor$totals,summaryNumeric$totals,qNumeric$totals),
+                missing=list(group=group.missing,totals=totals.missing),
+                n.groups=n.groups,
+                p.values=c(p.cont,p.Q,p.freq),
+                formula=formula,
+                groups=grouplabels,
+                vartype=vartypes,
+                xlevels=xlevels,
+                Q.format=Q.format,
+                summary.format=summary.format,
+                freq.format=freq.format)
     class(out) <- "univariateTable"
     out
-
     # }}}
 } 

@@ -147,7 +147,7 @@ publish.matrix <- function(x,
         x <- rbind(ccc,x)
         ## x <- format(x,justify="right")
         x <- do.call("cbind",lapply(1:NCOL(x),function(col){
-            format(x[,col],justify="right")
+            format(unlist(x[,col]),justify="right")
         }))
         ccc <- x[1,,drop=TRUE]
         x <- x[-1,,drop=FALSE]
