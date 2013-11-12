@@ -47,10 +47,10 @@ summary.univariateTable <- function(x,
     for (s in names(ordered.summary)){
         if (!is.null(x$groups)){
             sum <- as.matrix(ordered.summary[[s]])
-            sum <- cbind(sum,Totals=x$summary.totals[[s]])
+            sum <- cbind(sum,Total=x$summary.totals[[s]])
         }
         else{
-            sum <- data.frame(Totals=x$summary.totals[[s]],stringsAsFactors = FALSE)
+            sum <- data.frame(Total=x$summary.totals[[s]],stringsAsFactors = FALSE)
         }
         if (missing!="never" && (missing=="always" || any(x$missing$totals[[s]]>0))){
             if (is.null(x$groups)){
@@ -113,35 +113,35 @@ summary.univariateTable <- function(x,
     }
     else{
         if (!missing(n) && (n=="inNames")){
-            colnames(XXtab) <- c("Factor","Levels",x$groups,paste("Totals"," (n=",x$n.groups[length(x$n.groups)],")",sep=""),"Pvalues")
+            colnames(XXtab) <- c("Variable","Level",x$groups,paste("Total"," (n=",x$n.groups[length(x$n.groups)],")",sep=""),"P-value")
         }
         else{
-            colnames(XXtab) <- c("Factor","Levels",x$groups,"Totals","Pvalues")
+            colnames(XXtab) <- c("Variable","Level",x$groups,"Total","P-value")
         }
     }
     # }}}
     # {{{ labels & units
-    units <- SmartControl(list(...),keys=XXtab$Factor,defaults=NULL,ignore.case=TRUE,replaceDefaults=TRUE,verbose=FALSE)
+    units <- SmartControl(list(...),keys=XXtab$Variable,defaults=NULL,ignore.case=TRUE,replaceDefaults=TRUE,verbose=FALSE)
     lunits <- sapply(units,length)
     units <- units[lunits>0]
     labels <- list(...)
     if (length(labels)>0){
         keys <- names(labels)
-        Flabels <- labels[match(keys,XXtab$Factor,nomatch=0)!=0]
-        XXtab$Factor[match(keys,XXtab$Factor,nomatch=0)] <- Flabels
-        Funits <- labels[match(keys,XXtab$Levels,nomatch=0)!=0]
+        Flabels <- labels[match(keys,XXtab$Variable,nomatch=0)!=0]
+        XXtab$Variable[match(keys,XXtab$Variable,nomatch=0)] <- Flabels
+        Funits <- labels[match(keys,XXtab$Level,nomatch=0)!=0]
         for (f in names(Funits)){
-            XXtab$Levels[XXtab$Levels%in%f] <- Funits[[f]]
+            XXtab$Level[XXtab$Level%in%f] <- Funits[[f]]
         }
         ## factor specific units
         if (length(units)>0){
             for (i in 1:length(units)){
-                uat <- grep(names(units)[i],XXtab$Factor)
-                lat <- match(names(units[[i]]),XXtab$Levels[uat:length(XXtab$Factor)],nomatch=FALSE)
+                uat <- grep(names(units)[i],XXtab$Variable)
+                lat <- match(names(units[[i]]),XXtab$Level[uat:length(XXtab$Variable)],nomatch=FALSE)
                 lat <- lat[lat!=0]
                 vals <- unlist(units[[i]])
                 vals <- vals[lat!=0]
-                XXtab$Levels[uat -1 + lat] <- vals
+                XXtab$Level[uat -1 + lat] <- vals
             }
         }
     }
