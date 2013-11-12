@@ -1,0 +1,102 @@
+* Introduction
+
+#+BEGIN_SRC R :results silent  :exports none :session *R* :cache no
+library(Publish)
+data(Diabetes)
+Diabetes$AgeGroups <- factor(cut(Diabetes$age,c(0,40,50,60,70,100)),
+			     levels=c("(0,40]","(40,50]","(50,60]","(60,70]","(70,100]"),
+			     labels=c("<40","40-50","50-60","60-70",">70"))
+#+END_SRC
+  
+* Univariate tables
+
+#+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes 
+org(univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes))
+#+END_SRC
+
+#+RESULTS[<2013-09-27 07:16:26> abc153bc8cc0f32cc2718a3f618129167349e6ed]:
+| Variable  | Level     | Buckingham   | Louisa       |        Total | P-value |
+|-----------+-----------+--------------+--------------+--------------+---------|
+| AgeGroups | <40       | 77 (48.1)    | 83 (51.9)    |          160 |         |
+|           | 40-50     | 43 (52.4)    | 39 (47.6)    |           82 |         |
+|           | 50-60     | 29 (42.0)    | 40 (58.0)    |           69 |         |
+|           | 60-70     | 32 (57.1)    | 24 (42.9)    |           56 |         |
+|           | >70       | 19 (52.8)    | 17 (47.2)    |           36 | 0.49238 |
+| gender    | male      | 86 (50.9)    | 83 (49.1)    |          169 |         |
+|           | female    | 114 (48.7)   | 120 (51.3)   |          234 | 0.74223 |
+| height    | mean (sd) | 66.5 (4.0)   | 65.6 (3.8)   |   66.0 (3.9) | 0.01549 |
+|           | missing   | 3            | 2            |            5 |         |
+| weight    | mean (sd) | 178.7 (43.8) | 176.5 (36.7) | 177.6 (40.3) | 0.58067 |
+|           | missing   | 0            | 1            |            1 |         |
+
+#+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes 
+tab1.data <- univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes)
+tab1 <- summary(tab1.data,n=TRUE,pvalue.digits=2,"AgeGroups"="Age (years)","gender"="Sex",height="Height (inches)",weight="Weight (pounds)")
+org(tab1)
+#+END_SRC
+
+#+RESULTS[<2013-09-27 07:19:29> d4497cf2dec91e1cdb196519541ecc7b628d2a7d]:
+| Variable        | Level     | Buckingham   | Louisa       |        Total | P-value |
+|-----------------+-----------+--------------+--------------+--------------+---------|
+| n               |           | 200          | 203          |          403 |         |
+| Age (years)     | <40       | 77 (48.1)    | 83 (51.9)    |          160 |         |
+|                 | 40-50     | 43 (52.4)    | 39 (47.6)    |           82 |         |
+|                 | 50-60     | 29 (42.0)    | 40 (58.0)    |           69 |         |
+|                 | 60-70     | 32 (57.1)    | 24 (42.9)    |           56 |         |
+|                 | >70       | 19 (52.8)    | 17 (47.2)    |           36 |   0.492 |
+| Sex             | male      | 86 (50.9)    | 83 (49.1)    |          169 |         |
+|                 | female    | 114 (48.7)   | 120 (51.3)   |          234 |   0.742 |
+| Height (inches) | mean (sd) | 66.5 (4.0)   | 65.6 (3.8)   |   66.0 (3.9) |   0.015 |
+|                 | missing   | 3            | 2            |            5 |         |
+| Weight (pounds) | mean (sd) | 178.7 (43.8) | 176.5 (36.7) | 177.6 (40.3) |   0.581 |
+|                 | missing   | 0            | 1            |            1 |         |
+
+  
+* Multiple regression tables
+
+* Confidence plots
+  
+* COMMENT Latex header
+#+TITLE: 
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:nil \n:nil @:t ::t |:t ^:t -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc author:nil creator:nil
+#+LaTeX_CLASS: jss
+#+LATEX_HEADER: \usepackage{tikz}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{attrib}
+#+LATEX_HEADER: \Plainauthor{}
+#+LATEX_HEADER: \author{Thomas A. Gerds\\University of Copenhagen \And Klaus K"ahler Holst\\University of Copenhagen}
+#+LATEX_HEADER: \title{Promoting R for publishable tables and figures: the \pkg{Publish} package for \proglang{R}}
+#+LATEX_HEADER: \Shorttitle{Illness-Death Model for Interval-Censored Data: The  \pkg{SmoothHazard} Package for \proglang{R}}
+#+LATEX_HEADER: \Keywords{Convenience, Emacs, Org mode, R, Regression results, Reproducible research}
+#+LATEX_HEADER: \Address{Thomas A. Gerds\\Department of Biostatistics\\University of Copenhagen\\\O sterfarimagsgade 5\\1014 Copenhagen\\Denmark\\E-mail: tag@biostat.ku.dk}
+#+LATEX_HEADER: \Abstract{\input{jss-abstract.tex}}
+#+LATEX_HEADER: \lstset{
+#+LATEX_HEADER: keywordstyle=\color{blue},
+#+LATEX_HEADER: commentstyle=\color{red},
+#+LATEX_HEADER: stringstyle=\color[rgb]{0,.5,0},
+#+LATEX_HEADER: basicstyle=\ttfamily\small,
+#+LATEX_HEADER: columns=fullflexible,
+#+LATEX_HEADER: breaklines=true,        % sets automatic line breaking
+#+LATEX_HEADER: breakatwhitespace=false,    % sets if automatic breaks should only happen at whitespace
+#+LATEX_HEADER: numbers=left,
+#+LATEX_HEADER: numberstyle=\ttfamily\tiny\color{gray},
+#+LATEX_HEADER: stepnumber=1,
+#+LATEX_HEADER: numbersep=10pt,
+#+LATEX_HEADER: backgroundcolor=\color{white},
+#+LATEX_HEADER: tabsize=4,
+#+LATEX_HEADER: showspaces=false,
+#+LATEX_HEADER: showstringspaces=false,
+#+LATEX_HEADER: xleftmargin=.23in,
+#+LATEX_HEADER: frame=single,
+#+LATEX_HEADER: basewidth={0.5em,0.4em}
+#+LATEX_HEADER: }
+#+LaTeX_HEADER:\usepackage{graphicx}
+#+LaTeX_HEADER:\usepackage{array}
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+STARTUP: oddeven
+#+PROPERTY: session *R* 
+#+PROPERTY: cache yes
