@@ -4,170 +4,124 @@
 ##' @title Tabulize hazard ratios with confidence intervals and p-values.
 ##' @S3method publish coxph
 ##' @param object A \code{coxph} object.
-##' @param conf.int Level of confidence. 
-##' @param scale Scaling factor multiplied to both the log-hazard ratio and its standard-error. Useful to change the units of the intepretation scale.
-##' @param digits 
-##' @param ci.format
-##' @param ci.digits
+##' @param digits
 ##' @param pvalue.digits
 ##' @param eps
-##' @param StandardError
+##' @param pvalue.stars
+##' @param showMissing
+##' @param output.columns
 ##' @param print
-##' @param missing
-##' @param sum
+##' @param ci.format
+##' @param style
 ##' @param ...
+##' @param scale Scaling factor multiplied to both the log-hazard
+##' ratio and its standard-error. Useful to change the units of the
+##' intepretation scale.
 ##' @return Table with hazard ratios, confidence intervals and p-values.
 ##' @author Thomas Alexander Gerds
 ##' @export
 publish.coxph <- function(object,
-                          conf.int = 0.95,
-                          scale = 1,
-                          digits = 2,
-                          ci.format=4,
-                          ci.digits=2,
+                          digits=2,
                           pvalue.digits=4,
                           eps=.0001,
-                          StandardError=FALSE,
+                          pvalue.stars=FALSE,
+                          showMissing="ifany",
+                          output.columns=NULL,
                           print=TRUE,
-                          missing=TRUE,
-                          sum=FALSE,
+                          ci.format,
+                          style="extraline",
                           ...) {
-  # {{{ create a data frame 
-
-    beta <- object$coef
-    nabeta <- !(is.na(beta))
-    beta2 <- beta[nabeta]
-    if (is.null(beta) | is.null(object$var)) stop("Input is not valid")
-    se <- sqrt(diag(object$var))
-    if (!is.null(object$naive.var)) nse <- sqrt(diag(object$naive.var))
-    z <- qnorm((1 + conf.int)/2, 0, 1)
-    beta <- beta * scale
-    se <- se * scale
-    if (StandardError==TRUE)
-        x <- data.frame("Hazard ratio"=format(exp(beta),digits=digits,nsmall=digits),
-                        "Standard error"=format(se,digits=digits,nsmall=digits),
-                        "CI.95"=format.ci(lower=exp(beta - z * se),2,upper=exp(beta + z * se),style=ci.format,digits=ci.digits),
-                            ## paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
-                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalue.digits,eps=eps),stringsAsFactors=FALSE)
-    else
-        x <- data.frame("Hazard ratio"=format(exp(beta),digits=digits,nsmall=digits),
-                        "CI.95"=format.ci(lower=exp(beta - z * se),2,upper=exp(beta + z * se),style=ci.format,digits=ci.digits),
-                        ## "CI.95"=paste("[",format(round(exp(beta - z * se),2)),";",format(round(exp(beta + z * se),2)),"]",sep=""),
-                        "P-value"=sapply(1 - pchisq((beta/se)^2, 1),format.pval,digits=pvalue.digits,eps=eps),stringsAsFactors=FALSE)
-
-  # }}}
-  # {{{ missing values 
-  varNames <- all.vars(delete.response(terms(object$formula)))
-  if (missing){
-    dd <- try(eval(object$call$data),silent=TRUE)
-    if (class(dd)=="function" || class(dd)=="try-error" || is.null(dd)){
-      missing <- FALSE
-    }
-    else{
-      Nmiss <- sapply(varNames,function(v){sum(is.na(dd[,v]))})
-      names(Nmiss) <- varNames
-      if (all(Nmiss==0))
-        missing <- FALSE
-    }
-  }
-  # }}}
-  # {{{ factors with a reference level
-  factorLevels <- object$xlevels
-  factorNames <- names(factorLevels)
-  ## oldnames <- lapply(1:length(factorLevels),function(i){
-  ## paste(factorNames[i],factorLevels[[i]],sep="")})
-  newnames <- lapply(1:length(factorLevels),function(i){
-    paste(factorNames[i],factorLevels[[i]],sep="=")})
-  names(newnames) <- factorNames
-  # {{{ summary: mean (sd) for numeric, count for factors with levels
-  if (sum){
-    dd <- try(eval(object$call$data),silent=TRUE)
-    if (class(dd)=="function" || class(dd)=="try-error" || is.null(dd)){
-      sum <- FALSE
-    }
-    else{
-      sumInfo <- lapply(varNames,function(v){
-        if (v %in% names(object$xlevels)){
-          table(dd[,v])
+    # {{{ formula, data 
+    if (is.null(object$formula)){
+        if (is.null(object$terms)){
+            if (class(object$call$formula)=="name"){
+                stop("Cannot extract the formula from object")
+            }
+            else{
+                formula <- object$call$formula
+            }
+        } else{
+            formula <- formula(object$terms)
         }
-        else{
-          paste(format(mean(dd[,v],na.rm=TRUE),digits=digits,nsmall=digits)," (",format(sd(dd[,v],na.rm=TRUE),digits=digits,nsmall=digits),")",sep="")
-        }})
-      names(sumInfo) <- varNames
     }
-  }
-  # }}}
-  # {{{ if intercept take it out
-
-  if (found <- match("(Intercept)",rownames(x),nomatch=0)){
-    inter <- x[found,,drop=FALSE]
-    x <- x[-found,,drop=FALSE]
-    if (missing)
-      inter <- cbind(inter,Missing="--")
-  }
-
-  # }}}
-  splitty <- unlist(lapply(varNames,function(vn){
-    rep(vn,length(grep(vn,rownames(x))))
-  }))
-  xlist <- split(x,factor(splitty,levels=unique(splitty)))
-  xfixed <- lapply(1:length(xlist),function(v){
-    ## factors
-    if (found <- match(names(xlist)[v],factorNames,nomatch=0)){
-      if (missing){
-        add <- c(1,rep("--",ncol(x)-1),Missing=Nmiss[v])
-        old <- cbind(xlist[[v]],Missing=rep("--",NROW(xlist[[v]])))
-        old$Missing <- as.character(old$Missing)
-        xlist[[v]] <- rbind(add,old)
-        xlist[[v]]
-      }
-      else{
-        xlist[[v]] <- rbind(c(1,rep("--",ncol(x)-1)), xlist[[v]])
-      }
-      rownames(xlist[[v]]) <- newnames[[found]]
-      xlist[[v]]
+    else{
+        formula <- object$formula
     }
-    else{ ## numeric
-      if (missing)
-        xlist[[v]] <- cbind(xlist[[v]],Missing=Nmiss[v])
-      else
-        xlist[[v]]
+    if (is.null(object$data))
+        data <- eval(object$call$data)
+    else
+        data <- object$data
+    terms <- terms(formula)
+    if (any(attr(terms,"order")>1)) stop("Unfortunately, higher order terms are not supported.\n We all hope that Klaus will fix this soon.")
+    varNames <- all.vars(delete.response(terms(object$formula)))
+    factors <- colnames(attr(terms,"factors"))
+    log.e <- match(paste("log(",varNames,")",sep=""),factors,nomatch=FALSE)!=0
+    log.2 <- match(paste("log(",varNames,", base = 2)",sep=""),factors,nomatch=FALSE)!=0
+    unity <- match(varNames,factors,nomatch=FALSE)
+    scale <- 1*(unity!=0) + 2 * (log.e!=0) + 3 * (log.2!=0)
+    if (any(scale==0)) stop("Unfortunately, constructions like I(age>50) are not supported\nYou need to define the transformed variable in the data set before calling coxph.\n")
+    scale <- as.character(factor(scale,levels=c(1,2,3),labels=c("","logarithmic","logarithmic base 2")))
+    names(scale) <- varNames
+    # }}}
+    # {{{     missing values?
+    Nmiss <- sapply(varNames,function(v){sum(is.na(data[,v]))})
+    names(Nmiss) <- varNames
+    if (is.null(showMissing)) showMissing <- "ifany"
+    showMissing <- switch(as.character(showMissing),"ifany"=any(Nmiss>0),"always"=TRUE,"never"=FALSE)
+    # }}}
+    # {{{ confidence interval format
+    if (missing(ci.format)){
+        ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
     }
-    if (sum){
-      ## if (v %in% names(object$xlevels)){
-      xlist[[v]] <- cbind("N or mean(sd)"=as.character(sumInfo[[v]]),xlist[[v]])
-      if (length(names(object$xlevels))==length(varNames))
-        names(xlist[[v]])[1] = "N"
-      else 
-        if (length(names(object$xlevels))==0)
-          names(xlist[[v]])[1] = "mean(sd)"
+    # }}}
+    # {{{ prepare table with confidence limits and p-values
+    x <- data.frame(summary(object)$coefficients)
+    names(x) <- c("logHR","HazardRatio","StandardError","z","pValue")
+    x$StandardError=format(x$StandardError,digits=digits,nsmall=digits)
+    x$HazardRatio=format(x$HazardRatio,digits=digits,nsmall=digits)
+    x$logHR=format(x$logHR,digits=digits,nsmall=digits)
+    ciX <- confint(object)
+    x$CI.95=apply(ciX[,c(1,2)],1,function(x){
+        sprintf(ci.format,x[1],x[2])})
+    if (pvalue.stars==TRUE)
+        x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+    else
+        x$pValue=sapply(x$pValue,
+            format.pval,
+            digits=pvalue.digits,
+            eps=eps)
+    # }}}
+    # {{{ output columns
+    if (is.null(output.columns)){
+        if (showMissing)
+            output.columns <- c("Variable","Units","Missing","HazardRatio","CI.95","pValue")
+        else
+            output.columns <- c("Variable","Units","HazardRatio","CI.95","pValue")
     }
-    xlist[[v]]
-  })
-  x <- do.call("rbind",xfixed)
-  ## if (missing==TRUE && length(object$na.action)>0){ 
-  ## x$missing=0
-  ## }
-  ## if (match("missing",sel,nomatch=FALSE) && length(object$na.action)>0){
-  ## x$missing=length(object$na.action)
-  ## }
-  # }}}
-  # {{{ print result
-  if (print==TRUE){
-    publish(x,...)
-    if (length(z <- object$na.action)){
-      cat("\nObservations deleted due to missing values:\n")
-      if (attr(z,"class")=="delete"){
-        zz <- cbind(names(z$nmiss[z$nmiss!=0]),matrix(z$nmiss[z$nmiss!=0],ncol=1))
-        colnames(zz) <- c("Factor","Missing")
-        publish(zz,col1name="Factor",rownames=FALSE)
-      }
-      else{
-        publish(naprint(z))
-      }
+    if (any((log.2 + log.e)>0)){
+        output.columns <- c(output.columns[1],"Scale",output.columns[2:length(output.columns)])
     }
-  }
-  # }}}
-  invisible(x)
+    # }}}
+    # {{{ fix
+    rt <- fixRegressionTable(x,
+                             varnames=varNames,
+                             factorlevels=object$xlevels,
+                             reference.style=style,
+                             reference.value=1,
+                             scale=scale,
+                             nmiss=Nmiss,
+                             intercept=FALSE)
+    # }}}
+    # {{{ remove unwanted columns and print
+    found <- match(output.columns,names(rt),nomatch=FALSE)!=0
+    output.columns <- output.columns[found]
+    rt <- rt[,output.columns]
+    names(rt)[names(rt)=="pValue"] <- "p-value"
+    rt <- labelUnits(rt,...)
+    if (print==TRUE){
+        publish(rt,rownames=FALSE,...)
+    }
+    # }}}
+    invisible(rt)  
 }
 

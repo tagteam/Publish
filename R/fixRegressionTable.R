@@ -1,11 +1,38 @@
+##' Expand tables showing regression coefficients
+##'
+##' For factors a reference line is added. Shown are numbers of missing values, 
+##' units and for log transformed variables the scale.
+##' @title Expand regression coefficients
+##' @param x
+##' @param varnames
+##' @param reference.value
+##' @param reference.style
+##' @param factorlevels
+##' @param scale
+##' @param nmiss
+##' @param intercept
+##' @return 
+##' @author Thomas Alexander Gerds
 fixRegressionTable <- function(x,
                                varnames,
                                reference.value,
                                reference.style=NULL,
                                factorlevels,
+                               scale,
                                nmiss,
                                intercept){
     if (missing(nmiss)) nmiss <- NULL
+    some.scaled <- sum(scale=="")>0
+    ## for some reason logical value variables, ie with levels
+    ## TRUE, FALSE do not get xlevels in the output of glm
+    loc <- grep("TRUE$",rownames(x),value=TRUE)
+    if (length(loc)>0){
+        locvars <- lapply(loc,function(l){
+            substring(l,1,nchar(l)-4)
+        })
+        names(locvars) <- locvars
+        factorlevels <- c(factorlevels,lapply(locvars,function(l){c("FALSE","TRUE")}))
+    }
     factornames <- names(factorlevels)
     blocks <- lapply(varnames,function(vn){
         isfactor <- match(vn,factornames,nomatch=0)
@@ -19,19 +46,26 @@ fixRegressionTable <- function(x,
             vn.regexp <- paste("^",vn,"$","|","\\(",vn,"|",vn,"\\)",sep="")
         }
         parms <- grep(vn.regexp,rownames(x))
-        browser()
         block <- x[parms,,drop=FALSE]
+        Scale <- NULL
+        Missing <- NULL
         # {{{ discrete variables
         if (isfactor){
             if (reference.style=="inline"){
                 Variable <- c(vn,rep("",NROW(block)-1))
                 Units <- paste(factorlevels[[isfactor]][-1], "vs", factorlevels[[isfactor]][1])
+                if (some.scaled){
+                    Scale <- rep("",NROW(block))
+                }
                 if (!is.null(nmiss)){
                     Missing <- c(nmiss[vn],rep("",NROW(block)-1))
                 }
             } else {
                 Variable <- c(vn,rep("",NROW(block)))
                 Units <- factorlevels[[isfactor]]
+                if (some.scaled){
+                    Scale <- rep("",NROW(block)+1)
+                }
                 if (!is.null(nmiss)){
                     Missing <- c(nmiss[vn],rep("",NROW(block)))
                 }
@@ -43,12 +77,11 @@ fixRegressionTable <- function(x,
             if (!is.null(nmiss)){
                 Missing <- nmiss[vn]
             }
+            if (some.scaled){
+                Scale <- scale[[vn]]
+            }
         }
-        if (!is.null(nmiss)){
-            cbind(Variable,Units,Missing,block)
-        } else{
-            cbind(Variable,Units,block)
-        }
+        do.call("cbind",list(Variable=Variable,Scale=Scale,Units=Units,Missing=Missing,block))
     })
     out <- do.call("rbind",blocks)
     out$Variable <- as.character(out$Variable)
