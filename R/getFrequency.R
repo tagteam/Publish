@@ -7,7 +7,10 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
         ## vv <- matrix[,grep(paste(v,":",sep=""),colnames(matrix))]
         vv <- matrix[,v,drop=FALSE]
         missing.v <- is.na(vv)
-        vvv <- factor(vv[!missing.v],levels=levels(vv[[1]]))
+        if (is.factor(vv[[1]]))
+            vvv <- factor(vv[!missing.v],levels=levels(vv[[1]]))
+        else
+            vvv <- factor(vv[!missing.v],levels=unique(vv[[1]]))
         ggg <- factor(groupvar[!missing.v],
                       levels=levels(groupvar))
         ## totals
