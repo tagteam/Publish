@@ -2,7 +2,7 @@
 \alias{lazyFactorCoding}
 \title{Efficient coding of factor levels}
 \usage{
-  lazyFactorCoding(data, maxlevel = 10)
+lazyFactorCoding(data, maxlevel = 10)
 }
 \arguments{
   \item{data}{}
@@ -12,19 +12,18 @@
   10.}
 }
 \value{
-  R-code one line for each variable.
+R-code one line for each variable.
 }
 \description{
-  For all discrete and factor variables in a data set write
-  R-code which can quickly be modified to change the
-  levels.
+For all discrete and factor variables in a data set write
+R-code which can quickly be modified to change the levels.
 }
 \details{
-  The code needs to be copy-and-pasted from the R-output
-  buffer into the R-code buffer. This can be customized for
-  the really efficiently working people e.g. in emacs.
+The code needs to be copy-and-pasted from the R-output
+buffer into the R-code buffer. This can be customized for
+the really efficiently working people e.g. in emacs.
 }
 \author{
-  Thomas Alexander Gerds
+Thomas Alexander Gerds
 }
 

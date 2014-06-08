@@ -2,13 +2,11 @@
 \alias{univariateTable}
 \title{Univariate table}
 \usage{
-  univariateTable(formula, data = parent.frame(),
-    summary.format = "mean(x) (sd(x))",
-    Q.format = "median(x) [iqr(x)]",
-    freq.format = "count(x) (percent(x))",
-    column.percent = TRUE, digits.summary = 1,
-    digits.freq = 1, strataIsOutcome = FALSE,
-    shortGroupNames, ...)
+univariateTable(formula, data = parent.frame(),
+  summary.format = "mean(x) (sd(x))", Q.format = "median(x) [iqr(x)]",
+  freq.format = "count(x) (percent(x))", column.percent = TRUE,
+  digits.summary = 1, digits.freq = 1, strataIsOutcome = FALSE,
+  shortGroupNames, ...)
 }
 \arguments{
   \item{formula}{}
@@ -36,15 +34,14 @@
   \item{...}{Not yet used}
 }
 \value{
-  List
+List
 }
 \description{
-  ##' ##' ##' Categorical variables are summarized using
-  counts and frequencies. Continuous variables are
-  summarized by means and standard deviations. Deviations
-  from the above defaults are obtained when the arguments
-  summary.format and freq.format are combined with suitable
-  summary functions.
+##' ##' ##' Categorical variables are summarized using
+counts and frequencies. Continuous variables are summarized
+by means and standard deviations. Deviations from the above
+defaults are obtained when the arguments summary.format and
+freq.format are combined with suitable summary functions.
 }
 \examples{
 data(Diabetes)
@@ -66,9 +63,9 @@ u <- univariateTable(location~gender+AgeGroups+ height + weight, data=Diabetes,f
 summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
 }
 \author{
-  Thomas A. Gerds
+Thomas A. Gerds
 }
 \seealso{
-  summary.univariateTable, publish.univariateTable
+summary.univariateTable, publish.univariateTable
 }
 

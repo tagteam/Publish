@@ -2,10 +2,9 @@
 \alias{summary.univariateTable}
 \title{Preparing univariate tables for publication}
 \usage{
-  summary.univariateTable(x,
-    missing = c("ifany", "always", "never"), n = "inNames",
-    pvalue.stars = FALSE, pvalue.eps = 0.0001,
-    pvalue.digits = 4, ...)
+\method{summary}{univariateTable}(x, missing = c("ifany", "always", "never"),
+  n = "inNames", pvalue.stars = FALSE, pvalue.eps = 0.0001,
+  pvalue.digits = 4, ...)
 }
 \arguments{
   \item{x}{\code{univariateTable} object as obtained with
@@ -25,15 +24,15 @@
   \item{...}{}
 }
 \value{
-  Summary table
+Summary table
 }
 \description{
-  Summary function for univariate table
+Summary function for univariate table
 }
 \details{
-  Collects results of univariate table in a matrix.
+Collects results of univariate table in a matrix.
 }
 \author{
-  Thomas A. Gerds
+Thomas A. Gerds
 }
 

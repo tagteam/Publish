@@ -2,7 +2,7 @@
 \alias{coxphSeries}
 \title{Run a series of Cox regression models}
 \usage{
-  coxphSeries(formula, data, vars, ...)
+coxphSeries(formula, data, vars, ...)
 }
 \arguments{
   \item{formula}{The fixed part of the regression formula.
@@ -24,17 +24,17 @@
   \item{...}{passed to publish.coxph}
 }
 \value{
-  matrix with results
+matrix with results
 }
 \description{
-  Run a series of Cox regression analyses and summarize the
-  results in a table
+Run a series of Cox regression analyses and summarize the
+results in a table
 }
 \details{
-  This function runs on \code{coxph} from the survival
-  package.
+This function runs on \code{coxph} from the survival
+package.
 }
 \author{
-  Thomas Alexander Gerds
+Thomas Alexander Gerds
 }
 

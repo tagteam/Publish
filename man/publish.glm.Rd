@@ -2,11 +2,10 @@
 \alias{publish.glm}
 \title{Tabulize regression coefficients with confidence intervals and p-values.}
 \usage{
-  publish.glm(object, digits = 2, pvalue.digits = 4,
-    eps = 0.0001, pvalue.stars = FALSE, showMissing = NULL,
-    output.columns = NULL, intercept = 0, print = TRUE,
-    transform = NULL, profile = TRUE, ci.format,
-    style = "extraline", ...)
+\method{publish}{glm}(object, digits = 2, pvalue.digits = 4, eps = 0.0001,
+  pvalue.stars = FALSE, showMissing = NULL, output.columns = NULL,
+  intercept = 0, print = TRUE, transform = NULL, profile = TRUE,
+  ci.format, style = "extraline", ...)
 }
 \arguments{
   \item{object}{}
@@ -44,19 +43,19 @@
   \item{...}{}
 }
 \value{
-  Table with regression coefficients, confidence intervals
-  and p-values.
+Table with regression coefficients, confidence intervals
+and p-values.
 }
 \description{
-  Tabulize the part of the result of a generalized linear
-  regression analysis which is commonly shown in
-  publications.
+Tabulize the part of the result of a generalized linear
+regression analysis which is commonly shown in
+publications.
 }
 \details{
-  For logistic regression, i.e. when family = binomial,
-  return odds ratio's with confidence intervals.
+For logistic regression, i.e. when family = binomial,
+return odds ratio's with confidence intervals.
 }
 \author{
-  Thomas Alexander Gerds
+Thomas Alexander Gerds
 }
 

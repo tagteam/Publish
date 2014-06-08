@@ -2,7 +2,7 @@
 \alias{publish}
 \title{Publishing tables and figures}
 \usage{
-  publish(object, ...)
+publish(object, ...)
 }
 \arguments{
   \item{x}{}
@@ -10,16 +10,16 @@
   \item{...}{}
 }
 \value{
-  Tables and figures
+Tables and figures
 }
 \description{
-  Publish provides summary functions for data and results
-  of statistical analysis in ready-for-publication design
+Publish provides summary functions for data and results of
+statistical analysis in ready-for-publication design
 }
 \details{
-  Some warnings are currently suppressed.
+Some warnings are currently suppressed.
 }
 \author{
-  Thomas Gerds
+Thomas Gerds
 }
 

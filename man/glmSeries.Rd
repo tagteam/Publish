@@ -2,7 +2,7 @@
 \alias{glmSeries}
 \title{Run a series of generalized linear regression analyses}
 \usage{
-  glmSeries(formula, data, vars, ...)
+glmSeries(formula, data, vars, ...)
 }
 \arguments{
   \item{formula}{The fixed part of the regression formula.
@@ -22,16 +22,16 @@
   \item{...}{passed to coxph}
 }
 \value{
-  Matrix with regression coefficients, one for each element
-  of \code{vars}.
+Matrix with regression coefficients, one for each element
+of \code{vars}.
 }
 \description{
-  Run a series of generalized linear regression analyses
-  and summarize the results in a table
+Run a series of generalized linear regression analyses and
+summarize the results in a table
 }
 \author{
-  Thomas Alexander Gerds
+Thomas Alexander Gerds
 
-  ##'
+##'
 }
 
