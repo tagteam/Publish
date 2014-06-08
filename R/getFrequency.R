@@ -1,5 +1,6 @@
 getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
     totals <- vector(NCOL(matrix),mode="list")
+    xlevels <- vector(NCOL(matrix),mode="list")
     names(totals) <- varnames
     groupfreq <- vector(NCOL(matrix),mode="list")
     names(groupfreq) <- varnames
@@ -11,6 +12,7 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
             vvv <- factor(vv[!missing.v],levels=levels(vv[[1]]))
         else
             vvv <- factor(vv[!missing.v],levels=unique(vv[[1]]))
+        xlevels[[v]] <- levels(vvv)
         ggg <- factor(groupvar[!missing.v],
                       levels=levels(groupvar))
         ## totals
@@ -87,5 +89,5 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
             }
         }
     }
-    list(totals=totals,groupfreq=groupfreq)
+    list(totals=totals,groupfreq=groupfreq,xlevels=xlevels)
 }

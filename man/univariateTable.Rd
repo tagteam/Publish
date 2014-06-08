@@ -51,8 +51,8 @@ data(Diabetes)
 univariateTable(~age+gender+ height+weight,data=Diabetes)
 univariateTable(location~age+gender+height+weight,data=Diabetes)
 
-## Use quantiles and rank tests to summarize age
-univariateTable(gender~Q(age)+location+height+weight,data=Diabetes)
+## Use quantiles and rank tests for some variables and mean and standard deviation for others
+univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,data=Diabetes)
 
 ## Factor with more than 2 levels
 Diabetes$AgeGroups <- cut(Diabetes$age,c(19,29,39,49,59,69,92),include.lowest=TRUE)

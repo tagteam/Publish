@@ -31,7 +31,7 @@ publish.prodlim <- function(object,times,intervals=TRUE,percent=TRUE,digits=ifel
         names <- names(so)
         u <- lapply(1:length(so),function(i){
             x <- so[[i]]
-            out <- x[,c("n.risk","n.event","n.lost")]
+            out <- x[,c("n.risk","n.event","n.lost"),drop=FALSE]
             colnames(out) <- c("No. at risk","No. of events","No. lost to follow-up")
             if (is.null(object$cuminc)){
                 out <- cbind(out,"Survival probability"=format(x[,"surv"],digits=digits,nsmall=digits))
@@ -39,11 +39,19 @@ publish.prodlim <- function(object,times,intervals=TRUE,percent=TRUE,digits=ifel
             else{
                 out <- cbind(out,"Cumulative incidence"=format(x[,"cuminc"],digits=digits,nsmall=digits))
             }
-            out <- cbind("Interval"=apply(format(x[,c("time0","time1")],digits=digits,nsmall=digits),1,paste,collapse="--"),
+            out <- cbind("Interval"=apply(format(x[,c("time0","time1"),drop=FALSE],digits=digits,nsmall=digits),1,paste,collapse="--"),
                          out,
-                         "CI.95"=apply(format(x[,c("lower","upper")],digits=digits,nsmall=digits),1,paste,collapse="--"))
+                         "CI.95"=apply(format(x[,c("lower","upper"),drop=FALSE],digits=digits,nsmall=digits),1,paste,collapse="--"))
             publish(names[i])
-            publish(out,rownames=FALSE,...)})
-        invisible(u)
+            publish(out,rownames=FALSE,...)
+            out})
+        if (all(sapply(u,NROW)==1)){
+            u.out <- do.call("rbind",u)
+            rownames(u.out) <- names(so)
+        }else{
+            names(u) <- names(so)
+            u.out <- u
+        }
+        invisible(u.out)
     }
 }

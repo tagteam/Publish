@@ -17,11 +17,13 @@
 
   \item{eps}{}
 
+  \item{pvalue.stars}{}
+
   \item{showMissing}{}
 
   \item{output.columns}{Select which parameters of the
   result are shown in the table. Defaults to
-  \code{c("Estimate","CI.95","pValue","Missing")} for
+  \code{c("Coefficient","CI.95","pValue","Missing")} for
   linear regression and to
   \code{c("OddsRatio","CI.95","pValue","Missing")} for
   logistic regression. Can also include
@@ -35,9 +37,9 @@
 
   \item{profile}{}
 
-  \item{pvalue.stars}{}
-
   \item{ci.format}{}
+
+  \item{style}{}
 
   \item{...}{}
 }

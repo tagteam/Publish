@@ -15,7 +15,7 @@
 ##' @author Thomas A. Gerds
 summary.univariateTable <- function(x,
                                     missing=c("ifany","always","never"),
-                                    n,
+                                    n="inNames",
                                     pvalue.stars=FALSE,
                                     pvalue.eps=0.0001,
                                     pvalue.digits=4,
@@ -123,11 +123,10 @@ summary.univariateTable <- function(x,
             colnames(XXtab) <- c("Variable","Level",x$groups,"Total","p-value")
         }
     }
-
     # }}}
     # {{{ labels & units
+    class(XXtab) <- c("summary.univariateTable","data.frame")
     XXtab <- labelUnits(XXtab,...)
-    
     # }}}
     rownames(XXtab) <- NULL
     XXtab

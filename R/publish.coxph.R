@@ -28,7 +28,7 @@ publish.coxph <- function(object,
                           showMissing="ifany",
                           output.columns=NULL,
                           print=TRUE,
-                          ci.format,
+                          ci.format=paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep=""),
                           style="extraline",
                           ...) {
     # {{{ formula, data 
@@ -53,8 +53,15 @@ publish.coxph <- function(object,
         data <- object$data
     terms <- terms(formula)
     if (any(attr(terms,"order")>1)) stop("Unfortunately, higher order terms are not supported.\n We all hope that Klaus will fix this soon.")
-    varNames <- all.vars(delete.response(terms(object$formula)))
+    ## hack hack
+    ## varNames <- all.vars(delete.response(terms(object$formula)))
+    ff <- readFormula(object$formula,specials=c("cluster","strata"))
+    varNames <- all.vars(ff$unSpec$formula)
     factors <- colnames(attr(terms,"factors"))
+    clustvar <- all.vars(ff$cluster$formula)
+    if (length(clustvar)){
+        factors <- factors[factors != paste("cluster(",clustvar,")",sep="")]
+    }
     log.e <- match(paste("log(",varNames,")",sep=""),factors,nomatch=FALSE)!=0
     log.2 <- match(paste("log(",varNames,", base = 2)",sep=""),factors,nomatch=FALSE)!=0
     unity <- match(varNames,factors,nomatch=FALSE)
@@ -70,18 +77,23 @@ publish.coxph <- function(object,
     showMissing <- switch(as.character(showMissing),"ifany"=any(Nmiss>0),"always"=TRUE,"never"=FALSE)
     # }}}
     # {{{ confidence interval format
-    if (missing(ci.format)){
-        ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
-    }
+    ## if (missing(ci.format)){
+    ## ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
+    ## }
     # }}}
     # {{{ prepare table with confidence limits and p-values
     x <- data.frame(summary(object)$coefficients)
-    names(x) <- c("logHR","HazardRatio","StandardError","z","pValue")
+    if (length(clustvar)){
+        names(x) <- c("logHR","HazardRatio","StandardError","robustStandardError","z","pValue")
+        x$robustStandardError=format(x$robustStandardError,digits=digits,nsmall=digits)
+    }
+    else
+        names(x) <- c("logHR","HazardRatio","StandardError","z","pValue")
     x$StandardError=format(x$StandardError,digits=digits,nsmall=digits)
     x$HazardRatio=format(x$HazardRatio,digits=digits,nsmall=digits)
     x$logHR=format(x$logHR,digits=digits,nsmall=digits)
-    ciX <- confint(object)
-    x$CI.95=apply(ciX[,c(1,2)],1,function(x){
+    ciX <- exp(confint(object))
+    x$CI.95=apply(ciX[,c(1,2),drop=FALSE],1,function(x){
         sprintf(ci.format,x[1],x[2])})
     if (pvalue.stars==TRUE)
         x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))

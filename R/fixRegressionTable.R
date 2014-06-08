@@ -11,7 +11,7 @@
 ##' @param scale
 ##' @param nmiss
 ##' @param intercept
-##' @return 
+##' @return a new table with regression coefficients
 ##' @author Thomas Alexander Gerds
 fixRegressionTable <- function(x,
                                varnames,
@@ -81,7 +81,11 @@ fixRegressionTable <- function(x,
                 Scale <- scale[[vn]]
             }
         }
-        do.call("cbind",list(Variable=Variable,Scale=Scale,Units=Units,Missing=Missing,block))
+        do.call("cbind",list(Variable=Variable,
+                             Scale=Scale,
+                             Units=Units,
+                             Missing=as.character(Missing),
+                             block))
     })
     out <- do.call("rbind",blocks)
     out$Variable <- as.character(out$Variable)
@@ -91,7 +95,10 @@ fixRegressionTable <- function(x,
     if (intercept!=0 && 
         (found <- match("(Intercept)",rownames(x),nomatch=0))){
         inter <- x[found,,drop=FALSE]
-        out <- rbind(c(Variable="Intercept",Units="",Missing="",inter)[colnames(out)],
+        out <- rbind(unlist(c(Variable="Intercept",
+                              Units="",
+                              Missing="",
+                              inter))[colnames(out)],
                      out)
     }
     rownames(out) <- 1:NROW(out)

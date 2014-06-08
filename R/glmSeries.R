@@ -16,12 +16,22 @@
 ##'
 ##' ##' @export
 glmSeries <- function(formula,data,vars,...){
+    ## ref <- glm(formula,data=data,...)
     glist <- lapply(vars,function(v){
         form.v <- update.formula(formula,paste(".~.+",v))
+        if (is.logical(data[,v]))
+            data[,v] <- factor(data[,v],levels=c("FALSE","TRUE"))
         gf <- glm(form.v,data=data,...)
         gf$call$data <- data
+        nv <- length(gf$xlevels[[v]])
         u <- publish(gf,print=FALSE)
-        u <- u[grep(v,rownames(u)),,drop=FALSE]
+        first <- grep(v,u[,"Variable"])
+        if (nv>1)
+            sel <- seq(first,first+nv-1,1)
+        else
+            sel <- first
+        u <- u[sel,,drop=FALSE]
+        u
     })
     u <- sapply(glist,NCOL)
     if (any(v <- (u<max(u)))){

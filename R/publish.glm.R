@@ -104,13 +104,16 @@ publish.glm <- function(object,
     x$StandardError=format(x$StandardError,digits=digits,nsmall=digits)
     if (logisticRegression||((!is.null(transform)) &&(transform=="exp"))){
         if (is.null(output.columns)){
-            if (missing)
+            if (showMissing)
                 output.columns <- c("Variable","Units","Missing","OddsRatio","CI.95","pValue")
             else
                 output.columns <- c("Variable","Units","OddsRatio","CI.95","pValue")
         }
         names(x)[1] <- "OddsRatio"
-        x$OddsRatio=format(exp(x$OddsRatio),digits=digits,nsmall=digits)
+        ## format the intercept separately
+        ic.or <- x$OddsRatio[[1]]
+        x$OddsRatio <- c(format(ic.or,,digits=digits,nsmall=digits),
+                         format(exp(x$OddsRatio)[-1],digits=digits,nsmall=digits))
         ciX <- exp(ciX)
     }
     else{

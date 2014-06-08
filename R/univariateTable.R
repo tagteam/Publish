@@ -27,8 +27,8 @@
 ##' univariateTable(~age+gender+ height+weight,data=Diabetes)
 ##' univariateTable(location~age+gender+height+weight,data=Diabetes)
 ##' 
-##' ## Use quantiles and rank tests to summarize age
-##' univariateTable(gender~Q(age)+location+height+weight,data=Diabetes)
+##' ## Use quantiles and rank tests for some variables and mean and standard deviation for others
+##' univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,data=Diabetes)
 ##' 
 ##' ## Factor with more than 2 levels
 ##' Diabetes$AgeGroups <- cut(Diabetes$age,c(19,29,39,49,59,69,92),include.lowest=TRUE)
@@ -52,7 +52,11 @@ univariateTable <- function(formula,
                             shortGroupNames,
                             ...){
     # {{{ parse formula and find data
-    formList <- readFormula(formula,specials=c("F","S","Q"),specialArgumentNames=list("S"="format"),alias=list("strata"="F","factor"="F","C"="S","nonpar"="Q"),unspecified="auto")
+    formList <- readFormula(formula,
+                            specials=c("F","S","Q"),
+                            specialArgumentNames=list("S"="format"),
+                            alias=list("strata"="F","factor"="F","C"="S","nonpar"="Q"),
+                            unspecified="auto")
     call <- match.call()
     m <- match.call(expand = FALSE)
     if (match("subset",names(call),nomatch=FALSE))
@@ -265,8 +269,11 @@ univariateTable <- function(formula,
             p.freq <- sapply(names(factor.matrix),function(v){
                 if (strataIsOutcome==TRUE){
                     ## logistic regression 
-                    format.pval(anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2],eps=pvalue.eps,digits=pvalue.digits)}
-                else{
+                    ## format.pval(
+                    ## warning(v)
+                    px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                       ## ,eps=pvalue.eps,digits=pvalue.digits)}
+                } else{
                     tabx <- table(factor.matrix[,v],groupvar)
                     if (sum(tabx)==0) {
                         px <- NA
@@ -284,10 +291,10 @@ univariateTable <- function(formula,
     }
     # }}}
     # {{{ output
-    xlevels <- lapply(factor.matrix,function(x){
+    ## xlevels <- lapply(factor.matrix,function(x){
         ## levels(as.factor(x,exclude=FALSE))
-        levels(as.factor(x))
-    })
+        ## levels(as.factor(x))
+    ## })
     vartypes <- rep(c("numeric","Q","factor"),c(length(names(continuous.matrix)),length(names(Q.matrix)),length(names(factor.matrix))))
     names(vartypes) <- c(names(continuous.matrix),names(Q.matrix),names(factor.matrix))
     out <- list(summary.groups=c(freqFactor$groupfreq,summaryNumeric$groupsummary,qNumeric$groupsummary),
@@ -298,7 +305,7 @@ univariateTable <- function(formula,
                 formula=formula,
                 groups=grouplabels,
                 vartype=vartypes,
-                xlevels=xlevels,
+                xlevels=freqFactor$xlevels,
                 Q.format=Q.format,
                 summary.format=summary.format,
                 freq.format=freq.format)

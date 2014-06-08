@@ -69,3 +69,4 @@ Collate:
     'coxphSeries.R'
     'glmSeries.R'
     'labelUnits.R'
+    'publish.CauseSpecificCox.R'

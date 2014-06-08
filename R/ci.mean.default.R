@@ -1,3 +1,15 @@
+##' Compute mean values with confidence intervals
+##'
+##' Normal approximation 
+##' @title Compute mean values with confidence intervals
+##' @param x
+##' @param alpha
+##' @param normal
+##' @param na.rm
+##' @param statistic
+##' @return a list with mean values and confidence limits
+##' @author Thomas Gerds
+##' @export
 ci.mean.default <- function(x,
                             alpha = 0.05,
                             normal = TRUE,

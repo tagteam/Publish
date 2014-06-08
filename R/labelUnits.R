@@ -1,4 +1,23 @@
+##' Label output tables
+##'
+##' Change printed variable labels and values  
+##' @title labelUnits
+##' @param x A matrix obtained with \code{univariateTable}.
+##' @param ...
+##' @return The re-labeled matrix
+##' @seealso univariateTable
+##' @examples
+##'
+##' data(Diabetes)
+##' tab <- summary(univariateTable(gender~AgeGroups+chol+waist,data=Diabetes))
+##' publish(tab)
+##' ltab <- labelUnits(tab,"chol"="Cholesterol (mg/dL)","age<40"="younger than 40")
+##' publish(ltab)
+##' 
+##' @export 
+##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 labelUnits <- function(x,...){
+    ## stopifnot(match("summary.univariateTable",class(x),nomatch=0)>0)
     units <- SmartControl(list(...),
                           keys=c("units",unique(x$Variable[x$Variable!=""])),
                           defaults=NULL,

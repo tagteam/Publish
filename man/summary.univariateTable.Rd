@@ -3,7 +3,7 @@
 \title{Preparing univariate tables for publication}
 \usage{
   summary.univariateTable(x,
-    missing = c("ifany", "always", "never"), n,
+    missing = c("ifany", "always", "never"), n = "inNames",
     pvalue.stars = FALSE, pvalue.eps = 0.0001,
     pvalue.digits = 4, ...)
 }

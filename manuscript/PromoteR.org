@@ -70,9 +70,7 @@ publish(fit,org=TRUE)
 |          | female |         |   3.3757 | [2.10;4.65]  | < 0.0001 |           |
 | chol     |        |       1 |   0.0128 | [-0.00;0.03] |  0.08644 |         1 |
 
-
 * Univariate tables
-
 ** Total statistics
 
 *** Raw form   
@@ -116,7 +114,6 @@ org(univariateTable(~AgeGroups+gender+height+weight,data=Diabetes),weight="Weigh
 | Weight (kg) | mean (sd) | 177.6 (40.3) |
 |             | missing   | 1            |
 
-   
 ** By groups
   
 #+BEGIN_SRC R  :results output raw  :exports both  :session *R* :cache yes 
