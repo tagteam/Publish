@@ -67,7 +67,9 @@ publish.coxph <- function(object,
     unity <- match(varNames,factors,nomatch=FALSE)
     scale <- 1*(unity!=0) + 2 * (log.e!=0) + 3 * (log.2!=0)
     if (any(scale==0)) stop("Unfortunately, constructions like I(age>50) are not supported\nYou need to define the transformed variable in the data set before calling coxph.\n")
-    scale <- as.character(factor(scale,levels=c(1,2,3),labels=c("","logarithmic","logarithmic base 2")))
+    scale <- as.character(factor(scale,
+                                 levels=c(1,2,3),
+                                 labels=c("","logarithmic","logarithmic base 2")))
     names(scale) <- varNames
     # }}}
     # {{{     missing values?

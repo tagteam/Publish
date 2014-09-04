@@ -22,7 +22,7 @@ fixRegressionTable <- function(x,
                                nmiss,
                                intercept){
     if (missing(nmiss)) nmiss <- NULL
-    some.scaled <- sum(scale=="")>0
+    some.scaled <- sum(scale!="")>0
     ## for some reason logical value variables, ie with levels
     ## TRUE, FALSE do not get xlevels in the output of glm
     loc <- grep("TRUE$",rownames(x),value=TRUE)
@@ -31,19 +31,30 @@ fixRegressionTable <- function(x,
             substring(l,1,nchar(l)-4)
         })
         names(locvars) <- locvars
-        factorlevels <- c(factorlevels,lapply(locvars,function(l){c("FALSE","TRUE")}))
+        factorlevels <- c(factorlevels,
+                          lapply(locvars,function(l){c("FALSE","TRUE")}))
     }
     factornames <- names(factorlevels)
+    ## for some reason ordinal variables get strange labels
+    ord <- grep("\\.L$",rownames(x),value=TRUE)
+    if (length(ord)>0){
+        orderednames <- unlist(strsplit(ord,"\\.L$"))
+    }
     blocks <- lapply(varnames,function(vn){
         isfactor <- match(vn,factornames,nomatch=0)
+        isordered <- match(vn,orderednames,nomatch=0)
         ## the regexp is supposed to catch the term `age' in
         ## age and I(age^2 and interaction(age,sex) and
         ## interaction(sex,age) and fun(age)
         if (isfactor){
-            levs.regexp <- paste("(",paste(factorlevels[[isfactor]],collapse="|"),")",sep="")
-            vn.regexp <- paste("^",vn,levs.regexp,"$","|","I\\(",vn,".*",levs.regexp,"|",vn,"\\)",".*",levs.regexp,sep="")
+            if (isordered){
+                vn.regexp <- paste("^",vn,".[LCQ]$","|","",vn,"\\^[0-9]+$",sep="")
+            }else{
+                levs.regexp <- paste("(",paste(factorlevels[[isfactor]],collapse="|"),")",sep="")
+                vn.regexp <- paste("^",vn,levs.regexp,"$","|","I\\(",vn,".*",levs.regexp,"|",vn,"\\)",".*",levs.regexp,sep="")
+            }
         } else{
-            vn.regexp <- paste("^",vn,"$","|","\\(",vn,"|",vn,"\\)",sep="")
+            vn.regexp <- paste("^",vn,"$",sep="")
         }
         parms <- grep(vn.regexp,rownames(x))
         block <- x[parms,,drop=FALSE]
@@ -69,7 +80,7 @@ fixRegressionTable <- function(x,
                 if (!is.null(nmiss)){
                     Missing <- c(nmiss[vn],rep("",NROW(block)))
                 }
-                block <- rbind(c(reference.value,rep("",NCOL(block)-1)), block)
+                block <- rbind(c(reference.value,rep("",NCOL(block)-1)),block)
             }
         } else{ ## numeric variables
             Variable <- vn
@@ -81,11 +92,18 @@ fixRegressionTable <- function(x,
                 Scale <- scale[[vn]]
             }
         }
-        do.call("cbind",list(Variable=Variable,
-                             Scale=Scale,
-                             Units=Units,
-                             Missing=as.character(Missing),
-                             block))
+        if (some.scaled){
+            do.call("cbind",list(Variable=Variable,
+                                 Scale=Scale,
+                                 Units=Units,
+                                 Missing=as.character(Missing),
+                                 block))
+        }else{
+            do.call("cbind",list(Variable=Variable,
+                                 Units=Units,
+                                 Missing=as.character(Missing),
+                                 block))
+        }
     })
     out <- do.call("rbind",blocks)
     out$Variable <- as.character(out$Variable)

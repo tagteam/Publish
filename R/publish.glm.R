@@ -70,7 +70,7 @@ publish.glm <- function(object,
     scale <- as.character(factor(scale,levels=c(1,2,3),labels=c("","logarithmic","logarithmic base 2")))
     names(scale) <- varNames
     # }}}
-    # {{{     missing values?
+    # {{{ missing values?
     Nmiss <- sapply(varNames,function(v){sum(is.na(data[,v]))})
     names(Nmiss) <- varNames
     if (is.null(showMissing)) showMissing <- "ifany"
@@ -84,9 +84,6 @@ publish.glm <- function(object,
     # }}}
     # {{{ confidence interval format
     if (missing(ci.format)){
-        ## if (logisticRegression)
-        ## ci.format <- paste("[",paste("%1.",digits,"f",sep=""),"-",paste("%1.",digits,"f",sep=""),"]",sep="")
-        ## else
         ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
     }
     # }}}
@@ -156,7 +153,9 @@ publish.glm <- function(object,
         publish(rt,rownames=FALSE,...)
     }
     # }}}
-    invisible(rt)  
+    attributes(rt) <- c(attributes(rt),list(CI=ciX,
+                                            OR=x$OddsRatio))
+    invisible(rt)
 }
 ##' @S3method publish lm
 publish.lm <- publish.glm

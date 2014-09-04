@@ -68,7 +68,6 @@ univariateTable <- function(formula,
     theData <- eval(m, parent.frame())
     # }}}
     # {{{ extract grouping variable
-   
     if (is.null(formList$Response)){
         groupvar <- NULL
         groupname <- NULL

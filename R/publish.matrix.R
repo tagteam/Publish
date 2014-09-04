@@ -1,3 +1,29 @@
+##' Publishing a matrix in raw, org, latex, or muse format
+##' 
+##' This is the heart of the Publish package 
+##' @param title 
+##' @param level
+##' @param hrule
+##' @param colnames
+##' @param rownames
+##' @param col1name
+##' @param digits
+##' @param sep
+##' @param collapse.head
+##' @param collapse.row
+##' @param endhead
+##' @param endrow
+##' @param style
+##' @param interLines
+##' @param latex
+##' @param wiki
+##' @param muse
+##' @param org
+##' @param environment
+##' @param latexTableFormat
+##' @param latexHline
+##' @param latexNoDollar
+##' @param ...
 ##' @S3method publish matrix
 publish.matrix <- function(x,
                            title,
