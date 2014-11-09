@@ -39,7 +39,7 @@ fixRegressionTable <- function(x,
     ord <- grep("\\.L$",rownames(x),value=TRUE)
     if (length(ord)>0){
         orderednames <- unlist(strsplit(ord,"\\.L$"))
-    }
+    }else{orderednames <- ""}
     blocks <- lapply(varnames,function(vn){
         isfactor <- match(vn,factornames,nomatch=0)
         isordered <- match(vn,orderednames,nomatch=0)
@@ -79,7 +79,7 @@ fixRegressionTable <- function(x,
                 }
                 if (!is.null(nmiss)){
                     Missing <- c(nmiss[vn],rep("",NROW(block)))
-                }
+                } 
                 block <- rbind(c(reference.value,rep("",NCOL(block)-1)),block)
             }
         } else{ ## numeric variables
@@ -93,11 +93,7 @@ fixRegressionTable <- function(x,
             }
         }
         if (some.scaled){
-            do.call("cbind",list(Variable=Variable,
-                                 Scale=Scale,
-                                 Units=Units,
-                                 Missing=as.character(Missing),
-                                 block))
+            do.call("cbind",list(Variable=Variable,Scale=Scale,Units=Units,Missing=as.character(Missing),block))
         }else{
             do.call("cbind",list(Variable=Variable,
                                  Units=Units,

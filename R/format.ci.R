@@ -27,7 +27,15 @@
 ##' 
 ##' @S3method format ci
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-format.ci <- function(lower,upper,format="[l;u]",degenerated="--",digits=3,nsmall=digits,trim=TRUE,sep=""){
+format.ci <- function(lower,
+                      upper,
+                      format="[l;u]",
+                      ## degenerated="--",
+                      degenerated="asis",
+                      digits=3,
+                      nsmall=digits,
+                      trim=TRUE,
+                      sep=""){
     stopifnot(length(upper)==length(lower))
     format <- sub("l","%s",format)
     format <- sub("u","%s",format)
@@ -35,7 +43,7 @@ format.ci <- function(lower,upper,format="[l;u]",degenerated="--",digits=3,nsmal
     upper <- format(upper,digits=digits,nsmall=digits,trim=trim)
     N <- length(lower)
     out <- sapply(1:N,function(i){
-        if (is.character(degenerated) && lower[i]==upper[i])
+        if (is.character(degenerated) && degenerated!="asis" && lower[i]==upper[i])
             ci <- degenerated
         else
             ci <- do.call("sprintf",list(fmt=format,lower[i],upper[i]))

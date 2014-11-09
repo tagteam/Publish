@@ -21,7 +21,7 @@
 ##' ci.mean(Y~X,data=d)
 ##' x <- ci.mean(Y~X,data=d)
 ##' print(x,format="(l,u)")
-##' 
+ 
 #' @S3method print ci
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 print.ci <- function(x,digits=3,format="[l;u]",se=FALSE,print=TRUE,...){
@@ -34,7 +34,9 @@ print.ci <- function(x,digits=3,format="[l;u]",se=FALSE,print=TRUE,...){
         colnames(pci) <- c(names(x)[1:2],paste("CI-",as.character(100*(1-level)),"%",sep=""))
     }else{
         pci <- cbind(format(cbind(x[[1]]),,digits=digits,nsmall=digits),
-                     apply(cbind(x[["lower"]],x[["upper"]]),1,function(x)format.ci(lower=x[1],upper=x[2],format=format,digits=digits)))
+                     apply(cbind(x[["lower"]],x[["upper"]]),1,function(x){
+                         format.ci(lower=x[1],upper=x[2],format=format,digits=digits)
+                     }))
         colnames(pci) <- c(names(x)[1],paste("CI-",as.character(100*(1-level)),"%",sep=""))
     }
     pci <- cbind(x$labels,pci)

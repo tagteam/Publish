@@ -25,40 +25,36 @@ publish.coxph <- function(object,
                           pvalue.digits=4,
                           eps=.0001,
                           pvalue.stars=FALSE,
+                          ci.format=paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep=""),
                           showMissing="ifany",
                           output.columns=NULL,
                           print=TRUE,
-                          ci.format=paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep=""),
                           style="extraline",
                           ...) {
-    # {{{ formula, data 
-    if (is.null(object$formula)){
-        if (is.null(object$terms)){
-            if (class(object$call$formula)=="name"){
-                stop("Cannot extract the formula from object")
-            }
-            else{
-                formula <- object$call$formula
-            }
-        } else{
-            formula <- formula(object$terms)
+    # {{{ formula, data
+    terms <- object$terms
+    if (is.null(terms)){
+        if (class(object$call$formula)=="name"){
+            stop("Cannot extract the formula from coxph object")
         }
+    }else{
+        formula <- formula(terms)
     }
-    else{
-        formula <- object$formula
-    }
-    if (is.null(object$data))
+    if (any(attr(terms,"order")>1))
+        stop("Unfortunately, higher order terms are not supported.\n We all hope that Klaus will fix this soon.")
+    data <- object$data
+    if (is.null(data))
         data <- eval(object$call$data)
-    else
-        data <- object$data
-    terms <- terms(formula)
-    if (any(attr(terms,"order")>1)) stop("Unfortunately, higher order terms are not supported.\n We all hope that Klaus will fix this soon.")
-    ## hack hack
-    ## varNames <- all.vars(delete.response(terms(object$formula)))
-    ff <- readFormula(object$formula,specials=c("cluster","strata"))
-    varNames <- all.vars(ff$unSpec$formula)
+    rhs <- formula(delete.response(object$terms))
+    X <- EventHistory.frame(formula=rhs,
+                            data=data,
+                            unspecialsDesign=FALSE,
+                            specials=c("strata","cluster"),
+                            check.formula=FALSE,
+                            specialsDesign=FALSE)
+    varNames <- colnames(X$design)
     factors <- colnames(attr(terms,"factors"))
-    clustvar <- all.vars(ff$cluster$formula)
+    clustvar <- if (!is.null(X$cluster)) colnames(X$cluster) else NULL
     if (length(clustvar)){
         factors <- factors[factors != paste("cluster(",clustvar,")",sep="")]
     }
@@ -73,10 +69,13 @@ publish.coxph <- function(object,
     names(scale) <- varNames
     # }}}
     # {{{     missing values?
-    Nmiss <- sapply(varNames,function(v){sum(is.na(data[,v]))})
+    ## warning("FIXME: need to repair information on missing values per variable")
+    ## Nmiss <- sapply(varNames,function(v){sum(is.na(data[,v]))})
+    Nmiss <- sapply(varNames,function(v) 0)
     names(Nmiss) <- varNames
-    if (is.null(showMissing)) showMissing <- "ifany"
-    showMissing <- switch(as.character(showMissing),"ifany"=any(Nmiss>0),"always"=TRUE,"never"=FALSE)
+    ## if (is.null(showMissing)) showMissing <- "ifany"
+    ## showMissing <- switch(as.character(showMissing),"ifany"=any(Nmiss>0),"always"=TRUE,"never"=FALSE)
+    showMissing <- FALSE
     # }}}
     # {{{ confidence interval format
     ## if (missing(ci.format)){
@@ -98,7 +97,11 @@ publish.coxph <- function(object,
     x$CI.95=apply(ciX[,c(1,2),drop=FALSE],1,function(x){
         sprintf(ci.format,x[1],x[2])})
     if (pvalue.stars==TRUE)
-        x$pValue <- symnum(x$pValue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+        x$pValue <- symnum(x$pValue,
+                           corr = FALSE,
+                           na = FALSE,
+                           cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                           symbols = c("***", "**", "*", ".", " "))
     else
         x$pValue=sapply(x$pValue,
             format.pval,
@@ -134,6 +137,8 @@ publish.coxph <- function(object,
     rt <- labelUnits(rt,...)
     if (print==TRUE){
         publish(rt,rownames=FALSE,...)
+        if (pvalue.stars==TRUE)
+            cat("\nSignif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1\n")
     }
     # }}}
     invisible(rt)  

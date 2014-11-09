@@ -24,6 +24,11 @@
 ##' @param latexHline
 ##' @param latexNoDollar
 ##' @param ...
+##' @examples
+##'
+##' x <- matrix(1:12,ncol=3) 
+##'
+##' 
 ##' @S3method publish matrix
 publish.matrix <- function(x,
                            title,
