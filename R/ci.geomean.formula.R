@@ -1,5 +1,4 @@
 ci.geomean.formula <- function(formula,data,alpha = 0.05,normal = T,na.rm=T,statistic="geometric"){
-  require(rms)
   work <- model.frame(formula,data)
   nf <- ncol(work)-1
   if (nf>1) f <- interaction(work[,-1,drop=FALSE],sep=" - ")

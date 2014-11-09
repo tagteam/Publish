@@ -1,8 +1,8 @@
 ##' Publishing a matrix in raw, org, latex, or muse format
 ##' 
 ##' This is the heart of the Publish package 
-##' @param title 
-##' @param level
+##' @param x Matrix to be published
+##' @param title Title for table, only in wiki and muse format
 ##' @param hrule
 ##' @param colnames
 ##' @param rownames
@@ -14,11 +14,11 @@
 ##' @param endhead
 ##' @param endrow
 ##' @param style
-##' @param interLines
-##' @param latex
-##' @param wiki
-##' @param muse
-##' @param org
+##' @param interLines 
+##' @param latex If TRUE use latex table format
+##' @param wiki If TRUE use wiki table format
+##' @param org If TRUE use org table format
+##' @param markdown If TRUE use markdown table format
 ##' @param environment
 ##' @param latexTableFormat
 ##' @param latexHline
@@ -47,8 +47,8 @@ publish.matrix <- function(x,
                            interLines,
                            latex=FALSE,
                            wiki=FALSE,
-                           muse=FALSE,
                            org=FALSE,
+                           markdown=FALSE,
                            environment=TRUE,
                            latexTableFormat=NA,
                            latexHline=1,
@@ -66,10 +66,10 @@ publish.matrix <- function(x,
     wiki.DefaultArgs <- list("class"="R-table")
     latex.DefaultArgs <- NULL
     org.DefaultArgs <- NULL
-    muse.DefaultArgs <- NULL
+    markdown.DefaultArgs <- NULL
     control <- SmartControl(call=  list(...),
-                            keys=c("wiki","latex","muse","org"),
-                            defaults=list("wiki"=wiki.DefaultArgs,"latex"=latex.DefaultArgs,"muse"=muse.DefaultArgs,"org"=org.DefaultArgs),
+                            keys=c("wiki","latex","markdown","org"),
+                            defaults=list("wiki"=wiki.DefaultArgs,"latex"=latex.DefaultArgs,"markdown"=markdown.DefaultArgs,"org"=org.DefaultArgs),
                             ignore.case=TRUE,
                             replaceDefaults=FALSE,
                             verbose=TRUE)
@@ -79,12 +79,12 @@ publish.matrix <- function(x,
     if (wiki==TRUE) style <- "wiki"
     if (latex==TRUE) style <- "latex"
     if (org==TRUE) style <- "org"
-    if (muse==TRUE) style <- "muse"
+    if (markdown==TRUE) style <- "markdown"
     switch(style,
            "latex"={
                latex <- TRUE
                wiki <- FALSE
-               muse <- FALSE
+               markdown <- FALSE
                org <- FALSE
                starthead <- ""
                collapse.head <- "&"
@@ -103,7 +103,7 @@ publish.matrix <- function(x,
            "wiki"={
                wiki <- TRUE
                latex <- FALSE
-               muse <- FALSE
+               markdown <- FALSE
                org <- FALSE
                starthead <- "|-\n! "
                collapse.head <- " !! "
@@ -115,25 +115,26 @@ publish.matrix <- function(x,
                    endrow <- "\n"
                endtable <- "|}\n"
            },
-           "muse"={
+           "markdown"={
                wiki <- FALSE
                latex <- FALSE
-               muse <- TRUE
+               markdown <- TRUE
                org <- FALSE
-               starthead <- " "
-               collapse.head <- " || "
+               starthead <- "|"
+               collapse.head <- "|"
                if (missing(endhead)){
-                   endhead <- "\n"}
-               startrow <- " "
-               collapse.row <- " | "
+                   endhead <- "|"
+               }
+               startrow <- "|"
+               collapse.row <- "|"
                if (missing(endrow))
-                   endrow <- "\n"
+                   endrow <- "|\n"
                endtable <- "\n"
            },
            "org"={
                wiki <- FALSE
                latex <- FALSE
-               muse <- FALSE
+               markdown <- FALSE
                org <- TRUE
                starthead <- "| "
                collapse.head <- " | "
@@ -149,7 +150,7 @@ publish.matrix <- function(x,
            "none"={
                wiki <- FALSE
                latex <- FALSE
-               muse <- FALSE
+               markdown <- FALSE
                org <- FALSE
                starthead <- ""
                collapse.head <- sep
@@ -192,10 +193,6 @@ publish.matrix <- function(x,
     }
     # }}}
     # {{{ header
-    if (muse && !missing(title)){
-        publish(title,level=level,hrule=hrule)
-        cat("\n")
-    }
     if (latex && environment==TRUE) {
         if (is.na(latexTableFormat))
             cat("\\begin{tabular}{",c("l|",rep("c",NCOL(x)-1)),"}","\n")
@@ -222,6 +219,16 @@ publish.matrix <- function(x,
                     cat("+",paste(rep("-",nchar(ccc[c]) -1 + nchar(collapse.row)),collapse=""),sep="")
             }
             cat("|\n")
+        }
+        if (markdown==TRUE){
+            cat("\n|")
+            for (c in 1:length(ccc)){
+                if (c==1)
+                    cat(paste(rep("-",nchar(ccc[c]) -1 + nchar(startrow)),collapse=""),sep="")
+                else 
+                    cat(":|",paste(rep("-",nchar(ccc[c]) -1 + nchar(collapse.row)),collapse=""),sep="")
+            }
+            cat(":|\n")
         }
     }
     colnames(x) <- NULL

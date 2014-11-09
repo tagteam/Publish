@@ -35,10 +35,10 @@
 ##' univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes)
 ##' 
 ##' ## Column percent
-##' univariateTable(location~gender+age+AgeGroups, data=Diabetes,freq.format="count(x) (colpercent(x))")
+##' univariateTable(location~gender+age+AgeGroups, data=Diabetes,column.percent=TRUE)
 ##' 
 ##' ## Labels
-##' u <- univariateTable(location~gender+AgeGroups+ height + weight, data=Diabetes,freq.format="count(x) (colpercent(x))")
+##' u <- univariateTable(location~gender+AgeGroups+ height + weight, data=Diabetes,column.percent=TRUE,freq.format="count(x) (percent(x))")
 ##' summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
 univariateTable <- function(formula,
                             data=parent.frame(),
