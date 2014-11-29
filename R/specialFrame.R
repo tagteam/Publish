@@ -92,7 +92,7 @@ specialFrame <- function(formula,
     response <- model.extract(m, "response")
     # }}}
     # {{{ design
-    design <- model.design(data=m,
+    design <- prodlim::model.design(data=m,
                            maxOrder=1,
                            dropIntercept=dropIntercept,
                            unspecialsDesign=unspecialsDesign,
