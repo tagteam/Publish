@@ -1,0 +1,65 @@
+\name{Spaghettiogram}
+\alias{Spaghettiogram}
+\title{Spaghettiogram}
+\usage{
+Spaghettiogram(formula, data, xlim, ylim, xlab = "", ylab = "",
+  axes = TRUE, col, lwd, lty, pch, legend = FALSE, add = FALSE,
+  background = TRUE, ...)
+}
+\arguments{
+  \item{formula}{A formula which specifies the variables
+  for the spaghettiograms. If Y ~ X + id(Z) then for each
+  value of Z the spaghettiogram is the graph (X,Y) in the
+  subset defined by the value of Z}
+
+  \item{data}{data set in which variable}
+
+  \item{xlim}{Limits for x-axis}
+
+  \item{ylim}{Limits for y-axis}
+
+  \item{xlab}{Label for x-axis}
+
+  \item{ylab}{Label for x-axis}
+
+  \item{axes}{Logical indicating if axes should be drawn.}
+
+  \item{col}{Colors for the spaghettiograms}
+
+  \item{lwd}{Widths for the spaghettiograms}
+
+  \item{lty}{Type for the spaghettiograms}
+
+  \item{pch}{Point-type for the spaghettiograms}
+
+  \item{legend}{If \code{TRUE} add a legend. Argument A of
+  legend is controlled as legend.A. E.g., when
+  \code{legend.cex=2} legend will be called with argument
+  cex=2.}
+
+  \item{add}{If \code{TRUE} add to existing plot device.}
+
+  \item{background}{Control the background color of the
+  graph.}
+
+  \item{...}{used to transport arguments which are passed
+  to the following subroutines: \code{"plot"},
+  \code{"lines"}, \code{"legend"}, \code{"background"},
+  \code{"axis1"}, \code{"axis2"}.}
+}
+\value{
+List with data of each subject
+}
+\description{
+A spaghettiogram is showing repeated measures (longitudinal
+data)
+}
+\examples{
+data(SpaceT)
+Spaghettiogram(HR~Status+id(ID),
+               data=SpaceT,
+               xlim=c(-0.5,1.5),
+               axis1.at=c(0,1),
+               axis1.lab=c("pre","post"))
+}
+

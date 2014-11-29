@@ -1,0 +1,37 @@
+\name{ci.mean.default}
+\alias{ci.mean.default}
+\title{Compute mean values with confidence intervals}
+\usage{
+\method{ci.mean}{default}(x, alpha = 0.05, normal = TRUE, na.rm = TRUE,
+  statistic = "arithmetic", ...)
+}
+\arguments{
+  \item{x}{numeric vector}
+
+  \item{alpha}{level of significance}
+
+  \item{normal}{If \code{TRUE} use quantile of
+  t-distribution else use normal approximation and quantile
+  of normal approximation. Do you think this is confusing?}
+
+  \item{na.rm}{If \code{TRUE} remove missing values from
+  \code{x}.}
+
+  \item{statistic}{Decide which mean to compute: either
+  \code{"arithmetic"} or \code{"geometric"}}
+
+  \item{...}{not used}
+}
+\value{
+a list with mean values and confidence limits
+}
+\description{
+Compute mean values with confidence intervals
+}
+\details{
+Normal approximation
+}
+\author{
+Thomas Gerds
+}
+

@@ -1,0 +1,28 @@
+\name{print.univariateTable}
+\alias{print.univariateTable}
+\title{Printing univariate tables}
+\usage{
+\method{print}{univariateTable}(x, ...)
+}
+\arguments{
+  \item{x}{An object obtained with \code{univariateTable}}
+
+  \item{...}{Passed to summary.univariateTable}
+}
+\value{
+The result of \code{summary.univariateTable(x)}
+}
+\description{
+Print function for univariate tables
+}
+\details{
+This function is simply calling
+\code{summary.univariateTable}
+}
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}
+\seealso{
+\code{univariateTable}
+}
+

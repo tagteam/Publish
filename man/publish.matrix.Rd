@@ -1,0 +1,75 @@
+\name{publish.matrix}
+\alias{publish.matrix}
+\title{Publishing a matrix in raw, org, latex, or muse format}
+\usage{
+\method{publish}{matrix}(object, title, colnames = TRUE, rownames = TRUE,
+  col1name = "", digits = 4, sep = " ", endhead, endrow, style,
+  interLines, latex = FALSE, wiki = FALSE, org = FALSE,
+  markdown = FALSE, tabular = TRUE, latexTableFormat = NA,
+  latexHline = 1, latexNoDollar = FALSE, ...)
+}
+\arguments{
+  \item{object}{Matrix to be published}
+
+  \item{title}{Title for table, only in wiki and muse
+  format}
+
+  \item{colnames}{If \code{TRUE} show column names}
+
+  \item{rownames}{If \code{TRUE} show row names}
+
+  \item{col1name}{Name for first column}
+
+  \item{digits}{Numbers are rounded according to digits}
+
+  \item{sep}{Field separator when style is \code{"none"}}
+
+  \item{endhead}{String to be pasted at the end of the
+  first row (header)}
+
+  \item{endrow}{String to be pasted at the end of each row}
+
+  \item{style}{Table style for export to \code{"latex"},
+  \code{"org"}, \code{"markdown"}, \code{"wiki"},
+  \code{"none"}. Overwritten by argments below.}
+
+  \item{interLines}{A named list which contains strings to
+  be placed between the rows of the table. An element with
+  name \code{"0"} is used to place a line before the first
+  column, elements with name \code{"r"} are placed between
+  line r and r+1.}
+
+  \item{latex}{If \code{TRUE} use latex table format}
+
+  \item{wiki}{If \code{TRUE} use mediawiki table format}
+
+  \item{org}{If \code{TRUE} use emacs orgmode table format}
+
+  \item{markdown}{If \code{TRUE} use markdown table format}
+
+  \item{tabular}{For style \code{latex} only: if
+  \code{TRUE} enclose the table in begin/end tabular
+  environement.}
+
+  \item{latexTableFormat}{For style \code{latex} only:
+  format of the tabular environement.}
+
+  \item{latexHline}{For style \code{latex} only: if
+  \code{TRUE} add hline statements add the end of each
+  line.}
+
+  \item{latexNoDollar}{For style \code{latex} only: if
+  \code{TRUE} do not enclose numbers in dollars.}
+
+  \item{...}{Used to transport arguments. Currently
+  supports \code{wiki.class}.}
+}
+\description{
+This is the heart of the Publish package
+}
+\examples{
+x <- matrix(1:12,ncol=3)
+publish(x)
+publish(x,interLines=list("3"="intermediate text"))
+}
+
