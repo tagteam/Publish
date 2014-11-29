@@ -5,7 +5,8 @@
 lazyFactorCoding(data, maxlevel = 10)
 }
 \arguments{
-  \item{data}{}
+  \item{data}{Data frame in which to search for categorical
+  variables.}
 
   \item{maxlevel}{Treat non-factor variables only if the
   number of unique values less than maxlevel. Defaults to
@@ -22,6 +23,10 @@ R-code which can quickly be modified to change the levels.
 The code needs to be copy-and-pasted from the R-output
 buffer into the R-code buffer. This can be customized for
 the really efficiently working people e.g. in emacs.
+}
+\examples{
+data(Diabetes)
+lazyFactorCoding(Diabetes)
 }
 \author{
 Thomas Alexander Gerds

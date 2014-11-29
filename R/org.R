@@ -2,8 +2,8 @@
 ##'
 ##' 
 ##' @title Wrapper function for publish with output format org
-##' @param x 
-##' @param ... 
+##' @param x object to format as org 
+##' @param ... passed to publish
 ##' @return See publish
 ##' @author Thomas Alexander Gerds
 ##' @export

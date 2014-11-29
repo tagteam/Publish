@@ -5,9 +5,9 @@
 org(x, ...)
 }
 \arguments{
-  \item{x}{}
+  \item{x}{object to format as org}
 
-  \item{...}{}
+  \item{...}{passed to publish}
 }
 \value{
 See publish

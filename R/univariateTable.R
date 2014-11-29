@@ -6,19 +6,21 @@
 ##' 
 ##' 
 ##' @title Univariate table
-##'
-##' @export
-##' @param formula
-##' @param data
-##' @param summary.format
-##' @param Q.format
-##' @param freq.format
+##' @param formula Formula specifying the grouping variable (strata) on the left hand side (can be omitted)
+##' and on the right hand side the variables for which to obtain (descriptive) statistics.
+##' @param data Data set in which formula is evaluated
+##' @param summary.format Format for the numeric (non-factor) variables. Default is mean (SD).
+##' If different formats are desired, either special Q can be used or the function is called multiple times
+##' and the results are rbinded. See examples.
+##' @param Q.format Format for quantile summary of numerice variables: Default is median (inter quartile range).
+##' @param freq.format Format for categorical variables. Default is count (percentage).
 ##' @param column.percent Logical, if \code{TRUE} and the default freq.format is used then column percentages are given instead of row percentages for discrete factors.
-##' @param digits.summary
-##' @param digits.freq
-##' @param strataIsOutcome
-##' @param shortGroupNames
-##' @param ... Not yet used
+##' @param digits.summary Rounding digits for summary.format.
+##' @param digits.freq Rounding digits for freq.format.
+##' @param strataIsOutcome If \code{TRUE} logistic regression is used instead of t-tests and Wilcoxon rank tests
+##' to compare numeric variables across groups.
+##' @param shortGroupNames If \code{TRUE} group names are abbreviated.
+##' @param ... Not used (not yet)
 ##' @return List 
 ##' @author Thomas A. Gerds
 ##' @seealso summary.univariateTable, publish.univariateTable
@@ -28,18 +30,46 @@
 ##' univariateTable(location~age+gender+height+weight,data=Diabetes)
 ##' 
 ##' ## Use quantiles and rank tests for some variables and mean and standard deviation for others
-##' univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,data=Diabetes)
+##' univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,
+##'                 data=Diabetes)
 ##' 
 ##' ## Factor with more than 2 levels
-##' Diabetes$AgeGroups <- cut(Diabetes$age,c(19,29,39,49,59,69,92),include.lowest=TRUE)
-##' univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes)
+##' Diabetes$AgeGroups <- cut(Diabetes$age,
+##'                           c(19,29,39,49,59,69,92),
+##'                           include.lowest=TRUE)
+##' univariateTable(location~AgeGroups+gender+height+weight,
+##'                 data=Diabetes)
 ##' 
 ##' ## Column percent
-##' univariateTable(location~gender+age+AgeGroups, data=Diabetes,column.percent=TRUE)
+##' univariateTable(location~gender+age+AgeGroups,
+##'                 data=Diabetes,
+##'                 column.percent=TRUE)
 ##' 
-##' ## Labels
-##' u <- univariateTable(location~gender+AgeGroups+ height + weight, data=Diabetes,column.percent=TRUE,freq.format="count(x) (percent(x))")
+##' ## changing Labels
+##' u <- univariateTable(location~gender+AgeGroups+ height + weight,
+##'                      data=Diabetes,
+##'                      column.percent=TRUE,
+##'                      freq.format="count(x) (percent(x))")
 ##' summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
+##' 
+##' ## multiple summary formats
+##' ## suppose we want for some reason mean (range) for age
+##' ## and median (range) for BMI.
+##' ## method 1:
+##' univariateTable(frame~Q(age)+BMI,
+##'                 data=na.omit(Diabetes),
+##'                 Q.format="mean(x) (range(x))",
+##'                 summary.format="median(x) (range(x))")
+##' ## method 2: 
+##' u1 <- summary(univariateTable(frame~age,
+##'                               data=na.omit(Diabetes),
+##'                               summary.format="mean(x) (range(x))"))
+##' u2 <- summary(univariateTable(frame~BMI,
+##'                               data=na.omit(Diabetes),
+##'                               summary.format="median(x) (range(x))"))
+##' publish(rbind(u1,u2),digits=2)
+##'
+##' @export
 univariateTable <- function(formula,
                             data=parent.frame(),
                             summary.format="mean(x) (sd(x))",
@@ -58,7 +88,7 @@ univariateTable <- function(formula,
                             alias=list("strata"="F","factor"="F","C"="S","nonpar"="Q"),
                             unspecified="auto")
     call <- match.call()
-    m <- match.call(expand = FALSE)
+    m <- match.call(expand.dots = FALSE)
     if (match("subset",names(call),nomatch=FALSE))
         stop("Subsetting of data is not possible.")
     m <- m[match(c("","formula","data","subset","na.action"),names(m),nomatch = 0)]

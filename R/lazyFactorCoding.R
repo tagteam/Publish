@@ -5,10 +5,14 @@
 ##' buffer into the R-code buffer. This can be customized
 ##' for the really efficiently working people e.g. in emacs.
 ##' @title Efficient coding of factor levels
-##' @param data
+##' @param data Data frame in which to search for categorical variables.
 ##' @param maxlevel Treat non-factor variables only if the number of unique values less than maxlevel. Defaults to 10.
 ##' @return R-code one line for each variable.
 ##' @author Thomas Alexander Gerds
+##' @examples
+##' data(Diabetes)
+##' lazyFactorCoding(Diabetes)
+##' 
 ##' @export
 lazyFactorCoding <- function(data,maxlevel=10){
     if (!is.character(data))

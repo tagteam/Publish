@@ -1,6 +1,11 @@
 #' @S3method ci.mean formula
-ci.mean.formula <- function(formula,data,alpha = 0.05,normal = TRUE,na.rm=T,statistic=c("arithmetic","geometric")){
-    work <- model.frame(formula,data)
+ci.mean.formula <- function(x,
+                            data,
+                            alpha = 0.05,
+                            normal = TRUE,
+                            na.rm=T,
+                            statistic=c("arithmetic","geometric"),...){
+    work <- model.frame(x,data)
     nf <- ncol(work)-1
     if (nf>1) f <- interaction(work[,-1,drop=FALSE],sep=" - ")
     else f <- factor(work[,2])

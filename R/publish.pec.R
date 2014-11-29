@@ -1,24 +1,24 @@
 ##' @S3method publish pec
-publish.pec <- function(x,times, digits=3,what=NULL,...){
+publish.pec <- function(object,times, digits=3,what=NULL,...){
   # FROM PRINT.PEC
   if (is.null(what))
-    if (x$method$internal.name=="noPlan")
+    if (object$method$internal.name=="noPlan")
       what="AppErr"
     else
-      what <- paste(x$method$internal.name,"Err",sep="")
+      what <- paste(object$method$internal.name,"Err",sep="")
   if (missing(times)){
-    ## times <- x$maxtime ## times <- quantile(x$time,.9)
-    times <- x$minmaxtime
-    ##     naPos <- sapply(x[[what]],function(pec){
+    ## times <- object$maxtime ## times <- quantile(object$time,.9)
+    times <- object$minmaxtime
+    ##     naPos <- sapply(object[[what]],function(pec){
     ##       length(pec)-sum(is.na(pec))-1
     ##     })
-    ##     times <- min(x$time[naPos],times)
+    ##     times <- min(object$time[naPos],times)
   }
   # {{{ cumulative prediction errors
   tnames <- if(times<1) signif(times,2) else round(times,2)
-  out <- crps(object=x,
+  out <- pec::crps(object=object,
               times=times,
-              start=x$start,
+              start=object$start,
               what=what)
   publish(out,digits=digits,quote=FALSE)
   # }}}

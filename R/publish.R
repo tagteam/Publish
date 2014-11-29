@@ -4,8 +4,8 @@
 ##'
 ##' Some warnings are currently suppressed.
 ##' @title Publishing tables and figures
-##' @param x 
-##' @param ... 
+##' @param object object to be published 
+##' @param ... Passed to method.
 ##' @return Tables and figures
 ##' @author Thomas Gerds
 ##' @export

@@ -1,46 +1,46 @@
 ##' Publishing a matrix in raw, org, latex, or muse format
 ##' 
 ##' This is the heart of the Publish package 
-##' @param x Matrix to be published
+##' @param object Matrix to be published
 ##' @param title Title for table, only in wiki and muse format
-##' @param hrule
-##' @param colnames
-##' @param rownames
-##' @param col1name
-##' @param digits
-##' @param sep
-##' @param collapse.head
-##' @param collapse.row
-##' @param endhead
-##' @param endrow
-##' @param style
-##' @param interLines 
-##' @param latex If TRUE use latex table format
-##' @param wiki If TRUE use wiki table format
-##' @param org If TRUE use org table format
-##' @param markdown If TRUE use markdown table format
-##' @param environment
-##' @param latexTableFormat
-##' @param latexHline
-##' @param latexNoDollar
-##' @param ...
+##' @param colnames If \code{TRUE} show column names
+##' @param rownames If \code{TRUE} show row names
+##' @param col1name Name for first column
+##' @param digits Numbers are rounded according to digits
+##' @param sep Field separator when style is \code{"none"}
+##' @param endhead String to be pasted at the end of the first row
+##' (header)
+##' @param endrow String to be pasted at the end of each row
+##' @param style Table style for export to \code{"latex"},
+##' \code{"org"}, \code{"markdown"}, \code{"wiki"},
+##' \code{"none"}. Overwritten by argments below.
+##' @param interLines A named list which contains strings to be placed
+##' between the rows of the table. An element with name \code{"0"} is
+##' used to place a line before the first column, elements with name
+##' \code{"r"} are placed between line r and r+1.
+##' @param latex If \code{TRUE} use latex table format
+##' @param wiki If \code{TRUE} use mediawiki table format
+##' @param org If \code{TRUE} use emacs orgmode table format
+##' @param markdown If \code{TRUE} use markdown table format
+##' @param tabular For style \code{latex} only: if \code{TRUE} enclose the table in begin/end tabular environement.
+##' @param latexTableFormat For style \code{latex} only: format of the tabular environement.
+##' @param latexHline For style \code{latex} only: if \code{TRUE} add hline statements add the end of each line.
+##' @param latexNoDollar For style \code{latex} only: if \code{TRUE} do not enclose numbers in dollars.
+##' @param ... Used to transport arguments. Currently supports \code{wiki.class}.
 ##' @examples
 ##'
-##' x <- matrix(1:12,ncol=3) 
-##'
+##' x <- matrix(1:12,ncol=3)
+##' publish(x)
+##' publish(x,interLines=list("3"="intermediate text"))
 ##' 
 ##' @S3method publish matrix
-publish.matrix <- function(x,
+publish.matrix <- function(object,
                            title,
-                           level=1,
-                           hrule=0,
                            colnames=TRUE,
                            rownames=TRUE,
                            col1name="",
                            digits=4,
                            sep=" ",
-                           collapse.head,
-                           collapse.row,
                            endhead,
                            endrow,
                            style,
@@ -49,17 +49,17 @@ publish.matrix <- function(x,
                            wiki=FALSE,
                            org=FALSE,
                            markdown=FALSE,
-                           environment=TRUE,
+                           tabular=TRUE,
                            latexTableFormat=NA,
                            latexHline=1,
                            latexNoDollar=FALSE,
                            ...){
     if (missing(interLines))
         interLines <- NULL
-    rrr <- rownames(x)
+    rrr <- rownames(object)
     # {{{ force vectors into matrix form
-    if (is.null(dim(x))){
-        x <- matrix(x,ncol=length(x))
+    if (is.null(dim(object))){
+        object <- matrix(object,ncol=length(object))
     }
     # }}}
     # {{{ smartControl
@@ -67,7 +67,7 @@ publish.matrix <- function(x,
     latex.DefaultArgs <- NULL
     org.DefaultArgs <- NULL
     markdown.DefaultArgs <- NULL
-    control <- SmartControl(call=  list(...),
+    control <- prodlim::SmartControl(call=  list(...),
                             keys=c("wiki","latex","markdown","org"),
                             defaults=list("wiki"=wiki.DefaultArgs,"latex"=latex.DefaultArgs,"markdown"=markdown.DefaultArgs,"org"=org.DefaultArgs),
                             ignore.case=TRUE,
@@ -163,39 +163,39 @@ publish.matrix <- function(x,
                endtable <- ""
            })
     # }}}
-    # {{{ round x
+    # {{{ round object
     if (!missing(digits)){
-        tmpx <- apply(x,2,function(u){
+        tmpx <- apply(object,2,function(u){
             if (is.numeric(u) | canbe.numeric(u)){
                 format(as.numeric(u),digits=digits,nsmall=digits)}
             else{ u
               }
         })
-        rownames(tmpx) <- rownames(x)
-        x <- tmpx
+        rownames(tmpx) <- rownames(object)
+        object <- tmpx
     }
-    ccc <- colnames(x)
+    ccc <- colnames(object)
     if (!latex){
-        x <- rbind(ccc,x)
-        ## x <- format(x,justify="right")
-        x <- do.call("cbind",lapply(1:NCOL(x),function(col){
-            format(unlist(x[,col]),justify="right")
+        object <- rbind(ccc,object)
+        ## object <- format(object,justify="right")
+        object <- do.call("cbind",lapply(1:NCOL(object),function(col){
+            format(unlist(object[,col]),justify="right")
         }))
-        ccc <- x[1,,drop=TRUE]
-        x <- x[-1,,drop=FALSE]
+        ccc <- object[1,,drop=TRUE]
+        object <- object[-1,,drop=FALSE]
     }
     # }}}
     # {{{ colnames & rownames
     if (!is.null(rrr) & rownames){
         if (!is.null(ccc)) ccc <- c(col1name,ccc)
-        x <- cbind(Variable=rrr,x)
-        x[,1] <- as.character(x[,1])
+        object <- cbind(Variable=rrr,object)
+        object[,1] <- as.character(object[,1])
     }
     # }}}
     # {{{ header
-    if (latex && environment==TRUE) {
+    if (latex && tabular==TRUE) {
         if (is.na(latexTableFormat))
-            cat("\\begin{tabular}{",c("l|",rep("c",NCOL(x)-1)),"}","\n")
+            cat("\\begin{tabular}{",c("l|",rep("c",NCOL(object)-1)),"}","\n")
         else
             cat("\\begin{tabular}{",latexTableFormat,"}","\n")
     }
@@ -231,20 +231,20 @@ publish.matrix <- function(x,
             cat(":|\n")
         }
     }
-    colnames(x) <- NULL
-    rownames(x) <- NULL
+    colnames(object) <- NULL
+    rownames(object) <- NULL
     # }}}
     # {{{ Cat by row
-    if (is.null(dim(x))){
+    if (is.null(dim(object))){
         if (latex && latexNoDollar==FALSE){
-            x[grep("<|>|[0-9.]+",x)] <- paste("$",x[grep("<|>|[0-9.]+",x)],"$")
+            object[grep("<|>|[0-9.]+",object)] <- paste("$",object[grep("<|>|[0-9.]+",object)],"$")
         }
-        cat(startrow,paste(x,collapse=collapse.row),endrow)
+        cat(startrow,paste(object,collapse=collapse.row),endrow)
     }
     else{
-        for (r in 1:NROW(x)){
-            ## apply(x,1,function(x){
-            row.x <- x[r,,drop=TRUE]
+        for (r in 1:NROW(object)){
+            ## apply(object,1,function(object){
+            row.x <- object[r,,drop=TRUE]
             ## extra lines
             if (!is.null(interLines[[as.character(r)]]))
                 cat(interLines[[as.character(r)]],"\n")
@@ -252,16 +252,16 @@ publish.matrix <- function(x,
             if (latex && latexNoDollar==FALSE){#      if (latex)
                 row.x[grep("<|>|[0-9.]+",row.x)]=paste("$",row.x[grep("<|>|[0-9.]+",row.x)],"$")
             }
-            if (latex && latexHline && x[[1]]!="") cat("\\hline\n")
+            if (latex && latexHline && object[[1]]!="") cat("\\hline\n")
             cat(startrow,paste(row.x,collapse=collapse.row),endrow)
         }
     }
     # }}}
     # {{{ footer
-    if(latex && environment==FALSE)
+    if(latex && tabular==FALSE)
         NULL
     else
         cat(endtable)
     # }}}
-    invisible(x)
+    invisible(object)
 }

@@ -9,7 +9,7 @@ publish.prodlim <- function(object,times,intervals=TRUE,percent=TRUE,digits=ifel
     if (!is.list(so) || (length(so)==1)) {
         if (is.list(so)) so <- so[[1]]
         if (!is.null(object$cluster)){
-            names <- sapply(c("n.risk","n.event","n.lost"),function(x)grep(x,colnames(so),val=TRUE))
+            names <- sapply(c("n.risk","n.event","n.lost"),function(x)grep(x,colnames(so),value=TRUE))
             out <- so[,names]}
         else{
             out <- so[,c("n.risk","n.event","n.lost"),drop=FALSE]

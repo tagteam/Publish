@@ -1,7 +1,7 @@
 ##' @S3method publish lme
 publish.lme <- function (object, adjustSigma = TRUE, verbose = FALSE, digits=2, pvalue.digits=4,eps=.0001, ...) 
 {
-  fixed <- fixef(object)
+  fixed <- lme4::fixef(object)
   stdFixed <- sqrt(diag(as.matrix(object$varFix)))
   object$corFixed <- array(t(object$varFix/stdFixed)/stdFixed, 
                            dim(object$varFix), list(names(fixed), names(fixed)))

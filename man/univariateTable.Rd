@@ -9,29 +9,42 @@ univariateTable(formula, data = parent.frame(),
   shortGroupNames, ...)
 }
 \arguments{
-  \item{formula}{}
+  \item{formula}{Formula specifying the grouping variable
+  (strata) on the left hand side (can be omitted) and on
+  the right hand side the variables for which to obtain
+  (descriptive) statistics.}
 
-  \item{data}{}
+  \item{data}{Data set in which formula is evaluated}
 
-  \item{summary.format}{}
+  \item{summary.format}{Format for the numeric (non-factor)
+  variables. Default is mean (SD). If different formats are
+  desired, either special Q can be used or the function is
+  called multiple times and the results are rbinded. See
+  examples.}
 
-  \item{Q.format}{}
+  \item{Q.format}{Format for quantile summary of numerice
+  variables: Default is median (inter quartile range).}
 
-  \item{freq.format}{}
+  \item{freq.format}{Format for categorical variables.
+  Default is count (percentage).}
 
   \item{column.percent}{Logical, if \code{TRUE} and the
   default freq.format is used then column percentages are
   given instead of row percentages for discrete factors.}
 
-  \item{digits.summary}{}
+  \item{digits.summary}{Rounding digits for
+  summary.format.}
 
-  \item{digits.freq}{}
+  \item{digits.freq}{Rounding digits for freq.format.}
 
-  \item{strataIsOutcome}{}
+  \item{strataIsOutcome}{If \code{TRUE} logistic regression
+  is used instead of t-tests and Wilcoxon rank tests to
+  compare numeric variables across groups.}
 
-  \item{shortGroupNames}{}
+  \item{shortGroupNames}{If \code{TRUE} group names are
+  abbreviated.}
 
-  \item{...}{Not yet used}
+  \item{...}{Not used (not yet)}
 }
 \value{
 List
@@ -49,18 +62,44 @@ univariateTable(~age+gender+ height+weight,data=Diabetes)
 univariateTable(location~age+gender+height+weight,data=Diabetes)
 
 ## Use quantiles and rank tests for some variables and mean and standard deviation for others
-univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,data=Diabetes)
+univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,
+                data=Diabetes)
 
 ## Factor with more than 2 levels
-Diabetes$AgeGroups <- cut(Diabetes$age,c(19,29,39,49,59,69,92),include.lowest=TRUE)
-univariateTable(location~AgeGroups+gender+height+weight,data=Diabetes)
+Diabetes$AgeGroups <- cut(Diabetes$age,
+                          c(19,29,39,49,59,69,92),
+                          include.lowest=TRUE)
+univariateTable(location~AgeGroups+gender+height+weight,
+                data=Diabetes)
 
 ## Column percent
-univariateTable(location~gender+age+AgeGroups, data=Diabetes,column.percent=TRUE)
+univariateTable(location~gender+age+AgeGroups,
+                data=Diabetes,
+                column.percent=TRUE)
 
-## Labels
-u <- univariateTable(location~gender+AgeGroups+ height + weight, data=Diabetes,column.percent=TRUE,freq.format="count(x) (percent(x))")
+## changing Labels
+u <- univariateTable(location~gender+AgeGroups+ height + weight,
+                     data=Diabetes,
+                     column.percent=TRUE,
+                     freq.format="count(x) (percent(x))")
 summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
+
+## multiple summary formats
+## suppose we want for some reason mean (range) for age
+## and median (range) for BMI.
+## method 1:
+univariateTable(frame~Q(age)+BMI,
+                data=na.omit(Diabetes),
+                Q.format="mean(x) (range(x))",
+                summary.format="median(x) (range(x))")
+## method 2:
+u1 <- summary(univariateTable(frame~age,
+                              data=na.omit(Diabetes),
+                              summary.format="mean(x) (range(x))"))
+u2 <- summary(univariateTable(frame~BMI,
+                              data=na.omit(Diabetes),
+                              summary.format="median(x) (range(x))"))
+publish(rbind(u1,u2),digits=2)
 }
 \author{
 Thomas A. Gerds

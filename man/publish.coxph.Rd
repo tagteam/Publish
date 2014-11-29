@@ -3,37 +3,39 @@
 \title{Tabulize hazard ratios with confidence intervals and p-values.}
 \usage{
 \method{publish}{coxph}(object, digits = 2, pvalue.digits = 4,
-  eps = 0.0001, pvalue.stars = FALSE, ci.format = paste("[", paste("\%1.",
-  digits, "f", sep = ""), ";", paste("\%1.", digits, "f", sep = ""), "]", sep =
-  ""), showMissing = "ifany", output.columns = NULL, print = TRUE,
-  style = "extraline", ...)
+  eps = 0.0001, pvalue.stars = FALSE, ci.format = NULL,
+  showMissing = "ifany", output.columns = NULL, print = TRUE,
+  reference = "extraline", ...)
 }
 \arguments{
   \item{object}{A \code{coxph} object.}
 
-  \item{digits}{}
+  \item{digits}{Rounding digits for all numbers but the
+  p-values.}
 
-  \item{pvalue.digits}{}
+  \item{pvalue.digits}{Rounding digits for p-values.}
 
-  \item{eps}{}
+  \item{eps}{passed to format.pval}
 
-  \item{pvalue.stars}{}
+  \item{pvalue.stars}{If \code{TRUE} significance is
+  indicated by stars instead of p-values.}
 
-  \item{showMissing}{}
+  \item{ci.format}{Format for confidence intervals passed
+  to \code{\link{sprintf}} with two arguments: the lower
+  and the upper limit.}
 
-  \item{output.columns}{}
+  \item{showMissing}{If \code{TRUE} show number of missing
+  values in table}
 
-  \item{print}{}
+  \item{output.columns}{Select output columns}
 
-  \item{ci.format}{}
+  \item{print}{If \code{FALSE} do not print results.}
 
-  \item{style}{}
+  \item{reference}{Style for showing results for
+  categorical variables. If \code{"extraline"} show an
+  additional line for the reference category.}
 
-  \item{...}{}
-
-  \item{scale}{Scaling factor multiplied to both the
-  log-hazard ratio and its standard-error. Useful to change
-  the units of the intepretation scale.}
+  \item{...}{passed to labelUnits}
 }
 \value{
 Table with hazard ratios, confidence intervals and
@@ -45,7 +47,10 @@ analysis which is commonly shown in publications.
 }
 \details{
 Transforms the log hazard ratios to hazard ratios and
-returns them with confidence limits and p-values.
+returns them with confidence limits and p-values. If
+explanatory variables are log transformed or log2
+transformed, a scaling factor is multiplied to both the
+log-hazard ratio and its standard-error.
 }
 \author{
 Thomas Alexander Gerds

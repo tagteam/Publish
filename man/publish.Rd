@@ -5,9 +5,9 @@
 publish(object, ...)
 }
 \arguments{
-  \item{x}{}
+  \item{object}{object to be published}
 
-  \item{...}{}
+  \item{...}{Passed to method.}
 }
 \value{
 Tables and figures

@@ -1,4 +1,4 @@
 ##' @S3method publish univariateTable
-publish.univariateTable <- function(x,...){
-    publish(summary(x,...),...)
+publish.univariateTable <- function(object,...){
+    publish(summary(object,...),...)
 }

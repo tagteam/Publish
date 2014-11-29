@@ -2,11 +2,12 @@
 ##'
 ##' Normal approximation 
 ##' @title Compute mean values with confidence intervals
-##' @param x
-##' @param alpha
-##' @param normal
-##' @param na.rm
-##' @param statistic
+#' @param x numeric vector
+#' @param alpha level of significance 
+#' @param normal If \code{TRUE} use quantile of t-distribution else use normal approximation and quantile of normal approximation. Do you think this is confusing? 
+#' @param na.rm If \code{TRUE} remove missing values from \code{x}.
+#' @param statistic Decide which mean to compute: either \code{"arithmetic"} or \code{"geometric"}
+#' @param ... not used
 ##' @return a list with mean values and confidence limits
 ##' @author Thomas Gerds
 #' @S3method ci.mean default
@@ -14,7 +15,7 @@ ci.mean.default <- function(x,
                             alpha = 0.05,
                             normal = TRUE,
                             na.rm=TRUE,
-                            statistic="arithmetic"){
+                            statistic="arithmetic",...){
     stat <- match.arg(statistic,c("arithmetic","geometric"))
     if (na.rm){x <- x[!is.na(x)]}
     if (stat=="geometric") x <- log(x) 

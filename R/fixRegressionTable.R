@@ -3,14 +3,16 @@
 ##' For factors a reference line is added. Shown are numbers of missing values, 
 ##' units and for log transformed variables the scale.
 ##' @title Expand regression coefficients
-##' @param x
-##' @param varnames
-##' @param reference.value
-##' @param reference.style
-##' @param factorlevels
-##' @param scale
-##' @param nmiss
-##' @param intercept
+##' @param x object to be fixed
+##' @param varnames Names of variables
+##' @param reference.value Reference value for reference categories
+##' @param reference.style Style for showing results for categorical
+##' variables. If \code{"extraline"} show an additional line for the
+##' reference category.
+##' @param factorlevels Levels of the categorical variables.
+##' @param scale Scale for some or all of the variables
+##' @param nmiss Number of missing values
+##' @param intercept Intercept
 ##' @return a new table with regression coefficients
 ##' @author Thomas Alexander Gerds
 fixRegressionTable <- function(x,

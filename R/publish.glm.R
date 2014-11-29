@@ -3,26 +3,42 @@
 ##' For logistic regression, i.e. when family = binomial, return odds ratio's with confidence intervals.
 ##' @title Tabulize regression coefficients with confidence intervals and p-values.
 ##' @S3method publish glm
-##' @param object
-##' @param digits
-##' @param pvalue.digits
-##' @param eps
-##' @param pvalue.stars
-##' @param showMissing
+##' @param object A \code{glm} object.
+##' @param digits Rounding digits for all numbers but the p-values.
+##' @param pvalue.digits Rounding digits for p-values.
+##' @param eps passed to format.pval
+##' @param pvalue.stars If \code{TRUE} significance is indicated by
+##' stars instead of p-values.
+##' @param showMissing If \code{TRUE} show number of missing values in
+##' table
 ##' @param output.columns Select which parameters of the result are
 ##' shown in the table. Defaults to
 ##' \code{c("Coefficient","CI.95","pValue","Missing")} for linear
 ##' regression and to \code{c("OddsRatio","CI.95","pValue","Missing")}
 ##' for logistic regression. Can also include \code{StandardError}.
-##' @param intercept
-##' @param print
-##' @param transform
-##' @param profile
-##' @param ci.format
-##' @param style
-##' @param ...
+##' @param intercept If \code{FALSE} suppress intercept
+##' @param print If \code{FALSE} do not print results.
+##' @param transform Transformation for regression coefficients.
+##' @param profile For logistic regression only. If \code{FALSE} run
+##' with Wald confidence intervals instead of waiting for profile
+##' confidence intervals.
+##' @param ci.format Format for confidence intervals passed to
+##' \code{\link{sprintf}} with two arguments: the lower and the upper
+##' limit.
+##' @param reference Style for showing results for categorical
+##' variables. If \code{"extraline"} show an additional line for the
+##' reference category.
+##' @param ... passed to labelUnits
 ##' @return Table with regression coefficients, confidence intervals and p-values.
 ##' @author Thomas Alexander Gerds
+##' @examples
+##' data(Diabetes)
+##' f = glm(bp.2s~frame+gender+age,data=Diabetes)
+##' publish(f)
+##' publish(f,reference="inline")
+##' publish(f,pvalue.stars=TRUE)
+##' publish(f,ci.format="(%1.1f,%1.1f)")
+##' 
 ##' @export
 publish.glm <- function(object,
                         digits=2,
@@ -35,9 +51,10 @@ publish.glm <- function(object,
                         print=TRUE,
                         transform=NULL,
                         profile=TRUE,
-                        ci.format,
-                        style="extraline",
+                        ci.format=NULL,
+                        reference="extraline",
                         ...){
+    if (is.null(ci.format)) ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
     # {{{ formula, data and 
     if (is.null(object$formula)){
         if (is.null(object$terms)){
@@ -137,7 +154,7 @@ publish.glm <- function(object,
     rt <- fixRegressionTable(x,
                              varnames=varNames,
                              factorlevels=object$xlevels,
-                             reference.style=style,
+                             reference.style=reference,
                              reference.value=ifelse(logisticRegression,1,0),
                              scale=scale,
                              nmiss=Nmiss,

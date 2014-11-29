@@ -1,4 +1,4 @@
 ##' @S3method publish data.frame
-publish.data.frame <- function(x,...){
-  publish(as.matrix(x),...)
+publish.data.frame <- function(object,...){
+  publish(as.matrix(object),...)
 }

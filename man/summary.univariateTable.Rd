@@ -2,17 +2,21 @@
 \alias{summary.univariateTable}
 \title{Preparing univariate tables for publication}
 \usage{
-\method{summary}{univariateTable}(x, missing = c("ifany", "always", "never"),
-  n = "inNames", pvalue.stars = FALSE, pvalue.eps = 0.0001,
+\method{summary}{univariateTable}(object, missing = c("ifany", "always",
+  "never"), n = "inNames", pvalue.stars = FALSE, pvalue.eps = 0.0001,
   pvalue.digits = 4, ...)
 }
 \arguments{
-  \item{x}{\code{univariateTable} object as obtained with
-  function \code{univariateTable}.}
+  \item{object}{\code{univariateTable} object as obtained
+  with function \code{univariateTable}.}
 
   \item{missing}{Decides if number of missing values are
   shown in table. Defaults to \code{"ifany"}, and can also
   be set to \code{"always"} or \code{"never"}.}
+
+  \item{n}{If not missing, show the number of subjects in
+  each column. If equal to \code{"inNames"}, show the
+  numbers in parentheses in the column names.}
 
   \item{pvalue.stars}{If TRUE use \code{symnum} to parse
   p-values otherwise use \code{format.pval}.}
@@ -21,7 +25,7 @@
 
   \item{pvalue.digits}{Passed to \code{format.pval}.}
 
-  \item{...}{}
+  \item{...}{passed on to labelUnits}
 }
 \value{
 Summary table

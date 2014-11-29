@@ -3,7 +3,7 @@
 ##' Change printed variable labels and values  
 ##' @title labelUnits
 ##' @param x A matrix obtained with \code{univariateTable}.
-##' @param ...
+##' @param ... not used
 ##' @return The re-labeled matrix
 ##' @seealso univariateTable
 ##' @examples
@@ -18,7 +18,7 @@
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 labelUnits <- function(x,...){
     ## stopifnot(match("summary.univariateTable",class(x),nomatch=0)>0)
-    units <- SmartControl(list(...),
+    units <- prodlim::SmartControl(list(...),
                           keys=c("units",unique(x$Variable[x$Variable!=""])),
                           defaults=NULL,
                           ignore.case=TRUE,

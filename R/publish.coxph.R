@@ -1,22 +1,27 @@
 ##' Tabulize the part of the result of a Cox regression analysis which is commonly shown in publications.
 ##'
 ##' Transforms the log hazard ratios to hazard ratios and returns them with confidence limits and p-values.
+##' If explanatory variables are log transformed or log2 transformed, a scaling factor is multiplied to both the log-hazard
+##' ratio and its standard-error. 
 ##' @title Tabulize hazard ratios with confidence intervals and p-values.
 ##' @S3method publish coxph
 ##' @param object A \code{coxph} object.
-##' @param digits
-##' @param pvalue.digits
-##' @param eps
-##' @param pvalue.stars
-##' @param showMissing
-##' @param output.columns
-##' @param print
-##' @param ci.format
-##' @param style
-##' @param ...
-##' @param scale Scaling factor multiplied to both the log-hazard
-##' ratio and its standard-error. Useful to change the units of the
-##' intepretation scale.
+##' @param digits Rounding digits for all numbers but the p-values.
+##' @param pvalue.digits Rounding digits for p-values.
+##' @param eps passed to format.pval
+##' @param pvalue.stars If \code{TRUE} significance is indicated by
+##' stars instead of p-values.
+##' @param ci.format Format for confidence intervals passed to
+##' \code{\link{sprintf}} with two arguments: the lower and the upper
+##' limit.
+##' @param showMissing If \code{TRUE} show number of missing values in
+##' table
+##' @param output.columns Select output columns
+##' @param print If \code{FALSE} do not print results.
+##' @param reference Style for showing results for categorical
+##' variables. If \code{"extraline"} show an additional line for the
+##' reference category.
+##' @param ... passed to labelUnits
 ##' @return Table with hazard ratios, confidence intervals and p-values.
 ##' @author Thomas Alexander Gerds
 ##' @export
@@ -25,12 +30,13 @@ publish.coxph <- function(object,
                           pvalue.digits=4,
                           eps=.0001,
                           pvalue.stars=FALSE,
-                          ci.format=paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep=""),
+                          ci.format=NULL,
                           showMissing="ifany",
                           output.columns=NULL,
                           print=TRUE,
-                          style="extraline",
+                          reference="extraline",
                           ...) {
+    if (is.null(ci.format)) ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
     # {{{ formula, data
     terms <- object$terms
     if (is.null(terms)){
@@ -46,7 +52,7 @@ publish.coxph <- function(object,
     if (is.null(data))
         data <- eval(object$call$data)
     rhs <- formula(delete.response(object$terms))
-    X <- EventHistory.frame(formula=rhs,
+    X <- prodlim::EventHistory.frame(formula=rhs,
                             data=data,
                             unspecialsDesign=FALSE,
                             specials=c("strata","cluster"),
@@ -123,7 +129,7 @@ publish.coxph <- function(object,
     rt <- fixRegressionTable(x,
                              varnames=varNames,
                              factorlevels=object$xlevels,
-                             reference.style=style,
+                             reference.style=reference,
                              reference.value=1,
                              scale=scale,
                              nmiss=Nmiss,
@@ -138,7 +144,7 @@ publish.coxph <- function(object,
     if (print==TRUE){
         publish(rt,rownames=FALSE,...)
         if (pvalue.stars==TRUE)
-            cat("\nSignif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1\n")
+            cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
     }
     # }}}
     invisible(rt)  

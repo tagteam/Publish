@@ -2,18 +2,21 @@
 ##'
 ##' Collects results of univariate table in a matrix. 
 ##' @title Preparing univariate tables for publication
-##' @param x \code{univariateTable} object as obtained with function \code{univariateTable}.
+##' @param object \code{univariateTable} object as obtained with
+##' function \code{univariateTable}.
 ##' @param missing Decides if number of missing values are shown in table.
 ##' Defaults to \code{"ifany"}, and can also be set to \code{"always"} or \code{"never"}.
 ##' 
-##' @export
-##' @param pvalue.stars If TRUE use \code{symnum} to parse p-values otherwise use \code{format.pval}.
+##' @param n If not missing, show the number of subjects in each column. If equal to \code{"inNames"}, show the numbers in parentheses in the column names.
+##' @param pvalue.stars If TRUE use \code{symnum} to parse p-values
+##' otherwise use \code{format.pval}.
 ##' @param pvalue.eps Passed to \code{format.pval}.
 ##' @param pvalue.digits Passed to \code{format.pval}.
-##' @param ... 
+##' @param ... passed on to labelUnits
+##' @export
 ##' @return Summary table 
 ##' @author Thomas A. Gerds
-summary.univariateTable <- function(x,
+summary.univariateTable <- function(object,
                                     missing=c("ifany","always","never"),
                                     n="inNames",
                                     pvalue.stars=FALSE,
@@ -24,57 +27,57 @@ summary.univariateTable <- function(x,
     missing <- match.arg(missing,c("ifany","always","never"),several.ok=FALSE)
     # }}}
     # {{{ pvalues
-    if (!is.null(x$p.values)){
+    if (!is.null(object$p.values)){
         if (pvalue.stars==TRUE)
-            px <- symnum(x$p.values,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
+            px <- symnum(object$p.values,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
         else
-            px <- format.pval(x$p.values,eps=pvalue.eps,digits=pvalue.digits)
-        names(px) <- names(x$p.values)
+            px <- format.pval(object$p.values,eps=pvalue.eps,digits=pvalue.digits)
+        names(px) <- names(object$p.values)
     }
     # }}}
     # {{{ order the table according to formula
-    if (is.null(x$groups)){
-        XX <- all.vars(x$formula)
+    if (is.null(object$groups)){
+        XX <- all.vars(object$formula)
     }
     else{
-        XX <- all.vars(x$formula)[-1]
+        XX <- all.vars(object$formula)[-1]
     }
-    order <- match(XX,names(x$summary.groups))
-    ordered.summary <- x$summary.groups[order]
+    order <- match(XX,names(object$summary.groups))
+    ordered.summary <- object$summary.groups[order]
     # }}}
     XXtab <- NULL
     # {{{ loop across table elements
     for (s in names(ordered.summary)){
-        if (!is.null(x$groups)){
+        if (!is.null(object$groups)){
             sum <- as.matrix(ordered.summary[[s]])
-            sum <- cbind(sum,Total=x$summary.totals[[s]])
+            sum <- cbind(sum,Total=object$summary.totals[[s]])
         }
         else{
-            sum <- data.frame(Total=x$summary.totals[[s]],stringsAsFactors = FALSE)
+            sum <- data.frame(Total=object$summary.totals[[s]],stringsAsFactors = FALSE)
         }
-        if (missing!="never" && (missing=="always" || any(x$missing$totals[[s]]>0))){
-            if (is.null(x$groups)){
-                miss <- x$missing$totals[[s]]
+        if (missing!="never" && (missing=="always" || any(object$missing$totals[[s]]>0))){
+            if (is.null(object$groups)){
+                miss <- object$missing$totals[[s]]
             }
             else{
-                miss <- c(unlist(x$missing$group[[s]]),x$missing$totals[[s]])
+                miss <- c(unlist(object$missing$group[[s]]),object$missing$totals[[s]])
             }
         }
         else{
             miss <- NULL
         }
         sum <- rbind(sum,miss)
-        if (x$vartype[[s]]=="factor"){
-            lev <- x$xlevels[[s]]
+        if (object$vartype[[s]]=="factor"){
+            lev <- object$xlevels[[s]]
         }
         else{
-            if (x$vartype[[s]]=="Q") 
-                lev <- gsub("\\(x\\)","",x$Q.format)
+            if (object$vartype[[s]]=="Q") 
+                lev <- gsub("\\(x\\)","",object$Q.format)
             else
-                lev <- gsub("\\(x\\)","",x$summary.format)
+                lev <- gsub("\\(x\\)","",object$summary.format)
         }
         if (!is.null(miss)) lev <- c(lev,"missing")
-        if (!is.null(x$groups)){
+        if (!is.null(object$groups)){
             p <- px[[s]]
             if (NROW(sum)>2 && NROW(p)==(NROW(sum)-1)){
                 sum <- cbind(sum,rbind(rep("",NROW(sum)-1),p=px[[s]]))
@@ -104,23 +107,23 @@ summary.univariateTable <- function(x,
 
     if (!missing(n)){
         if (n=="inNames"){
-            x$groups <- paste(x$groups," (n=",x$n.groups[-length(x$n.groups)],")",sep="")
+            object$groups <- paste(object$groups," (n=",object$n.groups[-length(object$n.groups)],")",sep="")
         }
         else{
-            XXtab <- rbind(c("n","",x$n.groups,""),XXtab)
+            XXtab <- rbind(c("n","",object$n.groups,""),XXtab)
         }
     }
-    if (is.null(x$groups)){
+    if (is.null(object$groups)){
         colnames(XXtab) <- c("Variable","Levels","Value")
         XXtab$Variable <- as.character(XXtab$Variable)
         XXtab$Levels <- as.character(XXtab$Levels)
     }
     else{
         if (!missing(n) && (n=="inNames")){
-            colnames(XXtab) <- c("Variable","Level",x$groups,paste("Total"," (n=",x$n.groups[length(x$n.groups)],")",sep=""),"p-value")
+            colnames(XXtab) <- c("Variable","Level",object$groups,paste("Total"," (n=",object$n.groups[length(object$n.groups)],")",sep=""),"p-value")
         }
         else{
-            colnames(XXtab) <- c("Variable","Level",x$groups,"Total","p-value")
+            colnames(XXtab) <- c("Variable","Level",object$groups,"Total","p-value")
         }
     }
     # }}}

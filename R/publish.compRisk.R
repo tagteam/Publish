@@ -16,7 +16,7 @@ publish.compRisk <- function(object,
   const.se <- sqrt(diag(object$timeConstVar))
   wald <- const.coef/const.se
   waldp <- (1 - pnorm(abs(wald))) * 2
-  format.waldp <- sapply(waldp,base:::format.pval,digits=pvalue.digits,eps=eps)
+  format.waldp <- sapply(waldp,base::format.pval,digits=pvalue.digits,eps=eps)
   # mark the pvalue in muse
   if (mark.pval){
     format.waldp <- sapply(1: length(waldp), function(p){

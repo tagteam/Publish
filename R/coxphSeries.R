@@ -20,7 +20,7 @@
 coxphSeries <- function(formula,data,vars,...){
   clist <- lapply(vars,function(v){
     form.v <- update.formula(formula,paste(".~.+",v))
-    cf <- coxph(form.v,data=data,...)
+    cf <- survival::coxph(form.v,data=data,...)
     cf$call$data <- data
     u <- publish(cf,missing=TRUE)
     u <- u[grep(v,rownames(u)),]

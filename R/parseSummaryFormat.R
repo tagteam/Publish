@@ -19,8 +19,14 @@ parseSummaryFormat <- function(format,digits){
         if(!(outlen[s]%in%c(1,2)))
             stop(paste("The function",stats[s],"returns",outlen[s],"values (can be 1 or 2)"))
         subs <- switch(as.character(outlen[s]),
-                       "1"={switch(outclass[s],"numeric"=format.numeric,"%s")},
-                       "2"={switch(outclass[s],"numeric"=paste(format.numeric,", ",format.numeric,sep=""),paste("%s",", ","%s",sep=""))})
+                       "1"={switch(outclass[s],
+                                   "numeric"=format.numeric,
+                                   "integer"=format.numeric,
+                                   "%s")},
+                       "2"={switch(outclass[s],
+                                   "numeric"=paste(format.numeric,", ",format.numeric,sep=""),
+                                   "integer"=paste(format.numeric,", ",format.numeric,sep=""),
+                                   paste("%s",", ","%s",sep=""))})
         format <- gsub(paste(stats[s],"(x)",sep=""),subs,format,fixed=TRUE)
     }
     list(format=format,stats=stats)
