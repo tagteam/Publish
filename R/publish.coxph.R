@@ -52,12 +52,11 @@ publish.coxph <- function(object,
     if (is.null(data))
         data <- eval(object$call$data)
     rhs <- formula(delete.response(object$terms))
-    X <- prodlim::EventHistory.frame(formula=rhs,
-                            data=data,
-                            unspecialsDesign=FALSE,
-                            specials=c("strata","cluster"),
-                            check.formula=FALSE,
-                            specialsDesign=FALSE)
+    X <- specialFrame(formula=rhs,
+                      data=data,
+                      unspecialsDesign=FALSE,
+                      specials=c("strata","cluster"),
+                      specialsDesign=FALSE)
     varNames <- colnames(X$design)
     factors <- colnames(attr(terms,"factors"))
     clustvar <- if (!is.null(X$cluster)) colnames(X$cluster) else NULL
