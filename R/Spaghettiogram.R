@@ -54,11 +54,18 @@ Spaghettiogram <- function(formula,
 
     # {{{ read formula and split data
     cl <- match.call(expand.dots=TRUE)
-    ## id <- function(x)x
-    sf <- specialFrame(cl,
-                       special="id",
+    sf <- specialFrame(formula,
+                       data,
+                       unspecialsDesign=TRUE,
+                       specials=c("id"),
                        specialsFactor=TRUE,
+                       specialsDesign=FALSE,
+                       stripSpecialNames=TRUE,
                        dropIntercept=TRUE)
+    ## sf <- specialFrame(cl,
+    ## special="id",
+    ## specialsFactor=TRUE,
+    ## dropIntercept=TRUE)
     if (NCOL(sf$X)>1) stop("Can only handle one x-variable, formula must have the form: y~ x+id(z) where\ny is a measurement\nx tells when the measurement was taken\nand z identifies repeated measurements of the same subject. ")
     XY <- data.frame(cbind(X=sf$design,Y=sf$response))
     names(XY) <- c("X","Y")

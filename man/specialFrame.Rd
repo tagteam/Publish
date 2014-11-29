@@ -33,9 +33,6 @@ specialFrame(formula, data, unspecialsDesign = TRUE, specials,
   \item{dropIntercept}{Passed as is to
   \code{\link{model.design}}}
 
-  \item{check.formula}{If TRUE check if formula is a Surv
-  or Hist thing.}
-
   \item{na.action}{Passed as is to
   \code{\link{model.frame}} na.action.}
 }

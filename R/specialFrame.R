@@ -18,7 +18,6 @@
 ##' @param stripSpecialNames Passed as is to
 ##' \code{\link{model.design}}
 ##' @param dropIntercept Passed as is to \code{\link{model.design}}
-##' @param check.formula If TRUE check if formula is a Surv or Hist thing.
 ##' @param na.action Passed as is to \code{\link{model.frame}}
 ##' na.action.
 ##' @return A list which contains
@@ -70,21 +69,17 @@
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 specialFrame <- function(formula,
-                               data,
-                               unspecialsDesign=TRUE,
-                               specials,
-                               specialsFactor=TRUE,
-                               specialsDesign=FALSE,
-                               stripSpecialNames=TRUE,
-                               dropIntercept=TRUE,
-                               na.action=options()$na.action){
+                         data,
+                         unspecialsDesign=TRUE,
+                         specials,
+                         specialsFactor=TRUE,
+                         specialsDesign=FALSE,
+                         stripSpecialNames=TRUE,
+                         dropIntercept=TRUE,
+                         na.action=options()$na.action){
     # {{{call model.frame
     ## data argument is used to resolve '.' see help(terms.formula)
     Terms <- terms(x=formula, specials=specials, data = data)
-    ## if (check.formula){
-    ## if (sum(sapply(c("Surv","Hist"),function(x) length(grep(x,Terms[[2]])>0)))==0)
-    ## stop("Expected a 'Surv'-object or a 'Hist'-object on the left hand side of the formula.")
-    ## }
     m <- model.frame(formula=Terms,data=data,subset=NULL,na.action=na.action)
     if (NROW(m) == 0) stop("No (non-missing) observations")
     # }}}
@@ -93,12 +88,12 @@ specialFrame <- function(formula,
     # }}}
     # {{{ design
     design <- prodlim::model.design(data=m,
-                           maxOrder=1,
-                           dropIntercept=dropIntercept,
-                           unspecialsDesign=unspecialsDesign,
-                           specialsFactor=specialsFactor,
-                           specialsDesign=specialsDesign,
-                           stripSpecialNames=stripSpecialNames)
+                                    maxOrder=1,
+                                    dropIntercept=dropIntercept,
+                                    unspecialsDesign=unspecialsDesign,
+                                    specialsFactor=specialsFactor,
+                                    specialsDesign=specialsDesign,
+                                    stripSpecialNames=stripSpecialNames)
     # }}}
     out <- c(list(response=response),
              design[sapply(design,length)>0])
