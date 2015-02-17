@@ -55,9 +55,19 @@ pbc$edema <- factor(pbc$edema,levels=c("0","0.5","1"),labels=c("0","0.5","1"))
 fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
             data=pbc)
 publish(fit)
-fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili,base=2)+log(albumin)+log(protime),
+fit2 = coxph(Surv(time,status!=0)~age+sex+edema+log(bili,base=2)+log(albumin)+log(protime),
     data=pbc)
-publish(fit)
+publish(fit2)
+
+# with cluster variable
+fit3 = coxph(Surv(time,status!=0)~age+cluster(sex)+edema+log(bili,base=2)+log(albumin)+log(protime),
+    data=pbc)
+publish(fit3)
+
+# with strata and cluster variable
+fit4 = coxph(Surv(time,status!=0)~age+cluster(sex)+strata(edema)+log(bili,base=2)+log(albumin)+log(protime),
+    data=pbc)
+publish(fit4)
 }
 \author{
 Thomas Alexander Gerds

@@ -30,9 +30,20 @@
 ##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
 ##'             data=pbc)
 ##' publish(fit)
-##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili,base=2)+log(albumin)+log(protime),
+##' fit2 = coxph(Surv(time,status!=0)~age+sex+edema+log(bili,base=2)+log(albumin)+log(protime),
 ##'     data=pbc)
-##' publish(fit)
+##' publish(fit2)
+##'
+##' # with cluster variable
+##' fit3 = coxph(Surv(time,status!=0)~age+cluster(sex)+edema+log(bili,base=2)+log(albumin)+log(protime),
+##'     data=pbc)
+##' publish(fit3)
+##'
+##' # with strata and cluster variable
+##' fit4 = coxph(Surv(time,status!=0)~age+cluster(sex)+strata(edema)+log(bili,base=2)+log(albumin)+log(protime),
+##'     data=pbc)
+##' publish(fit4)
+##' 
 ##' @export
 ##' @method publish coxph
 publish.coxph <- function(object,
@@ -51,10 +62,12 @@ publish.coxph <- function(object,
             "robust"={"robust"},
             "simultaneous"={"simultaneous"},
             "default")
-    cluster <- attr(terms(object),"specials")$cluster-1
+    spec <- attr(terms(object),"specials")
+    cluster <- spec$cluster-1
+    strata <- spec$strata-1
     # if (!is.null(cluster)) cluster <- cluster-1
     rt <- regressionTable(object,
-                          noterms=cluster,
+                          noterms=c(cluster,strata),
                           confint.method=confint.method,
                           factor.reference=factor.reference,
                           units=units)
