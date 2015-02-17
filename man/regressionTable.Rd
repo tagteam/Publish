@@ -6,7 +6,7 @@
 \usage{
 regressionTable(object, confint.method = c("default", "profile", "robust",
   "simultaneous"), pvalue.method = c("default", "robust", "simultaneous"),
-  factor.reference = "extraline", units = NULL, noterms, ...)
+  factor.reference = "extraline", units = NULL, noterms = NULL, ...)
 }
 \arguments{
 \item{object}{Fitted regression model obtained with \code{lm},

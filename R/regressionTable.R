@@ -63,7 +63,7 @@ regressionTable <- function(object,
                             pvalue.method=c("default","robust","simultaneous"),
                             factor.reference="extraline",
                             units=NULL,
-                            noterms,
+                            noterms=NULL,
                             ...){
     # {{{ model type 
     logisticRegression <- (!is.null(object$family$family) && object$family$family=="binomial")
