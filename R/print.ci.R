@@ -24,7 +24,7 @@
 ##' ci.mean(Y~X,data=d)
 ##' x <- ci.mean(Y~X,data=d)
 ##' print(x,format="(l,u)")
-##' @method print ci
+##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 print.ci <- function(x,digits=3,format=NULL,se=FALSE,print=TRUE,...){
     if (missing(format) || is.null(format)) format <- "[u;l]"

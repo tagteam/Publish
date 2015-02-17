@@ -1,4 +1,4 @@
-##' @method publish summary.aov
+##' @export publish summary.aov
 publish.summary.aov <- function(object,digits=4,pvalue.digits=4,eps=0.0001,...){
     y <- object[[1]]
     yy <- cbind(Df=y$Df,

@@ -1,4 +1,4 @@
-##' @method publish compRisk
+##' @export
 publish.compRisk <- function(object,
                              conf.int = 0.95,
                              digits = 2,

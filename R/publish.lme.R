@@ -1,4 +1,4 @@
-##' @method publish lme
+##' @export
 publish.lme <- function (object, adjustSigma = TRUE, verbose = FALSE, digits=2, pvalue.digits=4,eps=.0001, ...) 
 {
   fixed <- lme4::fixef(object)

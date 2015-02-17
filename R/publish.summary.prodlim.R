@@ -1,4 +1,4 @@
-##' @method publish summary.prodlim
+##' @export 
 publish.summary.prodlim <- function(object,
                                     conf.int = 0.95,
                                     digits = 1,

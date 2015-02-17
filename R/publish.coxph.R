@@ -45,7 +45,6 @@
 ##' publish(fit4)
 ##' 
 ##' @export
-##' @method publish coxph
 publish.coxph <- function(object,
                           confint.method,
                           pvalue.method,

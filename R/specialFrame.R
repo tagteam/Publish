@@ -124,8 +124,7 @@ specialFrame <- function(formula,
     class(out) <- "specialFrame"
     out
 }
-##' @method as.data.frame specialFrame
-##' @method as.data.frame specialFrame
+##' @export
 as.data.frame.specialFrame <- function(x,...){
     Y <- data.frame(unclass(x$response))
     X <- do.call("cbind",x[-1])

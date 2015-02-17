@@ -49,7 +49,7 @@
 ##' plot(x)
 ##'
 ##' 
-#' @method plot ci
+#' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.ci <- function(x,
                     lower,

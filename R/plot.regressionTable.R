@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55) 
 ## Version: 
-## last-updated: Feb 17 2015 (15:22) 
+## last-updated: Feb 17 2015 (16:31) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 11
+##     Update #: 12
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -30,7 +30,7 @@
 ##' plot(rtf)
 ##'
 ##' 
-##' @method plot regressionTable
+##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.regressionTable <- function(x,...){
     X <- summary(x)

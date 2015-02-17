@@ -1,4 +1,4 @@
-##' @method publish htest
+##' @export
 publish.htest <- function(object,title,digits=3,peps=0.0001,pdigits=4,ciformat="[l;u]",...){
     printmethod=object$method
     printmethod[grep("Wilcoxon rank sum test",printmethod)]="Wilcoxon rank sum test"

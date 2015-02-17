@@ -3,7 +3,7 @@
 ##' The table shows changes in mean for linear regression and
 ##' odds ratios for logistic regression (family = binomial).
 ##' @title Tabulize regression coefficients with confidence intervals and p-values.
-##' @method publish glm
+##' @export
 ##' @param object A \code{glm} object.
 ##' @param digits Rounding digits for all numbers but the p-values.
 ##' @param pvalue.digits Rounding digits for p-values.
@@ -88,7 +88,7 @@ publish.glm <- function(object,
         publish(srt,...)
     invisible(srt)
 }
-##' @method publish lm
+##' @export
 publish.lm <- publish.glm
 
 publish.glm1 <- function(object,

@@ -1,4 +1,4 @@
-##' @method publish list
+##' @export
 publish.list <- function(object,
                          title,
                          level=0,

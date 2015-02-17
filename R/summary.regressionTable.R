@@ -15,8 +15,7 @@
 ##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
 ##'             data=pbc)
 ##' summary(regressionTable(fit))
-#' @method summary regressionTable
-##' @method summary regressionTable
+#' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 summary.regressionTable <- function(x,digits=2,nsmall=2,print=TRUE,...){
     Rtab <- do.call("rbind",x)

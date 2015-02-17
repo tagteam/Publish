@@ -1,4 +1,4 @@
-##' @method publish data.frame
+##' @export
 publish.data.frame <- function(object,...){
   publish(as.matrix(object),...)
 }

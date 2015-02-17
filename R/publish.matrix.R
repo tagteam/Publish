@@ -33,7 +33,7 @@
 ##' publish(x)
 ##' publish(x,interLines=list("3"="intermediate text"))
 ##' 
-##' @method publish matrix
+##' @export
 publish.matrix <- function(object,
                            title,
                            colnames=TRUE,

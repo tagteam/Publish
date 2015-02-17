@@ -10,7 +10,7 @@
 #' @param ... not used
 ##' @return a list with mean values and confidence limits
 ##' @author Thomas Gerds
-#' @method ci.mean default
+#' @export
 ci.mean.default <- function(x,
                             alpha = 0.05,
                             normal = TRUE,

@@ -1,4 +1,4 @@
-##' @method publish anova
+##' @export
 publish.anova <- function(object,digits=2,pvalue.digits=4,eps=0.0001,print=TRUE,residuals=FALSE,...){
   x <- object
   if (residuals==FALSE)

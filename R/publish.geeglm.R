@@ -1,4 +1,4 @@
-##' @method publish geeglm
+##' @export
 publish.geeglm <- function(object,
                            digits=2,
                            pFormat=TRUE,

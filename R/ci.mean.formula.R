@@ -1,4 +1,4 @@
-#' @method ci.mean formula
+#' @export
 ci.mean.formula <- function(x,
                             data,
                             alpha = 0.05,
