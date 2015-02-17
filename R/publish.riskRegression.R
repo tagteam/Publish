@@ -15,10 +15,13 @@
 ##' @examples
 ##' library(prodlim)
 ##' library(riskRegression)
+##' library(lava)
 ##' set.seed(20)
 ##' d <- SimCompRisk(20)
+##' \dontrun{
 ##' f <- ARR(Hist(time,event)~X1+X2,data=d,cause=1)
 ##' publish(f)
+##' }
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 publish.riskRegression <- function(object,

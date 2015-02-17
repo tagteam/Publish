@@ -81,34 +81,45 @@ univariateTable <- function(formula,
                             strataIsOutcome=FALSE,
                             shortGroupNames,
                             ...){
-    # {{{ parse formula and find data
-    formList <- readFormula(formula,
-                            specials=c("F","S","Q"),
-                            specialArgumentNames=list("S"="format"),
-                            alias=list("strata"="F","factor"="F","C"="S","nonpar"="Q"),
-                            unspecified="auto")
+
     call <- match.call()
-    m <- match.call(expand.dots = FALSE)
-    if (match("subset",names(call),nomatch=FALSE))
-        stop("Subsetting of data is not possible.")
-    m <- m[match(c("","formula","data","subset","na.action"),names(m),nomatch = 0)]
-    m[[1]]  <-  as.name("model.frame")
-    m$formula <- formList$allVars
-    m$na.action <- "na.pass"
-    theData <- eval(m, parent.frame())
+    ## m <- match.call(expand.dots = FALSE)
+    ## if (match("subset",names(call),nomatch=FALSE))
+        ## stop("Subsetting of data is not possible.")
+    ## m <- m[match(c("","formula","data","subset","na.action"),names(m),nomatch = 0)]
+    ## m[[1]]  <-  as.name("model.frame")
+    ## m$formula <- formula
+    ## m$na.action <- "na.pass"
+    ## theData <- eval(m, parent.frame())
+    # {{{ parse formula and find data
+    oldnaaction <- options()$na.action
+    options(na.action="na.pass")
+    FRAME <- specialFrame(formula,
+                          data,
+                          specialsDesign=FALSE,
+                          unspecialsDesign=FALSE,
+                          specials=c("F","S","Q"),
+                          specialsFactor = FALSE,
+                          stripSpecials=c("F","S","Q"),
+                          stripArguments=list("S"="format"),
+                          stripAlias=list("strata"="F","factor"="F","Cont"="S","nonpar"="Q"),
+                          na.action="na.pass")
+    options(na.action=oldnaaction)
     # }}}
     # {{{ extract grouping variable
-    if (is.null(formList$Response)){
+    if (is.null(FRAME$response)){
         groupvar <- NULL
         groupname <- NULL
         grouplabels <- NULL
         groups <- NULL
-        n.groups <- NROW(theData)
+        n.groups <- NROW(data)
     }
     else{
-        mr <- model.response(model.frame(formula=formList$Response,data=theData,drop.unused.levels = TRUE,na.action="na.pass"))
-        groupname <- all.vars(formList$Response)
-        groupvar <- as.character(model.response(model.frame(formula=formList$Response,data=theData,na.action="na.pass")))
+        ## mr <- model.response(model.frame(formula=formList$Response,data=theData,drop.unused.levels = TRUE,na.action="na.pass"))
+        mr <- FRAME$response
+        stopifnot(NCOL(mr)==1)
+        groupname <- colnames(mr)
+        groupvar <- as.character(FRAME$response[,1,drop=TRUE])
         ## deal with missing values in group var
         groupvar[is.na(groupvar)] <- "Missing"
         if (is.factor(mr))
@@ -138,8 +149,9 @@ univariateTable <- function(formula,
    
     # }}}
     # {{{ classify variables into continuous numerics and grouping factors
-    unspecified <- all.vars(formList$auto$formula)
-    automatrix <- model.frame(formula=formList$auto$formula,data=theData,na.action="na.pass")
+    automatrix <- FRAME$design
+    continuous.matrix <- NULL
+    factor.matrix <- NULL
     auto.type <- sapply(1:NCOL(automatrix),function(i){
         x <- automatrix[,i]
         #  type 0=character
@@ -153,34 +165,19 @@ univariateTable <- function(formula,
         if (length(unique(x))<3) type.i <- 1
         type.i})
     if (any(auto.type==2)){
-        if (length(formList$S$formula)>0)
-            formList$S$formula <- update(formList$S$formula,paste("~.+",paste(unspecified[auto.type==2],collapse="+")))
+        if (is.null(FRAME$S))
+            continuous.matrix <- automatrix[,auto.type==2,drop=FALSE]
         else
-            formList$S$formula <- formula(paste("~",paste(unspecified[auto.type==2],collapse="+")))
+            continuous.matrix <- cbind(FRAME$S,automatrix[,auto.type==2,drop=FALSE])
     }
     if (any(auto.type==1)){
-        if (length(formList$F$formula)>0)
-            formList$F$formula <- update(formList$F$formula,paste("~.+",paste(unspecified[auto.type==1],collapse="+")))
+        if (is.null(FRAME$F))        
+            factor.matrix <- automatrix[,auto.type==1,drop=FALSE]
         else
-            formList$F$formula <- formula(paste("~",paste(unspecified[auto.type==1],collapse="+")))
+            factor.matrix <- cbind(FRAME$F,automatrix[,auto.type==1,drop=FALSE])
     }
-    if (is.null(formList$F$formula)){
-        factor.matrix <- NULL
-    }
-    else{
-        factor.matrix <- model.frame(formula=formList$F$formula,data=theData,na.action="na.pass")
-    }
-    if (is.null(formList$S$formula)){
-        continuous.matrix <- NULL
-    } else{
-        continuous.matrix <- model.frame(formula=formList$S$formula,data=theData,,na.action="na.pass")
-    }
-    if (is.null(formList$Q$formula)){
-        Q.matrix <- NULL
-    } else{
-        Q.matrix <- model.frame(formula=formList$Q$formula,data=theData,,na.action="na.pass")
-    }
-    NVARS <- NCOL(continuous.matrix)+NCOL(factor.matrix)+ NCOL(Q.matrix)
+    Q.matrix <- FRAME$Q
+    NVARS <- NCOL(continuous.matrix)+ NCOL(continuous.matrix)+NCOL(factor.matrix)+ NCOL(Q.matrix)
     # }}}
     # {{{ summary numeric variables
     if (!is.null(continuous.matrix)){
@@ -240,17 +237,7 @@ univariateTable <- function(formula,
     }
     # }}}
     # {{{ missing values
-    if (is.null(continuous.matrix)){
-        allmatrix <- factor.matrix
-    }
-    else{
-        if (is.null(factor.matrix)){
-            allmatrix <- continuous.matrix
-        }
-        else{
-            allmatrix <- cbind(continuous.matrix,factor.matrix)
-        }
-    }
+    allmatrix <- cbind(continuous.matrix,Q.matrix,factor.matrix)
     totals.missing <- lapply(allmatrix,function(v){sum(is.na(v))})
     if (!is.null(groups)){
         group.missing <- lapply(allmatrix,function(v){
@@ -268,7 +255,7 @@ univariateTable <- function(formula,
     p.Q <- NULL
     p.freq <- NULL
     if (!is.null(groups)){
-        if (!is.null(continuous.matrix)){    
+        if (!is.null(continuous.matrix)){
             p.cont <- sapply(names(continuous.matrix),function(v){
                 if (strataIsOutcome==TRUE){
                     ## logistic regression 

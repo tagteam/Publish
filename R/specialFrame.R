@@ -15,11 +15,17 @@
 ##' the values
 ##' @param specialsFactor Passed as is to \code{\link{model.design}}.
 ##' @param specialsDesign Passed as is to \code{\link{model.design}}
-##' @param stripSpecialNames Passed as is to
-##' \code{\link{model.design}}
+##' @param stripSpecials Passed as \code{specials} to
+##' \code{\link{strip.terms}}
+##' @param stripArguments Passed as \code{arguments} to
+##' \code{\link{strip.terms}}
+##' @param stripAlias Passed as \code{alias.names} to
+##' \code{\link{strip.terms}}
+##' @param stripUnspecials Passed as \code{unspecials} to
+##' \code{\link{strip.terms}}
 ##' @param dropIntercept Passed as is to \code{\link{model.design}}
-##' @param na.action Passed as is to \code{\link{model.frame}}
-##' na.action.
+##' @param response If FALSE do not get response data.
+##' @param na.action Decide what to do with missing values. 
 ##' @return A list which contains
 ##' - the response
 ##' - the design matrix (see \code{\link{model.design}})
@@ -32,19 +38,19 @@
 ##' ## Suppose we want to declare that variable X1 is treated differently
 ##' ## than variable X2. For example, X1 could be a cluster variable, or
 ##' ## X1 should have a proportional effect on the outcome.
-##' dsurv <- data.frame(y=1:7,
-##'                     X2=c(2.24,3.22,9.59,4.4,3.54,6.81,5.05),
-##'                     X3=c(1,1,1,1,0,0,1),
-##'                     X4=c(44.69,37.41,68.54,38.85,35.9,27.02,41.84),
-##'                     X1=factor(c("a","b","a","c","c","a","b"),
-##'                         levels=c("c","a","b")))
+##' d <- data.frame(y=1:7,
+##'                 X2=c(2.24,3.22,9.59,4.4,3.54,6.81,5.05),
+##'                 X3=c(1,1,1,1,0,0,1),
+##'                 X4=c(44.69,37.41,68.54,38.85,35.9,27.02,41.84),
+##'                 X1=factor(c("a","b","a","c","c","a","b"),
+##'                     levels=c("c","a","b")))
 ##' ## define special functions prop and cluster
 ##' prop <- function(x)x
 ##' cluster <- function(x)x
 ##' ## We pass a formula and the data
-##' e <- specialFrame(status~prop(X1)+X2+cluster(X3)+X4,
-##'                         data=dsurv,
-##'                         specials=c("prop","cluster"))
+##' e <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
+##'                   data=d,
+##'                   specials=c("prop","cluster"))
 ##' ## The first element is the response
 ##' e$response
 ##' ## The other elements are the design, i.e., model.matrix for the non-special covariates
@@ -52,20 +58,18 @@
 ##' ## and a data.frame for the special covariates
 ##' e$prop
 ##' ## The special covariates can be returned as a model.matrix 
-##' e2 <- specialFrame(status~prop(X1)+X2+cluster(X3)+X4,
-##'                          data=dsurv,
-##'                          specials=c("prop","cluster"),
-##'                          specialsDesign=TRUE)
+##' e2 <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
+##'                    data=d,
+##'                    specials=c("prop","cluster"),
+##'                    specialsDesign=TRUE)
 ##' e2$prop
 ##' ## and the non-special covariates can be returned as a data.frame
-##' e3 <- specialFrame(status~prop(X1)+X2+cluster(X3)+X4,
-##'                          data=dsurv,
-##'                          specials=c("prop","cluster"),
-##'                          specialsDesign=TRUE,
-##'                          unspecialsDesign=FALSE)
+##' e3 <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
+##'                    data=d,
+##'                    specials=c("prop","cluster"),
+##'                    specialsDesign=TRUE,
+##'                    unspecialsDesign=FALSE)
 ##' e3$design
-##' 
-##'  
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 specialFrame <- function(formula,
@@ -74,35 +78,53 @@ specialFrame <- function(formula,
                          specials,
                          specialsFactor=TRUE,
                          specialsDesign=FALSE,
-                         stripSpecialNames=TRUE,
+                         stripSpecials=TRUE,
+                         stripArguments=NULL,
+                         stripAlias=NULL,
+                         stripUnspecials=NULL,
                          dropIntercept=TRUE,
+                         response=TRUE,
                          na.action=options()$na.action){
+    # {{{ get all variables and remove missing values
+    if (na.action %in% c("na.omit","na.fail","na.exclude") || is.function(na.action))
+        mm <- do.call(na.action,list(object=get_all_vars(formula,data)))
+    else
+        mm <- get_all_vars(formula,data)
+    if (NROW(mm) == 0) stop("No (non-missing) observations")
+    # }}}
     # {{{call model.frame
     ## data argument is used to resolve '.' see help(terms.formula)
-    Terms <- terms(x=formula, specials=specials, data = data)
-    m <- model.frame(formula=Terms,data=data,subset=NULL,na.action=na.action)
-    if (NROW(m) == 0) stop("No (non-missing) observations")
+    if (!is.null(stripSpecials)){
+        ## eval without the data to avoid evaluating special specials
+        Terms <- terms(x=formula, specials=specials)
+        Terms <- prodlim::strip.terms(Terms,specials=stripSpecials,arguments=stripArguments)
+    }else{
+        ## data argument is used to resolve '.' see help(terms.formula)
+        Terms <- terms(x=formula, specials=specials, data = data)
+    }
     # }}}
     # {{{ extract response
-    response <- model.extract(m, "response")
+    if (response==TRUE && attr(Terms,"response")!=0){
+        response <- model.frame(update(formula,".~1"), data=mm,na.action="na.pass")
+    }else response <- NULL
     # }}}
     # {{{ design
-    design <- prodlim::model.design(data=m,
+    design <- prodlim::model.design(Terms,
+                                    data=mm,
                                     maxOrder=1,
                                     dropIntercept=dropIntercept,
                                     unspecialsDesign=unspecialsDesign,
                                     specialsFactor=specialsFactor,
-                                    specialsDesign=specialsDesign,
-                                    stripSpecialNames=stripSpecialNames)
+                                    specialsDesign=specialsDesign)
     # }}}
     out <- c(list(response=response),
              design[sapply(design,length)>0])
     attr(out,"Terms") <- Terms
-    attr(out,"na.action") <- attr(m,"na.action")
+    attr(out,"na.action") <- attr(mm,"na.action")
     class(out) <- "specialFrame"
     out
 }
-##' @S3method as.data.frame specialFrame
+##' @method as.data.frame specialFrame
 ##' @method as.data.frame specialFrame
 as.data.frame.specialFrame <- function(x,...){
     Y <- data.frame(unclass(x$response))

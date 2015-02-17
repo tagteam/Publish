@@ -4,7 +4,6 @@
 ##' If explanatory variables are log transformed or log2 transformed, a scaling factor is multiplied to both the log-hazard
 ##' ratio and its standard-error. 
 ##' @title Tabulize hazard ratios with confidence intervals and p-values.
-##' @S3method publish coxph
 ##' @param object A \code{coxph} object.
 ##' @param digits Rounding digits for all numbers but the p-values.
 ##' @param pvalue.digits Rounding digits for p-values.
@@ -24,19 +23,62 @@
 ##' @param ... passed to labelUnits
 ##' @return Table with hazard ratios, confidence intervals and p-values.
 ##' @author Thomas Alexander Gerds
+##' @examples
+##' library(survival)
+##' data(pbc)
+##' pbc$edema <- factor(pbc$edema,levels=c("0","0.5","1"),labels=c("0","0.5","1"))
+##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
+##'             data=pbc)
+##' publish(fit)
+##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili,base=2)+log(albumin)+log(protime),
+##'     data=pbc)
+##' publish(fit)
 ##' @export
+##' @method publish coxph
 publish.coxph <- function(object,
-                          digits=2,
-                          pvalue.digits=4,
-                          eps=.0001,
-                          pvalue.stars=FALSE,
-                          ci.format=NULL,
-                          showMissing="ifany",
-                          output.columns=NULL,
+                          confint.method,
+                          pvalue.method,
+                          digits=c(2,4),
+                          eps=0.0001,
                           print=TRUE,
-                          reference="extraline",
-                          ...) {
-    if (is.null(ci.format)) ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
+                          ci.format=NULL,
+                          factor.reference="extraline",
+                          units=NULL,
+                          ...){
+    if (missing(confint.method)) confint.method="default"
+    if (missing(pvalue.method))
+        pvalue.method=switch(confint.method,
+            "robust"={"robust"},
+            "simultaneous"={"simultaneous"},
+            "default")
+    cluster <- attr(terms(object),"specials")$cluster-1
+    # if (!is.null(cluster)) cluster <- cluster-1
+    rt <- regressionTable(object,
+                          noterms=cluster,
+                          confint.method=confint.method,
+                          factor.reference=factor.reference,
+                          units=units)
+    srt <- summary.regressionTable(rt,
+                                   digits=digits,
+                                   print=FALSE)
+    if (print==TRUE)
+        publish(srt,...)
+    invisible(srt)
+}
+
+
+publish.coxph1 <- function(object,
+                           digits=2,
+                           pvalue.digits=4,
+                           eps=.0001,
+                           pvalue.stars=FALSE,
+                           ci.format=NULL,
+                           showMissing="ifany",
+                           output.columns=NULL,
+                           print=TRUE,
+                           reference="extraline",
+                           ...) {
+    if (is.null(ci.format)) ci.format <- "[u;l]"
     # {{{ formula, data
     terms <- object$terms
     if (is.null(terms)){
@@ -52,9 +94,14 @@ publish.coxph <- function(object,
     if (is.null(data))
         data <- eval(object$call$data)
     rhs <- formula(delete.response(object$terms))
+    varnames <- attr(terms(rhs),"term.labels")
+    log.scale <- prodlim::parseSpecialNames(varnames,special="log",arguments=list("base"=exp(1)))
+    strata <- prodlim::parseSpecialNames(varnames,special="strata")
+    cluster <- prodlim::parseSpecialNames(varnames,special="cluster")
     X <- specialFrame(formula=rhs,
                       data=data,
                       unspecialsDesign=FALSE,
+                      specialsFactor=FALSE,
                       specials=c("strata","cluster"),
                       specialsDesign=FALSE)
     varNames <- colnames(X$design)
@@ -100,7 +147,9 @@ publish.coxph <- function(object,
     x$logHR=format(x$logHR,digits=digits,nsmall=digits)
     ciX <- exp(confint(object))
     x$CI.95=apply(ciX[,c(1,2),drop=FALSE],1,function(x){
-        sprintf(ci.format,x[1],x[2])})
+        formatCI(lower=x[1],upper=x[2],digits=digits,format=ci.format)
+        ## sprintf(ci.format,x[1],x[2])
+    })
     if (pvalue.stars==TRUE)
         x$pValue <- symnum(x$pValue,
                            corr = FALSE,
@@ -149,3 +198,6 @@ publish.coxph <- function(object,
     invisible(rt)  
 }
 
+
+#----------------------------------------------------------------------
+### publish.coxph.R ends here

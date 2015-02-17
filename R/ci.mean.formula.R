@@ -1,4 +1,4 @@
-#' @S3method ci.mean formula
+#' @method ci.mean formula
 ci.mean.formula <- function(x,
                             data,
                             alpha = 0.05,

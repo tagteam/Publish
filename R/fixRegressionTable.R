@@ -1,9 +1,11 @@
-##' Expand tables showing regression coefficients
+##' Expand regression coefficient table
 ##'
-##' For factors a reference line is added. Shown are numbers of missing values, 
-##' units and for log transformed variables the scale.
-##' @title Expand regression coefficients
-##' @param x object to be fixed
+##' For factor variables the reference group is shown.
+##' For continuous variables the units are shown and
+##' for transformed continuous variables also the scale.
+##' For all variables the numbers of missing values are added. 
+##' @title Expand regression coefficient table
+##' @param x object resulting from \code{lm}, \code{glm} or \code{coxph}.
 ##' @param varnames Names of variables
 ##' @param reference.value Reference value for reference categories
 ##' @param reference.style Style for showing results for categorical
@@ -13,8 +15,9 @@
 ##' @param scale Scale for some or all of the variables
 ##' @param nmiss Number of missing values
 ##' @param intercept Intercept
-##' @return a new table with regression coefficients
-##' @author Thomas Alexander Gerds
+##' @return a table with regression coefficients
+##' @author Thomas Alexander Gerds <tag@@biostat.ku.dk>
+##' @export
 fixRegressionTable <- function(x,
                                varnames,
                                reference.value,
@@ -84,7 +87,9 @@ fixRegressionTable <- function(x,
                 } 
                 block <- rbind(c(reference.value,rep("",NCOL(block)-1)),block)
             }
-        } else{ ## numeric variables
+        } else{
+            # }}}
+            # {{{numeric variables
             Variable <- vn
             Units <- ""
             if (!is.null(nmiss)){
@@ -95,16 +100,22 @@ fixRegressionTable <- function(x,
             }
         }
         if (some.scaled){
-            do.call("cbind",list(Variable=Variable,Scale=Scale,Units=Units,Missing=as.character(Missing),block))
+            do.call("cbind",list(Variable=Variable,
+                                 Scale=Scale,
+                                 Units=Units,
+                                 Missing=as.character(Missing),
+                                 block))
         }else{
             do.call("cbind",list(Variable=Variable,
                                  Units=Units,
                                  Missing=as.character(Missing),
                                  block))
         }
+        # }}}
     })
     out <- do.call("rbind",blocks)
     out$Variable <- as.character(out$Variable)
+    out$Missing <- as.character(out$Missing)
     out$Units <- as.character(out$Units)
     rownames(out) <- 1:NROW(out)
     # {{{ add intercept if it is wanted

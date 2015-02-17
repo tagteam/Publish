@@ -1,4 +1,4 @@
-##' @S3method publish lrm
+##' @method publish lrm
 publish.lrm <- function(object,
                        digits=2,
                        pdigits=4,

@@ -24,7 +24,7 @@
 ##' ci.mean(Y~X,data=d)
 ##' x <- summary(ci.mean(Y~X,data=d))
 ##' x
-#' @S3method summary ci
+#' @method summary ci
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 summary.ci <- function(object,digits=3,format,se=FALSE,print=TRUE,...){
     if (missing(format) || is.null(format)) format <- "[u;l]"

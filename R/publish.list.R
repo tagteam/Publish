@@ -1,4 +1,4 @@
-##' @S3method publish list
+##' @method publish list
 publish.list <- function(object,
                          title,
                          level=0,

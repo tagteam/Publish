@@ -1,4 +1,4 @@
-##' @S3method publish cox.aalen
+##' @method publish cox.aalen
 publish.cox.aalen <- function(object,
                               conf.int = 0.95,
                               robust = FALSE,

@@ -33,7 +33,7 @@
 ##' publish(x)
 ##' publish(x,interLines=list("3"="intermediate text"))
 ##' 
-##' @S3method publish matrix
+##' @method publish matrix
 publish.matrix <- function(object,
                            title,
                            colnames=TRUE,

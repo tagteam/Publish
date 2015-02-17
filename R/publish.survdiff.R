@@ -1,5 +1,5 @@
 ## based on a copy from print.survdiff, tag, 07 Aug 2009 (11:19)
-##' @S3method publish survdiff
+##' @method publish survdiff
 publish.survdiff <- function (object, digits = 4, eps=0.0001,verbose=TRUE,...) {
     saveopt <- options(digits = digits)
     on.exit(options(saveopt))

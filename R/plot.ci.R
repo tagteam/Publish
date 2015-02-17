@@ -47,8 +47,9 @@
 ##' data(Diabetes)
 ##' x=ci.mean(bp.2s~frame,data=Diabetes)
 ##' plot(x)
+##'
 ##' 
-#' @S3method plot ci
+#' @method plot ci
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.ci <- function(x,
                     lower,
@@ -99,19 +100,21 @@ plot.ci <- function(x,
         if (labels[1]==TRUE)
             if (is.null(x$labels))
                 message("no labels in object")
-            else
+            else{
                 labels <- x$labels
+            }
     if (NCOL(labels)>1){
         labels <- apply(labels,1,paste,collapse=" / ")
         title.labels <- paste(title.labels,collapse=" / ")
     }
     if (values[1]){
-        val <- print.ci(x,
-                        print=FALSE,
-                        digits=digits,
-                        format=format,
-                        se=FALSE)
-        valstring <- paste(val[,2],val[,3])
+        valstring <- paste(format(x[[1]],digits=digits+1),
+                           apply(cbind(x[["lower"]],x[["upper"]]),
+                                 1,
+                                 function(x)formatCI(lower=x[1],upper=x[2],format=format,digits=digits)))
+        ## val <- cbind(x$labels)
+        ## print.ci(x,print=FALSE,digits=digits,format=format,se=FALSE)
+        ## valstring <- paste(val[,2],val[,3])
     }
     if (!is.expression(title.values) && !is.character(title.values) && title.values[1]!=FALSE)
         title.values <- expression(CI[95])
@@ -178,7 +181,7 @@ plot.ci <- function(x,
     # {{{  labels
     if (is.expression(labels) || is.character(labels) || labels[1]!=FALSE)
         do.call("text",smartA$labels)
-    if (is.expression(title.labels) || title.labels[1]!=FALSE)
+    if (!is.null(title.labels)&& (is.expression(title.labels) || title.labels[1]!=FALSE))
         do.call("text",smartA$title.labels)
     # }}}
     # {{{  values
@@ -189,4 +192,14 @@ plot.ci <- function(x,
         do.call("text",smartA$title.values)
     # }}}
     invisible(smartA)
+}
+
+plotCI <- function(x,...){
+    UseMethod("plotCI",object=x)
+}
+
+plotCI.glm <- function(x,...){
+    X = publish(x,print=FALSE)
+    names(X)=c("coef","lower","upper")
+    plot.ci(X,title.labels=names(x$xlevels))
 }

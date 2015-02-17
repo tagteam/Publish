@@ -1,4 +1,4 @@
-##' @S3method publish geeglm
+##' @method publish geeglm
 publish.geeglm <- function(object,
                            digits=2,
                            pFormat=TRUE,

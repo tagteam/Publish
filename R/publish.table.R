@@ -1,4 +1,4 @@
-##' @S3method publish table
+##' @method publish table
 publish.table <- function(object,title,level,...){
   if ((NM=length(dim(object)))==3){
     if (missing(title)) title <- ""
