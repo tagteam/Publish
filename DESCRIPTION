@@ -7,12 +7,12 @@ Author: Thomas Gerds
 Maintainer: Thomas Gerds <tag@biostat.ku.dk>
 Description: Formatting output from R for publication
 Imports:
-    prodlim,
+    prodlim (>= 1.5.4),
     survival,
     lava
 Suggests:
     lme4,
     pec,
-    riskRegression
+    riskRegression (>= 1.0.8)
 License: GPL (>= 2)
 Packaged: Mon Jun 08 11:54:28 2009 ;tag

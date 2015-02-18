@@ -26,6 +26,8 @@
 ##' @seealso summary.univariateTable, publish.univariateTable
 ##' @examples
 ##' data(Diabetes)
+##' univariateTable(~age,data=Diabetes)
+##' univariateTable(~gender,data=Diabetes)
 ##' univariateTable(~age+gender+ height+weight,data=Diabetes)
 ##' univariateTable(location~age+gender+height+weight,data=Diabetes)
 ##' 
@@ -237,7 +239,8 @@ univariateTable <- function(formula,
     }
     # }}}
     # {{{ missing values
-    allmatrix <- cbind(continuous.matrix,Q.matrix,factor.matrix)
+    mlist <- list(continuous.matrix,Q.matrix,factor.matrix)
+    allmatrix <- do.call("cbind",mlist[!sapply(mlist,is.null)])
     totals.missing <- lapply(allmatrix,function(v){sum(is.na(v))})
     if (!is.null(groups)){
         group.missing <- lapply(allmatrix,function(v){
