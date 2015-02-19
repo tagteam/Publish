@@ -3,20 +3,22 @@
 ##' The default format for confidence intervals is [lower; upper]. 
 ##' @title Formatting confidence intervals
 ##' @param x not used (for compatibility with format)
-##' @param lower Vector of lower limits
-##' @param upper Vector of upper limits
+##' @param lower Numeric vector of lower limits
+##' @param upper Numeric vector of upper limits
+##' @param handler Function to format numeric values. Default is
+##' 'sprintf', also supported are 'format' and 'prettyNum'
 ##' @param format Character string in which 'l' will be replaced by
 ##' the value of the lower limit (argument lower) and 'u' by the value
 ##' of the upper upper limit. For example, \code{'(l,u)'} yields
-##' confidence intervals in round parenthesis in which the upper and lower
-##' limits are comma separated. Default is '[l;u]'.
+##' confidence intervals in round parenthesis in which the upper and
+##' lower limits are comma separated. Default is '[l;u]'.
 ##' @param degenerated String to show when lower==upper.  Default is
 ##' '--'
-##' @param digits For rounding of values passed to format
-##' @param nsmall For rounding of values passed to format
-##' @param trim This argument is passed to format
+##' @param digits If handler \code{format} or \code{prettyNum} used format numeric vectors.
+##' @param nsmall If handler \code{format} or \code{prettyNum} used format numeric vectors.
+##' @param trim Used to aligning resulting intervals. Also, if handler \code{format} or \code{prettyNum} used format numeric vectors .
 ##' @param sep Field separator
-##' @param ... not used
+##' @param ... passed to handler
 ##' @return String vector with confidence intervals
 ##' @seealso plot.ci ci.mean
 ##' @examples
@@ -26,15 +28,24 @@
 ##' # change format
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="(l, u)")
 ##' 
-##' # the first lower limit is shorter than the second, to align numbers
-##' # use trim:
+##' # if the first lower limit is shorter than the second (missing negative sign), 
+##' # then, option trim will make a difference:
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=FALSE)
+##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=TRUE)
+##'
+##' # change of handler function
+##' l <- c(-0.0890139,0.0084736,144.898333,0.000000001)
+##' u <- c(0.03911392,0.3784706,3338944.8821221,0.00001)
+##' cbind(format=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="format"),
+##'       prettyNum=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="prettyNum"),
+##'       sprintf=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="sprintf"))
 ##' 
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 formatCI <- function(x,
                      lower,
                      upper,
+                     handler="sprintf",
                      format="[l;u]",
                      degenerated="asis",
                      digits=3,
@@ -44,8 +55,14 @@ formatCI <- function(x,
     stopifnot(length(upper)==length(lower))
     format <- sub("l","%s",format)
     format <- sub("u","%s",format)
-    lower <- format(lower,digits=digits,nsmall=digits,trim=trim)
-    upper <- format(upper,digits=digits,nsmall=digits,trim=trim)
+    if (handler=="sprintf"){
+        fmt <- paste0("%1.",digits,"f")
+        lower <- sprintf(fmt=fmt,lower,...)
+        upper <- sprintf(fmt=fmt,upper,...)
+    }else{ # format or prettyNum
+        lower <- do.call(handler,list(lower,digits=digits,nsmall=digits,...))
+        upper <- do.call(handler,list(upper,digits=digits,nsmall=digits,...))
+    }
     N <- length(lower)
     out <- sapply(1:N,function(i){
         if (is.character(degenerated) && degenerated!="asis" && lower[i]==upper[i])

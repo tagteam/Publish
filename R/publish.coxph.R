@@ -30,6 +30,11 @@
 ##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
 ##'             data=pbc)
 ##' publish(fit)
+##'
+##' publish(fit,ci.digits=2,pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE)
+##' publish(fit,ci.digits=2,ci.handler="prettyNum",pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE)
+##' publish(fit,ci.digits=2,ci.handler="sprintf",pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE,ci.trim=FALSE)
+##' 
 ##' fit2 = coxph(Surv(time,status!=0)~age+sex+edema+log(bili,base=2)+log(albumin)+log(protime),
 ##'     data=pbc)
 ##' publish(fit2)
@@ -72,7 +77,7 @@ publish.coxph <- function(object,
                           units=units)
     srt <- summary.regressionTable(rt,
                                    digits=digits,
-                                   print=FALSE)
+                                   print=FALSE,...)
     if (print==TRUE)
         publish(srt,...)
     invisible(srt)

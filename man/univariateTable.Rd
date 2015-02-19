@@ -49,6 +49,8 @@ summary functions.
 }
 \examples{
 data(Diabetes)
+univariateTable(~age,data=Diabetes)
+univariateTable(~gender,data=Diabetes)
 univariateTable(~age+gender+ height+weight,data=Diabetes)
 univariateTable(location~age+gender+height+weight,data=Diabetes)
 

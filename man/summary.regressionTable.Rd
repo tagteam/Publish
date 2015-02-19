@@ -4,8 +4,8 @@
 \alias{summary.regressionTable}
 \title{formatting regression tables}
 \usage{
-\method{summary}{regressionTable}(x, digits = 2, nsmall = 2, print = TRUE,
-  ...)
+\method{summary}{regressionTable}(x, digits = 2, nsmall = 2,
+  handler = "sprintf", print = TRUE, ...)
 }
 \arguments{
 \item{x}{}
