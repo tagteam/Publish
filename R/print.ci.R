@@ -26,25 +26,6 @@
 ##' print(x,format="(l,u)")
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-print.ci <- function(x,digits=3,format=NULL,se=FALSE,print=TRUE,...){
-    if (missing(format) || is.null(format)) format <- "[u;l]"
-    if (is.null(x$level))   level <- 0.05 else level <- x$level
-    if (match("se",names(x)) && se==TRUE){
-        pci <- cbind(format(cbind(x[[1]],x[[2]]),digits=digits,nsmall=digits),
-                     apply(cbind(x[["lower"]],x[["upper"]]),
-                           1,
-                           function(x)formatCI(lower=x[1],upper=x[2],format=format,digits=digits)))
-        colnames(pci) <- c(names(x)[1:2],paste("CI-",as.character(100*(1-level)),"%",sep=""))
-    }else{
-        pci <- cbind(format(cbind(x[[1]]),,digits=digits,nsmall=digits),
-                     apply(cbind(x[["lower"]],x[["upper"]]),1,function(x){
-                         formatCI(lower=x[1],upper=x[2],format=format,digits=digits)
-                     }))
-        colnames(pci) <- c(names(x)[1],paste("CI-",as.character(100*(1-level)),"%",sep=""))
-    }
-    pci <- cbind(x$labels,pci)
-    rownames(pci) <- rep("",nrow(pci))
-    if (print==TRUE)
-        print(pci,right=FALSE,digits=digits,quote=FALSE,...)
-    invisible(pci)
+print.ci <- function(x,se=FALSE,print=TRUE,...){
+  summary(x,se=se,print=print,...)
 }
