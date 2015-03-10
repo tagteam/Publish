@@ -2,21 +2,16 @@
 % Please edit documentation in R/summary.regressionTable.R
 \name{summary.regressionTable}
 \alias{summary.regressionTable}
-\title{formatting regression tables}
+\title{Formatting regression tables}
 \usage{
-\method{summary}{regressionTable}(x, digits = 2, nsmall = 2,
-  handler = "sprintf", print = TRUE, ...)
+\method{summary}{regressionTable}(x, print = TRUE, ...)
 }
 \arguments{
 \item{x}{}
 
-\item{digits}{}
-
-\item{nsmall}{}
-
 \item{print}{}
 
-\item{...}{}
+\item{...}{Used to control formatting of parameter estimates, confidence intervals and p-values. See examples.}
 }
 \value{
 Formatted regression table with raw values as attributes
@@ -31,6 +26,9 @@ pbc$edema <- factor(pbc$edema,levels=c("0","0.5","1"),labels=c("0","0.5","1"))
 fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
             data=pbc)
 summary(regressionTable(fit))
+summary(regressionTable(fit),handler="prettyNum")
+summary(regressionTable(fit),handler="format")
+summary(regressionTable(fit),handler="sprintf",digits=c(2,2),pValue.stars=TRUE)
 }
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>

@@ -7,38 +7,42 @@
 univariateTable(formula, data = parent.frame(),
   summary.format = "mean(x) (sd(x))", Q.format = "median(x) [iqr(x)]",
   freq.format = "count(x) (percent(x))", column.percent = TRUE,
-  digits.summary = 1, digits.freq = 1, strataIsOutcome = FALSE,
-  shortGroupNames, ...)
+  digits = c(1, 1, 3), strataIsOutcome = FALSE, shortGroupNames, ...)
 }
 \arguments{
-\item{formula}{Formula specifying the grouping variable (strata) on the left hand side (can be omitted)
-and on the right hand side the variables for which to obtain (descriptive) statistics.}
+\item{formula}{Formula specifying the grouping variable (strata)
+on the left hand side (can be omitted) and on the right hand side
+the variables for which to obtain (descriptive) statistics.}
 
 \item{data}{Data set in which formula is evaluated}
 
-\item{summary.format}{Format for the numeric (non-factor) variables. Default is mean (SD).
-If different formats are desired, either special Q can be used or the function is called multiple times
-and the results are rbinded. See examples.}
+\item{summary.format}{Format for the numeric (non-factor)
+variables. Default is mean (SD).  If different formats are
+desired, either special Q can be used or the function is called
+multiple times and the results are rbinded. See examples.}
 
-\item{Q.format}{Format for quantile summary of numerice variables: Default is median (inter quartile range).}
+\item{Q.format}{Format for quantile summary of numerice variables:
+Default is median (inter quartile range).}
 
-\item{freq.format}{Format for categorical variables. Default is count (percentage).}
+\item{freq.format}{Format for categorical variables. Default is
+count (percentage).}
 
-\item{column.percent}{Logical, if \code{TRUE} and the default freq.format is used then column percentages are given instead of row percentages for discrete factors.}
+\item{column.percent}{Logical, if \code{TRUE} and the default
+freq.format is used then column percentages are given instead of
+row percentages for discrete factors.}
 
-\item{digits.summary}{Rounding digits for summary.format.}
+\item{digits}{}
 
-\item{digits.freq}{Rounding digits for freq.format.}
-
-\item{strataIsOutcome}{If \code{TRUE} logistic regression is used instead of t-tests and Wilcoxon rank tests
-to compare numeric variables across groups.}
+\item{strataIsOutcome}{If \code{TRUE} logistic regression is used
+instead of t-tests and Wilcoxon rank tests to compare numeric
+variables across groups.}
 
 \item{shortGroupNames}{If \code{TRUE} group names are abbreviated.}
 
 \item{...}{Not used (not yet)}
 }
 \value{
-List
+List with one summary table element for each variable on the right hand side of formula.
 }
 \description{
 ##' ##' ##' Categorical variables are summarized using counts and frequencies.

@@ -5,38 +5,25 @@
 \title{Tabulizing cause-specific hazard ratio from all causes with confidence limits and Wald test p-values.}
 \usage{
 \method{publish}{CauseSpecificCox}(object, cause, confint.method, pvalue.method,
-  digits = c(2, 4), eps = 0.0001, print = TRUE, ci.format = NULL,
-  factor.reference = "extraline", units = NULL, ...)
+  factor.reference = "extraline", units = NULL, print = TRUE, ...)
 }
 \arguments{
-\item{object}{Cause-specific hazard model obtained with
-\code{CSC}.}
+\item{object}{Cause-specific hazard model obtained with \code{CSC}.}
 
-\item{cause}{Show a table for this cause. If omitted, list all
-causes.}
+\item{cause}{Show a table for this cause. If omitted, list all causes.}
 
-\item{digits}{Number of digits for all values except p-values.}
+\item{confint.method}{See \code{publish.coxph}}
 
-\item{eps}{Values smaller than \code{eps} are formatted as \code{<
-eps}.}
+\item{pvalue.method}{See \code{publish.coxph}}
+
+\item{factor.reference}{See \code{regressionTable}}
+
+\item{units}{See \code{regressionTable}}
 
 \item{print}{If \code{TRUE} print the table(s).}
 
-\item{ci.format}{Format for confidence intervals passed to}
-
-\item{...}{passed to \code{publish.coxph}}
-
-\item{pvalue.digits}{Number of digits for p-values}
-
-\item{pvalue.stars}{If \code{TRUE}, use star-notation for
-p-values.}
-
-\item{showMissing}{If \code{TRUE} show number of missing values
-per variable.}
-
-\item{reference}{See \code{publish.coxph}.}
-
-\item{output.columns}{Pre-select columns.}
+\item{...}{passed on to control formatting of parameters, confidence intervals and p-values.
+See \code{summary.regressionTable}.}
 }
 \value{
 Table with cause-specific hazard ratios, confidence limits and p-values.
@@ -52,13 +39,12 @@ library(riskRegression)
 library(prodlim)
 library(pec)
 library(survival)
-data(Melanoma)
- fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
+data(Melanoma,package="riskRegression")
+fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
             data=Melanoma)
 publish(fit1)
-publish(fit1,eps=0.001)
 publish(fit1,pvalue.stars=TRUE)
-publish(fit1,ci.format="(\%1.1f, \%1.1f)")
+publish(fit1,ci.format="(u--l)",factor.reference="inline",units=list("age"="years"))
 }
 \author{
 Thomas Alexander Gerds <tab@biostat.ku.dk>

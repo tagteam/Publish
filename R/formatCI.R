@@ -16,7 +16,8 @@
 ##' '--'
 ##' @param digits If handler \code{format} or \code{prettyNum} used format numeric vectors.
 ##' @param nsmall If handler \code{format} or \code{prettyNum} used format numeric vectors.
-##' @param trim Used to aligning resulting intervals. Also, if handler \code{format} or \code{prettyNum} used format numeric vectors .
+##' @param trim Used to aligning resulting intervals. Also, if handler \code{format}
+##' or \code{prettyNum} used format numeric vectors .
 ##' @param sep Field separator
 ##' @param ... passed to handler
 ##' @return String vector with confidence intervals
@@ -48,21 +49,15 @@ formatCI <- function(x,
                      handler="sprintf",
                      format="[l;u]",
                      degenerated="asis",
-                     digits=3,
+                     digits=2,
                      nsmall=digits,
                      trim=TRUE,
                      sep="",...){
     stopifnot(length(upper)==length(lower))
     format <- sub("l","%s",format)
     format <- sub("u","%s",format)
-    if (handler=="sprintf"){
-        fmt <- paste0("%1.",digits,"f")
-        lower <- sprintf(fmt=fmt,lower,...)
-        upper <- sprintf(fmt=fmt,upper,...)
-    }else{ # format or prettyNum
-        lower <- do.call(handler,list(lower,digits=digits,nsmall=digits,...))
-        upper <- do.call(handler,list(upper,digits=digits,nsmall=digits,...))
-    }
+    lower <- pubformat(lower,digits=digits[[1]],nsmall=nsmall[[1]],handler=handler)
+    upper <- pubformat(upper,digits=digits[[1]],nsmall=nsmall[[1]],handler=handler)
     N <- length(lower)
     out <- sapply(1:N,function(i){
         if (is.character(degenerated) && degenerated!="asis" && lower[i]==upper[i])

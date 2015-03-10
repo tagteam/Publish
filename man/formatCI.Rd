@@ -5,7 +5,7 @@
 \title{Formatting confidence intervals}
 \usage{
 formatCI(x, lower, upper, handler = "sprintf", format = "[l;u]",
-  degenerated = "asis", digits = 3, nsmall = digits, trim = TRUE,
+  degenerated = "asis", digits = 2, nsmall = digits, trim = TRUE,
   sep = "", ...)
 }
 \arguments{
@@ -31,7 +31,8 @@ lower limits are comma separated. Default is '[l;u]'.}
 
 \item{nsmall}{If handler \code{format} or \code{prettyNum} used format numeric vectors.}
 
-\item{trim}{Used to aligning resulting intervals. Also, if handler \code{format} or \code{prettyNum} used format numeric vectors .}
+\item{trim}{Used to aligning resulting intervals. Also, if handler \code{format}
+or \code{prettyNum} used format numeric vectors .}
 
 \item{sep}{Field separator}
 

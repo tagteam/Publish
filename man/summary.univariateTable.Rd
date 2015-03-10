@@ -5,8 +5,7 @@
 \title{Preparing univariate tables for publication}
 \usage{
 \method{summary}{univariateTable}(object, missing = c("ifany", "always",
-  "never"), n = "inNames", pvalue.stars = FALSE, pvalue.eps = 0.0001,
-  pvalue.digits = 4, ...)
+  "never"), n = "inNames", pvalue.stars = FALSE, pvalue.digits = 4, ...)
 }
 \arguments{
 \item{object}{\code{univariateTable} object as obtained with
@@ -15,16 +14,18 @@ function \code{univariateTable}.}
 \item{missing}{Decides if number of missing values are shown in table.
 Defaults to \code{"ifany"}, and can also be set to \code{"always"} or \code{"never"}.}
 
-\item{n}{If not missing, show the number of subjects in each column. If equal to \code{"inNames"}, show the numbers in parentheses in the column names.}
+\item{n}{If not missing, show the number of subjects in each
+column. If equal to \code{"inNames"}, show the numbers in
+parentheses in the column names.}
 
 \item{pvalue.stars}{If TRUE use \code{symnum} to parse p-values
 otherwise use \code{format.pval}.}
 
-\item{pvalue.eps}{Passed to \code{format.pval}.}
-
 \item{pvalue.digits}{Passed to \code{format.pval}.}
 
 \item{...}{passed on to labelUnits}
+
+\item{pvalue.eps}{Passed to \code{format.pval}.}
 }
 \value{
 Summary table
@@ -35,7 +36,15 @@ Summary function for univariate table
 \details{
 Collects results of univariate table in a matrix.
 }
+\examples{
+data(Diabetes)
+u <- univariateTable(gender~age+location+Q(BMI)+height+weight,
+                data=Diabetes)
+summary(u)
+summary(u,n=NULL)
+summary(u,pvalue.digits=2,"age"="Age (years)","height"="Body height (cm)")
+}
 \author{
-Thomas A. Gerds
+Thomas A. Gerds <tag@biostat.ku.dk>
 }
 

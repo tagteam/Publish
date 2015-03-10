@@ -1,11 +1,9 @@
 ##' Preparing regression results for publication
 ##'
-##' @title formatting regression tables
+##' @title Formatting regression tables
 ##' @param x
-##' @param digits Vector of length 2 (second for pvalues, first for all other). 
-##' @param nsmall
-##' @param print 
-##' @param ...
+##' @param print
+##' @param ... Used to control formatting of parameter estimates, confidence intervals and p-values. See examples.
 ##' @return Formatted regression table with raw values as attributes
 ##' @seealso publish.glm publish.coxph 
 ##' @examples
@@ -15,57 +13,57 @@
 ##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
 ##'             data=pbc)
 ##' summary(regressionTable(fit))
+##' summary(regressionTable(fit),handler="prettyNum")
+##' summary(regressionTable(fit),handler="format")
+##' summary(regressionTable(fit),handler="sprintf",digits=c(2,2),pValue.stars=TRUE)
 #' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-summary.regressionTable <- function(x,digits=2,nsmall=2,handler="sprintf",print=TRUE,...){
+summary.regressionTable <- function(x,
+                                    print=TRUE,
+                                    ...){
+    pynt <- getPyntDefaults(list(...),names=list("digits"=c(2,3),"handler"="sprintf",nsmall=NULL))
+    digits <- pynt$digits
+    handler <- pynt$handler
+    if (length(digits)==1) digits <- rep(digits,2)
+    if (length(pynt$nsmall)>0) nsmall <- pynt$nsmall else nsmall <- pynt$digits
     Rtab <- do.call("rbind",x)
     Lower <- Rtab[,"Lower"]
     Upper <- Rtab[,"Upper"]
     Pvalue <- Rtab[,"Pvalue"]
     Rtab <- Rtab[,-match(c("Lower","Upper","Pvalue"),colnames(Rtab)),drop=FALSE]
-    pvalue.defaults <- list(digits=4,eps=0.0001)
+    pvalue.defaults <- list(digits=digits[[2]],
+                            eps=10^{-digits[[2]]},
+                            stars=FALSE)
     ci.defaults <- list(format="[l;u]",
-                        digits=digits,
-                        nsmall=digits,
+                        digits=digits[[1]],
+                        nsmall=digits[[1]],
                         degenerated="asis")
     smartF <- prodlim::SmartControl(call=list(...),
                                     keys=c("ci","pvalue"),
-                                    ignore=c("x","print"),
+                                    ignore=c("x","print","handler","digits","nsmall"),
                                     defaults=list("ci"=ci.defaults,"pvalue"=pvalue.defaults),
-                                    forced=list("ci"=list(lower=Lower,upper=Upper),"pvalue"=list(Pvalue)),
-                                    verbose=TRUE)
-    if (handler=="sprintf"){ fmt <- paste0("%1.",digits[[1]],"f")}
+                                    forced=list("ci"=list(lower=Lower,upper=Upper,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]]),
+                                        "pvalue"=list(Pvalue)),
+                                    verbose=FALSE)
     if (attr(x,"model")=="Cox regression"){
         attr(Rtab,"model") <- "Cox regression"
         attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
-        if (handler=="sprintf"){
-            Rtab$HazardRatio <- sprintf(fmt=fmt,Rtab$HazardRatio)
-        }else{
-            Rtab$HazardRatio <- do.call(handler,list(Rtab$HazardRatio,digits=digits,nsmall=nsmall))
-        }
+        Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
     } else{
         if (attr(x,"model")=="Logistic regression"){
             attr(Rtab,"model") <- "Logistic regression"
             attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
-            if (handler=="sprintf"){
-                Rtab$OddsRatio <- sprintf(fmt=fmt,Rtab$OddsRatio)
-            }else{
-                Rtab$OddsRatio <- do.call(handler,list(Rtab$OddsRatio,digits=digits,nsmall=nsmall))
-            }
+            Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         } else{
             ## assume "Linear regression"
             attr(Rtab,"model") <- "Linear regression"
             attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
-            if (handler=="sprintf"){
-                Rtab$Coefficient <- sprintf(fmt=fmt,Rtab$Coefficient)
-            }else{
-                Rtab$Coefficient <- do.call(handler,list(Rtab$Coefficient,digits=digits,nsmall=nsmall))
-            }
+            Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         }
     }
     Rtab$CI.95 <- do.call("formatCI",smartF$ci)
     Rtab$"p-value" <- do.call("format.pval",smartF$pvalue)
-    if (smartF$pvalue$stars==TRUE)
+    if (length(smartF$pvalue$stars)>0 && smartF$pvalue$stars==TRUE)
         Rtab$signif <- symnum(Pvalue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
     attr(Rtab,"Lower") <- Lower
     attr(Rtab,"Upper") <- Upper

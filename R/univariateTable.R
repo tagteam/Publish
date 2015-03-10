@@ -6,22 +6,28 @@
 ##' 
 ##' 
 ##' @title Univariate table
-##' @param formula Formula specifying the grouping variable (strata) on the left hand side (can be omitted)
-##' and on the right hand side the variables for which to obtain (descriptive) statistics.
+##' @param formula Formula specifying the grouping variable (strata)
+##' on the left hand side (can be omitted) and on the right hand side
+##' the variables for which to obtain (descriptive) statistics.
 ##' @param data Data set in which formula is evaluated
-##' @param summary.format Format for the numeric (non-factor) variables. Default is mean (SD).
-##' If different formats are desired, either special Q can be used or the function is called multiple times
-##' and the results are rbinded. See examples.
-##' @param Q.format Format for quantile summary of numerice variables: Default is median (inter quartile range).
-##' @param freq.format Format for categorical variables. Default is count (percentage).
-##' @param column.percent Logical, if \code{TRUE} and the default freq.format is used then column percentages are given instead of row percentages for discrete factors.
-##' @param digits.summary Rounding digits for summary.format.
-##' @param digits.freq Rounding digits for freq.format.
-##' @param strataIsOutcome If \code{TRUE} logistic regression is used instead of t-tests and Wilcoxon rank tests
-##' to compare numeric variables across groups.
+##' @param summary.format Format for the numeric (non-factor)
+##' variables. Default is mean (SD).  If different formats are
+##' desired, either special Q can be used or the function is called
+##' multiple times and the results are rbinded. See examples.
+##' @param Q.format Format for quantile summary of numerice variables:
+##' Default is median (inter quartile range).
+##' @param freq.format Format for categorical variables. Default is
+##' count (percentage).
+##' @param column.percent Logical, if \code{TRUE} and the default
+##' freq.format is used then column percentages are given instead of
+##' row percentages for discrete factors.
+##' @param digits 
+##' @param strataIsOutcome If \code{TRUE} logistic regression is used
+##' instead of t-tests and Wilcoxon rank tests to compare numeric
+##' variables across groups.
 ##' @param shortGroupNames If \code{TRUE} group names are abbreviated.
 ##' @param ... Not used (not yet)
-##' @return List 
+##' @return List with one summary table element for each variable on the right hand side of formula.
 ##' @author Thomas A. Gerds
 ##' @seealso summary.univariateTable, publish.univariateTable
 ##' @examples
@@ -78,21 +84,15 @@ univariateTable <- function(formula,
                             Q.format="median(x) [iqr(x)]",
                             freq.format="count(x) (percent(x))",
                             column.percent=TRUE,
-                            digits.summary=1,
-                            digits.freq=1,
+                            digits=c(1,1,3),
                             strataIsOutcome=FALSE,
                             shortGroupNames,
                             ...){
-
+    if (length(digits)<3) digits <- rep(digits,3)
+    if (!is.numeric(digits.summary <- digits[[1]])) digits.summary <- 1
+    if (!is.numeric(digits.freq <- digits[[2]])) digits.freq <- 1
+    if (!is.numeric(pvalue.digits <- digits[[3]])) pvalue.digits <- 3
     call <- match.call()
-    ## m <- match.call(expand.dots = FALSE)
-    ## if (match("subset",names(call),nomatch=FALSE))
-        ## stop("Subsetting of data is not possible.")
-    ## m <- m[match(c("","formula","data","subset","na.action"),names(m),nomatch = 0)]
-    ## m[[1]]  <-  as.name("model.frame")
-    ## m$formula <- formula
-    ## m$na.action <- "na.pass"
-    ## theData <- eval(m, parent.frame())
     # {{{ parse formula and find data
     oldnaaction <- options()$na.action
     options(na.action="na.pass")
@@ -288,10 +288,7 @@ univariateTable <- function(formula,
             p.freq <- sapply(names(factor.matrix),function(v){
                 if (strataIsOutcome==TRUE){
                     ## logistic regression 
-                    ## format.pval(
-                    ## warning(v)
                     px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
-                       ## ,eps=pvalue.eps,digits=pvalue.digits)}
                 } else{
                     tabx <- table(factor.matrix[,v],groupvar)
                     if (sum(tabx)==0) {
@@ -311,8 +308,8 @@ univariateTable <- function(formula,
     # }}}
     # {{{ output
     ## xlevels <- lapply(factor.matrix,function(x){
-        ## levels(as.factor(x,exclude=FALSE))
-        ## levels(as.factor(x))
+    ## levels(as.factor(x,exclude=FALSE))
+    ## levels(as.factor(x))
     ## })
     vartypes <- rep(c("numeric","Q","factor"),c(length(names(continuous.matrix)),length(names(Q.matrix)),length(names(factor.matrix))))
     names(vartypes) <- c(names(continuous.matrix),names(Q.matrix),names(factor.matrix))
