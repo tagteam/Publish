@@ -5,17 +5,20 @@
 \title{Plot confidence intervals}
 \usage{
 \method{plot}{ci}(x, y.offset = 0, lower, upper, labels = TRUE, label.pos,
-  title.labels, values = TRUE, value.pos = TRUE, title.values = TRUE,
-  pch = 16, cex = 1, lwd = 2, col = 1, xlim, ylim, ylab, xlab,
-  automar = TRUE, margin.offset = 0.25, digits = 1, format = NULL,
-  shift = 0, add = FALSE, axes = TRUE, axis2 = FALSE, ...)
+  title.labels, values = TRUE, value.pos = TRUE, title.values,
+  factor.reference.pos, factor.reference.label = "Ref", pch = 16, cex = 1,
+  lwd = 2, col = 1, xlim, ylim, ylab, xlab, automar = TRUE,
+  margin.offset = 0.25, digits = 1, format = NULL, shift = 0,
+  add = FALSE, axes = TRUE, axis2 = FALSE, ...)
 }
 \arguments{
 \item{x}{Object containing point estimates and the corresponding
 confidence intervals}
 
-\item{y.offset}{Adjustment of position of confidence intervals and text on y-axis. When \code{y.offset=0}
-the positions are integers between the number of intervals (upper most) and 1 (lowest interval).}
+\item{y.offset}{Adjustment of position of confidence intervals and
+text on y-axis. When \code{y.offset=0} the positions are integers
+between the number of intervals (upper most) and 1 (lowest
+interval).}
 
 \item{lower}{lower confidence limits}
 
@@ -33,6 +36,10 @@ estimates and confidence intervals on the graph}
 \item{value.pos}{x-postion of values}
 
 \item{title.values}{Label for the column (or row) of the values.}
+
+\item{factor.reference.pos}{Position of factor references.}
+
+\item{factor.reference.label}{Label to use at factor.reference.pos instead of value.}
 
 \item{pch}{Point type for point estimates}
 

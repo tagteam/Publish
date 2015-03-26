@@ -10,10 +10,17 @@
 ##' @param data A \code{data.frame} in which we evaluate the formula.
 ##' @param vars A list of variable names, the changing part of the
 ##' regression formula.
-##' @param ... passed to coxph
+##' @param ... passed to glm
 ##' @return Matrix with regression coefficients, one for each element of \code{vars}.
 ##' @author Thomas Alexander Gerds
 ##'
+##' data(Diabetes)
+##' Diabetes$hyper1 <- factor(1*(Diabetes$bp.1s>140))
+##' uniodds <- glmSeries(hyper1~1,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
+##' uniodds
+##' ## control all univariate analyses for age and gender
+##' uniodds.control <- glmSeries(hyper1~age+gender,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
+##' uniodds.control
 ##' ##' @export
 glmSeries <- function(formula,data,vars,...){
     ## ref <- glm(formula,data=data,...)

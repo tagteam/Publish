@@ -111,19 +111,16 @@ summary.univariateTable <- function(object,
         rownames(sumXX) <- NULL
         XXtab <- rbind(XXtab,sumXX)
     }
-    ## rownames(XXtab) <- 1:NROW(XXtab)
     # }}}
     # {{{ column names and n
-
-    ## if (!missing(n)){
-    if (length(n)>0)
+    if (length(n)>0 && !(is.null(object$groups))){
         if (n=="inNames"){
             object$groups <- paste(object$groups," (n=",object$n.groups[-length(object$n.groups)],")",sep="")
         }
         else{
             XXtab <- rbind(c("n","",object$n.groups,""),XXtab)
         }
-    ## }
+    }
     if (is.null(object$groups)){
         colnames(XXtab) <- c("Variable","Levels","Value")
         XXtab$Variable <- as.character(XXtab$Variable)
