@@ -12,8 +12,10 @@
 ##' @title Plot confidence intervals
 ##' @param x Object containing point estimates and the corresponding
 ##' confidence intervals
-##' @param y.offset Adjustment of position of confidence intervals and text on y-axis. When \code{y.offset=0}
-##' the positions are integers between the number of intervals (upper most) and 1 (lowest interval).
+##' @param y.offset Adjustment of position of confidence intervals and
+##' text on y-axis. When \code{y.offset=0} the positions are integers
+##' between the number of intervals (upper most) and 1 (lowest
+##' interval).
 ##' @param lower lower confidence limits
 ##' @param upper upper confidence limits
 ##' @param labels labels
@@ -23,6 +25,8 @@
 ##' estimates and confidence intervals on the graph
 ##' @param value.pos x-postion of values
 ##' @param title.values Label for the column (or row) of the values.
+##' @param factor.reference.pos Position of factor references.
+##' @param factor.reference.label Label to use at factor.reference.pos instead of value. 
 ##' @param pch Point type for point estimates
 ##' @param cex Size of points
 ##' @param lwd Line type for the confidence intervals
@@ -75,6 +79,8 @@ plot.ci <- function(x,
                     values=TRUE,
                     value.pos=TRUE,
                     title.values,
+                    factor.reference.pos,
+                    factor.reference.label="Ref",
                     pch=16,
                     cex=1,
                     lwd=2,
@@ -106,7 +112,6 @@ plot.ci <- function(x,
         upper <- x$upper+shift
     else
         upper <- upper+shift
-
     # }}}
     # {{{  labels
     if (missing(title.labels))
@@ -136,6 +141,8 @@ plot.ci <- function(x,
                            apply(cbind(x[["lower"]],x[["upper"]]),
                                  1,
                                  function(x)formatCI(lower=x[1],upper=x[2],format=format,digits=digits)))
+        if (!missing(factor.reference.pos) && is.numeric(factor.reference.pos) && all(factor.reference.pos<length(valstring)))
+            valstring[factor.reference.pos] <- factor.reference.label
         if (missing(title.values)) title.values <- TRUE
         ## val <- cbind(x$labels)
         ## print.ci(x,print=FALSE,digits=digits,format=format,se=FALSE)
@@ -191,7 +198,7 @@ plot.ci <- function(x,
                                      pos=4)
     smartA <- prodlim::SmartControl(call=  list(...),
                                     keys=c("plot","points","segments","labels","values","title.labels","title.values","axis1","axis2","background"),
-                                    ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","axis2"),
+                                    ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","axis2","factor.reference.pos","factor.reference.label"),
                                     defaults=list("plot"=plot.DefaultArgs,"points"=points.DefaultArgs,"labels"=labels.DefaultArgs,"title.labels"=title.labels.DefaultArgs,"background"=background.DefaultArgs,"values"=values.DefaultArgs,"title.values"=title.values.DefaultArgs,"segments"=segments.DefaultArgs,"axis1"=axis1.DefaultArgs,"axis2"=axis2.DefaultArgs),
                                     forced=list("plot"=list(axes=FALSE),"axis1"=list(side=1)),
                                     verbose=TRUE)
