@@ -19,7 +19,7 @@ and x2 are confounders.}
 \item{vars}{A list of variable names, the changing part of the
 regression formula.}
 
-\item{...}{passed to coxph}
+\item{...}{passed to glm}
 }
 \value{
 Matrix with regression coefficients, one for each element of \code{vars}.
@@ -30,6 +30,13 @@ Run a series of generalized linear regression analyses and summarize the results
 \author{
 Thomas Alexander Gerds
 
+data(Diabetes)
+Diabetes$hyper1 <- factor(1*(Diabetes$bp.1s>140))
+uniodds <- glmSeries(hyper1~1,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
+uniodds
+## control all univariate analyses for age and gender
+uniodds.control <- glmSeries(hyper1~age+gender,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
+uniodds.control
 ##'
 }
 
