@@ -5,28 +5,16 @@
 \title{Tabulize regression coefficients with confidence intervals and p-values.}
 \usage{
 \method{publish}{glm}(object, confint.method, pvalue.method, digits = c(2, 4),
-  eps = 0.0001, print = TRUE, ci.format = NULL,
-  factor.reference = "extraline", units = NULL, ...)
+  print = TRUE, factor.reference = "extraline", units = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{glm} object.}
 
 \item{digits}{Rounding digits for all numbers but the p-values.}
 
-\item{eps}{passed to format.pval}
-
 \item{print}{If \code{FALSE} do not print results.}
 
-\item{ci.format}{Format for confidence intervals passed to
-\code{\link{sprintf}} with two arguments: the lower and the upper
-limit.}
-
-\item{...}{passed to labelUnits}
-
-\item{pvalue.digits}{Rounding digits for p-values.}
-
-\item{pvalue.stars}{If \code{TRUE} significance is indicated by
-stars instead of p-values.}
+\item{...}{... passed to \code{summary.regressionTable} and also to \code{labelUnits}.}
 
 \item{showMissing}{If \code{TRUE} show number of missing values in
 table}
@@ -63,9 +51,9 @@ odds ratios for logistic regression (family = binomial).
 data(Diabetes)
 f = glm(bp.2s~frame+gender+age,data=Diabetes)
 publish(f)
-publish(f,reference="inline")
+publish(f,factor.reference="inline")
 publish(f,pvalue.stars=TRUE)
-publish(f,ci.format="(\%1.1f,\%1.1f)")
+publish(f,ci.format="(l,u)")
 
 ### interaction
 fit = glm(bp.2s~frame+gender*age,data=Diabetes)

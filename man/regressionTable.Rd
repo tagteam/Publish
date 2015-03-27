@@ -19,7 +19,8 @@ intervals using the model based estimate of standard error.
 available from library MASS for \code{lm} and \code{glm}
 objects. \code{'robust'} uses the sandwich form standard error to
 construct Wald type intervals (see
-\code{lava::estimate.default}). \code{}}
+\code{lava::estimate.default}). \code{simultaneous} calls
+\code{multcomp::glht} to obtain simultaneous confidence intervals.}
 
 \item{pvalue.method}{}
 

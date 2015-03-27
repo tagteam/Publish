@@ -17,6 +17,7 @@
 #' @examples
 ##' data(SpaceT)
 NULL
+#' Diabetes data of Dr John Schorling
 #'
 #' These data are courtesy of Dr John Schorling, Department of Medicine, University of Virginia School of Medicine.
 #' The data consist of 19 variables on 403 subjects from 1046 subjects who were interviewed in a study to understand

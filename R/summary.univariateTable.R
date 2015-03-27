@@ -7,7 +7,9 @@
 ##' @param missing Decides if number of missing values are shown in table.
 ##' Defaults to \code{"ifany"}, and can also be set to \code{"always"} or \code{"never"}.
 ##' 
-##' @param n If not missing, show the number of subjects in each column. If equal to \code{"inNames"}, show the numbers in parentheses in the column names.
+##' @param n If not missing, show the number of subjects in each
+##' column. If equal to \code{"inNames"}, show the numbers in
+##' parentheses in the column names.
 ##' @param pvalue.stars If TRUE use \code{symnum} to parse p-values
 ##' otherwise use \code{format.pval}.
 ##' @param pvalue.eps Passed to \code{format.pval}.
@@ -15,12 +17,20 @@
 ##' @param ... passed on to labelUnits
 ##' @export
 ##' @return Summary table 
-##' @author Thomas A. Gerds
+##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
+##' @examples
+##' data(Diabetes)
+##' u <- univariateTable(gender~age+location+Q(BMI)+height+weight,
+##'                 data=Diabetes)
+##' summary(u)
+##' summary(u,n=NULL)
+##' summary(u,pvalue.digits=2,"age"="Age (years)","height"="Body height (cm)")
+##' 
+##' 
 summary.univariateTable <- function(object,
                                     missing=c("ifany","always","never"),
                                     n="inNames",
                                     pvalue.stars=FALSE,
-                                    pvalue.eps=0.0001,
                                     pvalue.digits=4,
                                     ...){
     # {{{missing and n
@@ -31,7 +41,7 @@ summary.univariateTable <- function(object,
         if (pvalue.stars==TRUE)
             px <- symnum(object$p.values,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
         else
-            px <- format.pval(object$p.values,eps=pvalue.eps,digits=pvalue.digits)
+            px <- format.pval(object$p.values,eps=10^{-pvalue.digits},digits=pvalue.digits)
         names(px) <- names(object$p.values)
     }
     # }}}
@@ -105,21 +115,22 @@ summary.univariateTable <- function(object,
     # }}}
     # {{{ column names and n
 
-    if (!missing(n)){
+    ## if (!missing(n)){
+    if (length(n)>0)
         if (n=="inNames"){
             object$groups <- paste(object$groups," (n=",object$n.groups[-length(object$n.groups)],")",sep="")
         }
         else{
             XXtab <- rbind(c("n","",object$n.groups,""),XXtab)
         }
-    }
+    ## }
     if (is.null(object$groups)){
         colnames(XXtab) <- c("Variable","Levels","Value")
         XXtab$Variable <- as.character(XXtab$Variable)
         XXtab$Levels <- as.character(XXtab$Levels)
     }
     else{
-        if (!missing(n) && (n=="inNames")){
+        if (length(n)>0 && (n=="inNames")){
             colnames(XXtab) <- c("Variable","Level",object$groups,paste("Total"," (n=",object$n.groups[length(object$n.groups)],")",sep=""),"p-value")
         }
         else{

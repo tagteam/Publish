@@ -72,7 +72,7 @@ publish.matrix <- function(object,
                             defaults=list("wiki"=wiki.DefaultArgs,"latex"=latex.DefaultArgs,"markdown"=markdown.DefaultArgs,"org"=org.DefaultArgs),
                             ignore.case=TRUE,
                             replaceDefaults=FALSE,
-                            verbose=TRUE)
+                            verbose=FALSE)
     # }}}
     # {{{ style dependent syntax
     if (missing(style)) style <- "none"

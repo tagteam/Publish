@@ -2,23 +2,15 @@
 ##'
 ##' The cause-specific hazard ratio's are combined into one table.
 ##' @title Tabulizing cause-specific hazard ratio from all causes with confidence limits and Wald test p-values.
-##' @param object Cause-specific hazard model obtained with
-##' \code{CSC}.
-##' @param cause Show a table for this cause. If omitted, list all
-##' causes.
-##' @param digits Number of digits for all values except p-values.
-##' @param pvalue.digits Number of digits for p-values
-##' @param eps Values smaller than \code{eps} are formatted as \code{<
-##' eps}.
-##' @param pvalue.stars If \code{TRUE}, use star-notation for
-##' p-values.
-##' @param ci.format Format for confidence intervals passed to
-##' @param showMissing If \code{TRUE} show number of missing values
-##' per variable.
-##' @param reference See \code{publish.coxph}.
-##' @param output.columns Pre-select columns.
+##' @param object Cause-specific hazard model obtained with \code{CSC}.
+##' @param cause Show a table for this cause. If omitted, list all causes.
+##' @param confint.method See \code{publish.coxph}
+##' @param pvalue.method See \code{publish.coxph}
+##' @param factor.reference See \code{regressionTable}
+##' @param units  See \code{regressionTable}
 ##' @param print If \code{TRUE} print the table(s).
-##' @param ... passed to \code{publish.coxph}
+##' @param ... passed on to control formatting of parameters, confidence intervals and p-values.
+##' See \code{summary.regressionTable}. 
 ##' @return Table with cause-specific hazard ratios, confidence limits and p-values.
 ##' @author Thomas Alexander Gerds <tab@@biostat.ku.dk>
 ##' @examples
@@ -26,41 +18,36 @@
 ##' library(prodlim)
 ##' library(pec)
 ##' library(survival)
-##' data(Melanoma)
-##'  fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
+##' data(Melanoma,package="riskRegression")
+##' fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
 ##'             data=Melanoma)
 ##' publish(fit1)
-##' publish(fit1,eps=0.001)
 ##' publish(fit1,pvalue.stars=TRUE)
-##' publish(fit1,ci.format="(%1.1f, %1.1f)")
+##' publish(fit1,ci.format="(u--l)",factor.reference="inline",units=list("age"="years"))
 ##' @export
 publish.CauseSpecificCox <- function(object,
                                      cause,
                                      confint.method,
                                      pvalue.method,
-                                     digits=c(2,4),
-                                     eps=0.0001,
-                                     print=TRUE,
-                                     ci.format=NULL,
                                      factor.reference="extraline",
                                      units=NULL,
+                                     print=TRUE,
                                      ...){
+    
     if (missing(confint.method)) confint.method="default"
     if (missing(pvalue.method))
         pvalue.method=switch(confint.method,
             "robust"={"robust"},
             "simultaneous"={"simultaneous"},
             "default")
-    if (is.null(ci.format)) ci.format <- paste("[",paste("%1.",digits,"f",sep=""),";",paste("%1.",digits,"f",sep=""),"]",sep="")
     if (missing(cause)) {
         clist <- lapply(object$models,function(m){
             m$call$data <- object$call$data
             publish(m,
                     pvalue.method=pvalue.method,
                     confint.method=confint.method,
-                    digits=digits,
+                    ## digits=digits,
                     print=FALSE,
-                    ci.format=ci.format,
                     factor.reference=factor.reference,
                     units=units,...)
         })
@@ -80,16 +67,13 @@ publish.CauseSpecificCox <- function(object,
         out <- publish(m,
                        pvalue.method=pvalue.method,
                        confint.method=confint.method,
-                       digits=digits,
+                       ## digits=digits,
                        print=FALSE,
                        ci.format=ci.format,
                        factor.reference=factor.reference,
                        units=units,...)
     }
-    if (print==TRUE)
-        print(out)
-    ## if (pvalue.stars==TRUE)
-    ## cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
+    if (print==TRUE) print(out)
     invisible(out)
 }
 

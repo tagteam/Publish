@@ -4,26 +4,26 @@
 \alias{summary.ci}
 \title{Summarize confidence intervals}
 \usage{
-\method{summary}{ci}(object, digits = 3, format, se = FALSE, print = TRUE,
+\method{summary}{ci}(object, format = "[u;l]", se = FALSE, print = TRUE,
   ...)
 }
 \arguments{
-\item{object}{Object containing point estimates and the corresponding
-confidence intervals}
+\item{object}{Object containing point estimates and the
+corresponding confidence intervals}
 
-\item{digits}{Digits for round values}
-
-\item{format}{A string which indicates the format used for confidence intervals.
-The string is passed to \code{\link{formatCI}} with two arguments: the lower and the upper
-limit. For example \code{'(l;u)'} yields confidence intervals with round parenthesis in which
-the upper and the lower limits are separated by semicolon.}
+\item{format}{A string which indicates the format used for
+confidence intervals.  The string is passed to
+\code{\link{formatCI}} with two arguments: the lower and the upper
+limit. For example \code{'(l;u)'} yields confidence intervals with
+round parenthesis in which the upper and the lower limits are
+separated by semicolon.}
 
 \item{se}{If \code{TRUE} add standard error.}
 
 \item{print}{Logical: if \code{FALSE} do not actually print
 confidence intervals but just return them invisibly.}
 
-\item{...}{passed to print}
+\item{...}{used to control formatting of numbers}
 }
 \value{
 Formatted confidence intervals
@@ -41,8 +41,12 @@ m <- categorical(m,Y~X,K=4)
 set.seed(4)
 d <- sim(m,24)
 ci.mean(Y~X,data=d)
-x <- summary(ci.mean(Y~X,data=d))
+x <- summary(ci.mean(Y~X,data=d),digits=2)
 x
+x <- summary(ci.mean(Y~X,data=d),format="(u,l)",digits=2)
+x <- summary(ci.mean(Y~X,data=d),format="(u,l)",digits=1,se=TRUE)
+x <- summary(ci.mean(Y~X,data=d),format="(u,l)",digits=1,handler="format")
+x <- summary(ci.mean(Y~X,data=d),format="(u,l)",digits=1,handler="prettyNum")
 }
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>

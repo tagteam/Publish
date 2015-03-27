@@ -4,19 +4,11 @@
 \alias{print.ci}
 \title{Print confidence intervals}
 \usage{
-\method{print}{ci}(x, digits = 3, format = NULL, se = FALSE,
-  print = TRUE, ...)
+\method{print}{ci}(x, se = FALSE, print = TRUE, ...)
 }
 \arguments{
 \item{x}{Object containing point estimates and the corresponding
 confidence intervals}
-
-\item{digits}{Digits for round values}
-
-\item{format}{A string which indicates the format used for confidence intervals.
-The string is passed to \code{\link{formatCI}} with two arguments: the lower and the upper
-limit. For example \code{'(l;u)'} yields confidence intervals with round parenthesis in which
-the upper and the lower limits are separated by semicolon.}
 
 \item{se}{If \code{TRUE} add the standard error.}
 
@@ -24,6 +16,13 @@ the upper and the lower limits are separated by semicolon.}
 confidence intervals but just return them invisibly.}
 
 \item{...}{passed to print}
+
+\item{digits}{Digits for round values}
+
+\item{format}{A string which indicates the format used for confidence intervals.
+The string is passed to \code{\link{formatCI}} with two arguments: the lower and the upper
+limit. For example \code{'(l;u)'} yields confidence intervals with round parenthesis in which
+the upper and the lower limits are separated by semicolon.}
 }
 \value{
 A string: the formatted confidence intervals

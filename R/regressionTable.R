@@ -13,7 +13,8 @@
 ##' available from library MASS for \code{lm} and \code{glm}
 ##' objects. \code{'robust'} uses the sandwich form standard error to
 ##' construct Wald type intervals (see
-##' \code{lava::estimate.default}). \code{}
+##' \code{lava::estimate.default}). \code{simultaneous} calls
+##' \code{multcomp::glht} to obtain simultaneous confidence intervals.
 ##' @param pvalue.method
 ##' @param factor.reference Style for showing results for categorical
 ##' variables. If \code{'extraline'} show an additional line for the
@@ -96,7 +97,12 @@ regressionTable <- function(object,
         data <- eval(object$call$data)
     else
         data <- object$data
-    if (is.null(units)) units <- attr(data,"units")
+    if (is.null(units))
+        units <- attr(data,"units")
+    else{
+        units <- c(units,attr(data,"units"))
+        units <- units[unique(names(units))]
+    }
     terms <- terms(formula)
     termlabels <- attr(terms,"term.labels")
     termorder <- attr(terms,"order")

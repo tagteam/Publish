@@ -4,38 +4,23 @@
 \alias{publish.coxph}
 \title{Tabulize hazard ratios with confidence intervals and p-values.}
 \usage{
-\method{publish}{coxph}(object, confint.method, pvalue.method, digits = c(2,
-  4), eps = 0.0001, print = TRUE, ci.format = NULL,
+\method{publish}{coxph}(object, confint.method, pvalue.method, print = TRUE,
   factor.reference = "extraline", units = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{coxph} object.}
 
-\item{digits}{Rounding digits for all numbers but the p-values.}
+\item{confint.method}{}
 
-\item{eps}{passed to format.pval}
+\item{pvalue.method}{}
 
 \item{print}{If \code{FALSE} do not print results.}
 
-\item{ci.format}{Format for confidence intervals passed to
-\code{\link{sprintf}} with two arguments: the lower and the upper
-limit.}
+\item{factor.reference}{}
 
-\item{...}{passed to labelUnits}
+\item{units}{}
 
-\item{pvalue.digits}{Rounding digits for p-values.}
-
-\item{pvalue.stars}{If \code{TRUE} significance is indicated by
-stars instead of p-values.}
-
-\item{showMissing}{If \code{TRUE} show number of missing values in
-table}
-
-\item{output.columns}{Select output columns}
-
-\item{reference}{Style for showing results for categorical
-variables. If \code{"extraline"} show an additional line for the
-reference category.}
+\item{...}{passed to \code{summary.regressionTable} and also to \code{labelUnits}.}
 }
 \value{
 Table with hazard ratios, confidence intervals and p-values.
@@ -58,7 +43,7 @@ publish(fit)
 
 publish(fit,ci.digits=2,pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE)
 publish(fit,ci.digits=2,ci.handler="prettyNum",pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE)
-publish(fit,ci.digits=2,ci.handler="sprintf",pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE)
+publish(fit,ci.digits=2,ci.handler="sprintf",pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE,ci.trim=FALSE)
 
 fit2 = coxph(Surv(time,status!=0)~age+sex+edema+log(bili,base=2)+log(albumin)+log(protime),
     data=pbc)

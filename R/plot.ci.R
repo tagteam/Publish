@@ -12,9 +12,11 @@
 ##' @title Plot confidence intervals
 ##' @param x Object containing point estimates and the corresponding
 ##' confidence intervals
+##' @param y.offset Adjustment of position of confidence intervals and text on y-axis. When \code{y.offset=0}
+##' the positions are integers between the number of intervals (upper most) and 1 (lowest interval).
 ##' @param lower lower confidence limits
 ##' @param upper upper confidence limits
-##' @param labels labels 
+##' @param labels labels
 ##' @param label.pos x-position of labels
 ##' @param title.labels title for label column
 ##' @param values Logical: if \code{TRUE} show the values of the point
@@ -30,18 +32,30 @@
 ##' @param ylim Limit of the y-axis
 ##' @param ylab Label for the x-axis
 ##' @param xlab Label for the y-axis
+##' @param automar If \code{TRUE} set margin elements 2 and 4 of
+##' \code{par()$mar} based on string width of labels and values.
+##' @param margin.offset If \code{automar} is \code{TRUE} additional
+##' offset in inches added to margins.  Can be a vector of length 2,
+##' first element for left margin second for right margin.
 ##' @param digits For rounding of values, passed to format and
 ##' print.ci
-##' @param format A string which indicates the format used for confidence intervals.
-##' The string is passed to \code{\link{formatCI}} with two arguments: the lower and the upper
-##' limit. For example \code{'(l;u)'} yields confidence intervals with round parenthesis in which
-##' the upper and the lower limits are separated by semicolon.
-##' @param shift Shift the whole graph \code{shift} units to the right if \code{shift}
-##' is positive and to the left if shift is negative. Useful for combining multiple plots.
+##' @param format A string which indicates the format used for
+##' confidence intervals.  The string is passed to
+##' \code{\link{formatCI}} with two arguments: the lower and the upper
+##' limit. For example \code{'(l;u)'} yields confidence intervals with
+##' round parenthesis in which the upper and the lower limits are
+##' separated by semicolon.
+##' @param shift Shift the whole graph \code{shift} units to the right
+##' if \code{shift} is positive and to the left if shift is
+##' negative. Useful for combining multiple plots.
 ##' @param add If not \code{FALSE} add to an existing plot.
 ##' @param axes if FALSE do not add axes
 ##' @param axis2 if FALSE do not y-axis
-##' @param ... Used to transport arguments for the subroutines: \code{"plot"}, \code{"points"}, \code{"segments"}, \code{"labels"}, \code{"values"}, \code{"title.labels"}, \code{"title.values"}, \code{"axis1"}, \code{"axis2"}, \code{"background"}.
+##' @param ... Used to transport arguments for the following
+##' subroutines: \code{"plot"}, \code{"points"}, \code{"segments"},
+##' \code{"labels"}, \code{"values"}, \code{"title.labels"},
+##' \code{"title.values"}, \code{"axis1"}, \code{"axis2"},
+##' \code{"background"}.
 ##' @examples
 ##'
 ##' data(Diabetes)
@@ -52,14 +66,15 @@
 #' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.ci <- function(x,
+                    y.offset=0,
                     lower,
                     upper,
                     labels=TRUE,
                     label.pos,
-                    title.labels=TRUE,
+                    title.labels,
                     values=TRUE,
                     value.pos=TRUE,
-                    title.values=TRUE,
+                    title.values,
                     pch=16,
                     cex=1,
                     lwd=2,
@@ -68,6 +83,8 @@ plot.ci <- function(x,
                     ylim,
                     ylab,
                     xlab,
+                    automar=TRUE,
+                    margin.offset=0.25,
                     digits=1,
                     format=NULL,
                     shift=0,
@@ -77,6 +94,7 @@ plot.ci <- function(x,
                     ...){
     if (missing(format) || is.null(format)) format <- "[u;l]"
     # {{{  extract data
+
     m <- x[[1]]+shift
     if (!missing(lower)) x$lower <- lower
     if (!missing(upper)) x$upper <- upper
@@ -88,11 +106,17 @@ plot.ci <- function(x,
         upper <- x$upper+shift
     else
         upper <- upper+shift
+
     # }}}
     # {{{  labels
+    if (missing(title.labels))
+        if (is.logical(labels) && (length(labels)==1) && (labels==FALSE))
+            title.labels <- FALSE
+        else
+            title.labels <- TRUE
     if (title.labels[1]!=FALSE)
         if (title.labels[1]==TRUE)
-            if (is.null(x$labels))
+            if (is.null(colnames(x$labels)))
                 message("no title labels in object")
             else
                 title.labels <- colnames(x$labels)
@@ -108,26 +132,31 @@ plot.ci <- function(x,
         title.labels <- paste(title.labels,collapse=" / ")
     }
     if (values[1]){
-        valstring <- paste(format(x[[1]],digits=digits+1),
+        valstring <- paste(pubformat(x[[1]],digits=digits),
                            apply(cbind(x[["lower"]],x[["upper"]]),
                                  1,
                                  function(x)formatCI(lower=x[1],upper=x[2],format=format,digits=digits)))
+        if (missing(title.values)) title.values <- TRUE
         ## val <- cbind(x$labels)
         ## print.ci(x,print=FALSE,digits=digits,format=format,se=FALSE)
         ## valstring <- paste(val[,2],val[,3])
+    } else{
+        valstring <- NULL
+        if (missing(title.values)) title.values <- FALSE
     }
     if (!is.expression(title.values) && !is.character(title.values) && title.values[1]!=FALSE)
-        title.values <- expression(CI[95])
+        title.values <- expression(bold(CI[95]))
     # }}}
     # {{{  dimensions
     len <- length(m)
-    at <- (1:len)
+    at <- (1:len)+y.offset
     rat <- rev(at)
     if (missing(xlim))
         xlim <- c(min(lower)-0.1*min(lower),max(upper)+0.1*min(upper))
     if (missing(xlab)) xlab <- ""
     # }}}
     # {{{  default and smart arguments
+
     background.DefaultArgs <- list(bg="white")
     axis1.DefaultArgs <- list(side=1,las=1)
     axis2.DefaultArgs <- list(side=2,pos=xlim[1],lwd.ticks=0,at=c(0,len),labels=c("",""))
@@ -136,23 +165,29 @@ plot.ci <- function(x,
     segments.DefaultArgs <- list(x0=lower,y0=rat,x1=upper,y1=rat,lwd=lwd,col=col,xpd=NA)
     labels.DefaultArgs <- list(x=xlim[1],
                                y=rat,
+                               cex=cex,
                                labels=labels,
                                xpd=NA,
                                pos=2)
     title.labels.DefaultArgs <- list(x=xlim[1],
                                      y=len+1,
+                                     cex=cex,
                                      labels=title.labels,
                                      xpd=NA,
+                                     font=2,
                                      pos=2)
     values.DefaultArgs <- list(x=xlim[2],
                                y=rat,
                                labels=valstring,
+                               cex=cex,
                                xpd=NA,
                                pos=4)
     title.values.DefaultArgs <- list(x=xlim[2],
                                      y=len+1,
                                      labels=title.values,
+                                     cex=cex,
                                      xpd=NA,
+                                     font=2,
                                      pos=4)
     smartA <- prodlim::SmartControl(call=  list(...),
                                     keys=c("plot","points","segments","labels","values","title.labels","title.values","axis1","axis2","background"),
@@ -160,12 +195,32 @@ plot.ci <- function(x,
                                     defaults=list("plot"=plot.DefaultArgs,"points"=points.DefaultArgs,"labels"=labels.DefaultArgs,"title.labels"=title.labels.DefaultArgs,"background"=background.DefaultArgs,"values"=values.DefaultArgs,"title.values"=title.values.DefaultArgs,"segments"=segments.DefaultArgs,"axis1"=axis1.DefaultArgs,"axis2"=axis2.DefaultArgs),
                                     forced=list("plot"=list(axes=FALSE),"axis1"=list(side=1)),
                                     verbose=TRUE)
+
+    # }}}
+    # {{{  margins
+
+    if (missing(automar) || automar==TRUE){
+        oldmar <- par()$mar
+        if (length(margin.offset)==1) margin.offset <- rep(margin.offset,2)
+        labelstextwidth <- max(strwidth(smartA$labels$labels,cex=smartA$labels$cex, units="inches"),
+                               strwidth(smartA$title.labels$labels,cex=smartA$title.labels$cex, units="inches"))+margin.offset[[1]]
+        valuestextwidth <- max(strwidth(smartA$values$labels,cex=smartA$values$cex, units="inches"),
+                               strwidth(smartA$title.values$labels,cex=smartA$title.values$cex, units="inches"))+margin.offset[[2]]
+        inches2lines <- ( par("mar") / par("mai") )[1] 
+        leftMargin <- labelstextwidth*inches2lines
+        rightMargin <- valuestextwidth*inches2lines
+        newmar <- par()$mar + c(0,leftMargin,0,rightMargin)
+        par(mar=newmar)
+    }
+
     # }}}
     # {{{  plot and axis
     if (add==FALSE){
         do.call("plot",smartA$plot)
         ## do.call(prodlim::backGround,smartA$background)
     }
+    if (missing(automar) || automar==TRUE) par(mar=oldmar) ## reset
+    
     if (axes==TRUE){
         if (is.null(smartA$axis1$labels))
             ## smartA$axis1$labels <- smartA$axis1$at - shift
