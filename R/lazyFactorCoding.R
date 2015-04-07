@@ -6,7 +6,7 @@
 ##' for the really efficiently working people e.g. in emacs.
 ##' @title Efficient coding of factor levels
 ##' @param data Data frame in which to search for categorical variables.
-##' @param maxlevel Treat non-factor variables only if the number of unique values less than maxlevel. Defaults to 10.
+##' @param maxlevels Treat non-factor variables only if the number of unique values less than maxlevels. Defaults to 10.
 ##' @return R-code one line for each variable.
 ##' @author Thomas Alexander Gerds
 ##' @examples
@@ -14,17 +14,22 @@
 ##' lazyFactorCoding(Diabetes)
 ##' 
 ##' @export
-lazyFactorCoding <- function(data,maxlevel=10){
+lazyFactorCoding <- function(data,maxlevels=10){
     if (!is.character(data))
         data <- as.character(substitute(data))
     d <- get(data)
+    isdt <- match("data.table",class(d),nomatch=FALSE)
     out <- lapply(names(d),function(x){
-        if ((is.factor(d[,x]) && length(unique(d[,x]))<maxlevel) || length(unique(d[,x]))<maxlevel){
-            obj.x <- paste(data,"$",x,sep="")
-            levs.x <- if (is.factor(d[,x])) levels(d[,x]) else sort(unique(d[,x]))
+        dx <- d[[x]]
+        if ((is.factor(dx) && length(unique(dx))<maxlevels) || (length(unique(dx))<maxlevels)){
+            levs.x <- if (is.factor(unique(dx))) levels(dx) else sort(unique(dx))
             labels.x <- paste("\"",paste(levs.x,collapse="\",\"",sep=""),"\"",sep="")
-            ## levs.x <- paste(levs.x,collapse=",",sep="")
-            paste(obj.x," <- factor(",obj.x,",levels=c(",as.character(labels.x),"),labels=c(",as.character(labels.x),"))\n",sep="")
+            if (isdt){
+                paste0(data,"[",",",x,":=factor(",x,",levels=c(",as.character(labels.x),"),labels=c(",as.character(labels.x),"))]\n")
+            }else{
+                obj.x <- paste(data,"$",x,sep="")
+                paste(obj.x," <- factor(",obj.x,",levels=c(",as.character(labels.x),"),labels=c(",as.character(labels.x),"))\n",sep="")
+            }
         }
         else NULL
     })
