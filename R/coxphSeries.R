@@ -1,5 +1,7 @@
-##' Run a series of Cox regression analyses and summarize the results in a table
-##'
+##' Run a series of Cox regression analyses for a list of predictor variables
+##' and summarize the results in a table.
+##' The Cox models can be adjusted for a fixed set of covariates
+##'  
 ##' This function runs on \code{coxph} from the survival package.
 ##' @title Run a series of Cox regression models 
 ##' @param formula The fixed part of the regression formula. For

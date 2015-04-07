@@ -261,12 +261,16 @@ univariateTable <- function(formula,
         if (!is.null(continuous.matrix)){
             p.cont <- sapply(names(continuous.matrix),function(v){
                 if (strataIsOutcome==TRUE){
-                    ## logistic regression 
+                    ## logistic regression
                     px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
                     px
                 }
                 else {
-                    px <- anova(glm(formula(paste(v,"~",groupname)),data=data),test="Chisq")$"Pr(>Chi)"[2]
+                    ## glm fails when there are missing values
+                    ## in outcome, so we remove missing values
+                    fv <- formula(paste(v,"~",groupname))
+                    vdata <- model.frame(fv,data,na.action=na.omit)
+                    px <- anova(glm(fv,data=vdata),test="Chisq")$"Pr(>Chi)"[2]
                     px
                 }
             })

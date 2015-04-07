@@ -42,7 +42,11 @@ summary.regressionTable <- function(x,
                                     keys=c("ci","pvalue"),
                                     ignore=c("x","print","handler","digits","nsmall"),
                                     defaults=list("ci"=ci.defaults,"pvalue"=pvalue.defaults),
-                                    forced=list("ci"=list(lower=Lower,upper=Upper,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]]),
+                                    forced=list("ci"=list(lower=Lower,
+                                                    upper=Upper,
+                                                    handler=handler,
+                                                    digits=digits[[1]],
+                                                    nsmall=nsmall[[1]]),
                                         "pvalue"=list(Pvalue)),
                                     verbose=FALSE)
     if (attr(x,"model")=="Cox regression"){

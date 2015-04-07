@@ -6,8 +6,12 @@
 ##' @param formula A formula which specifies the variables for the
 ##' spaghettiograms. If Y ~ X + id(Z) then for each value of Z the
 ##' spaghettiogram is the graph (X,Y) in the subset defined by the
-##' value of Z
-##' @param data data set in which variable
+##' value of Z. Data are expected to be in the "long" format. Y is
+##' a numeric vector and X is a factor whose levels define the X-axis.
+##' Each level of the id-vector corresponds to 
+##' one line (spaghetti) in the plot.
+##' 
+##' @param data data set in which variables X, Y and Z are defined.
 ##' @param xlim Limits for x-axis
 ##' @param ylim Limits for y-axis
 ##' @param xlab Label for x-axis
