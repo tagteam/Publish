@@ -89,7 +89,7 @@ NULL
 ##' @examples
 ##' 
 ##' data(trace)
-##' Units(trace)
+##' Units(trace,list("age"="years"))
 ##' fit <- glm(dead ~ smoking+sex+age+Time+offset(log(ObsTime)), family="poisson",data=trace)
 ##' rtf <- regressionTable(fit,factor.reference = "inline")
 ##' summary(rtf)
