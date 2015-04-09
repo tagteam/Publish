@@ -49,7 +49,7 @@ summary.regressionTable <- function(x,
                                                     nsmall=nsmall[[1]]),
                                         "pvalue"=list(Pvalue)),
                                     verbose=FALSE)
-    if (attr(x,"model")=="Cox regression"){
+    if (attr(x,"model")%in%c("Cox regression","Poisson regression")){
         attr(Rtab,"model") <- "Cox regression"
         attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
         Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])

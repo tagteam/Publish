@@ -67,5 +67,35 @@ NULL
 ##' 
 NULL
 
+#' trace data 
+#'
+#' These data are from Christian Torp-Pedersen
+#' @name trace
+#' @docType data
+#' @format A data frame with 1832 observations on the following 6 variables.
+#' \describe{
+#' \item{Time}{dont know}
+#' \item{smoking}{Smoking status. A factor with levels (Never, Current, Previous)}
+#' \item{sex}{A factor with levels (Female, Male)}
+#' \item{age}{Age in years}
+#' \item{ObsTime}{Observed time at risk}
+#' \item{dead}{Count of deaths}
+#' }
+#' @references
+#' XXX
+#' @source
+#' CTP
+#' @keywords datasets
+##' @examples
+##' 
+##' data(trace)
+##' Units(trace)
+##' fit <- glm(dead ~ smoking+sex+age+Time+offset(log(ObsTime)), family="poisson",data=trace)
+##' rtf <- regressionTable(fit,factor.reference = "inline")
+##' summary(rtf)
+##' publish(fit)
+##' 
+NULL
+
 #' @importFrom survival Surv
 #' @importFrom prodlim Hist

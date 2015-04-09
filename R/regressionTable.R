@@ -66,8 +66,14 @@ regressionTable <- function(object,
                             units=NULL,
                             noterms=NULL,
                             ...){
-    # {{{ model type 
-    logisticRegression <- (!is.null(object$family$family) && object$family$family=="binomial")
+    # {{{ model type
+    if (is.character(object$family)){
+        logisticRegression <- (object$family=="binomial")
+        poissonRegression <- (object$family=="poisson")
+    } else{
+        logisticRegression <- (!is.null(object$family$family) && object$family$family=="binomial")
+        poissonRegression <- (!is.null(object$family$family) && object$family$family=="poisson")
+    }
     coxRegression <- any(match(class(object),c("coxph","cph"),nomatch=0))
     # }}}
     # {{{ intercept
@@ -278,7 +284,7 @@ regressionTable <- function(object,
                 x$Upper <- exp(x$Upper)
                 x
             })
-        if (coxRegression)
+        if (coxRegression | poissonRegression)
             out <- lapply(out,function(x){
                 colnames(x) <- sub("Coefficient","HazardRatio",colnames(x))
                 x$HazardRatio <- exp(x$HazardRatio)
@@ -291,9 +297,10 @@ regressionTable <- function(object,
     attr(out,"terms2") <- terms2
     attr(out,"factornames") <- factornames
     attr(out,"orderednames") <- orderednames
-    attr(out,"model") <- switch(as.character(logisticRegression+2*coxRegression),
+    attr(out,"model") <- switch(as.character(logisticRegression+2*coxRegression+3*poissonRegression),
                                 "1"="Logistic regression",
                                 "2"="Cox regression",
+                                "3"="Poisson regression",
                                 "Linear regression")
     class(out) <- "regressionTable"
     out
