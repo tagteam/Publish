@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55) 
 ## Version: 
-## last-updated: Feb 17 2015 (16:31) 
+## last-updated: Mar 31 2015 (15:06) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 12
+##     Update #: 18
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -33,15 +33,13 @@
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.regressionTable <- function(x,...){
-    X <- summary(x)
-    at <- attributes(X)
-    Coef <- at$Coefficient
-    Lower <- at$Lower
-    Upper <- at$Upper
+    X <- do.call("rbind",x)
+    Coef <- X[,grep("OddsRatio|HazardRatio|Coefficient",colnames(X))]
+    Lower <- X$Lower
+    Upper <- X$Upper
     plot.ci(list(Coef,lower=Lower,upper=Upper),
             plot.xlim=c(min(Lower),max(Upper)),
-            labels=X$Variable,
-            title.labels="Factor")
+            labels=X$Variable,...)
 }
 
 

@@ -27,7 +27,9 @@ regression formula.}
 matrix with results
 }
 \description{
-Run a series of Cox regression analyses and summarize the results in a table
+Run a series of Cox regression analyses for a list of predictor variables
+and summarize the results in a table.
+The Cox models can be adjusted for a fixed set of covariates
 }
 \details{
 This function runs on \code{coxph} from the survival package.

@@ -12,9 +12,12 @@ Spaghettiogram(formula, data, xlim, ylim, xlab = "", ylab = "",
 \item{formula}{A formula which specifies the variables for the
 spaghettiograms. If Y ~ X + id(Z) then for each value of Z the
 spaghettiogram is the graph (X,Y) in the subset defined by the
-value of Z}
+value of Z. Data are expected to be in the "long" format. Y is
+a numeric vector and X is a factor whose levels define the X-axis.
+Each level of the id-vector corresponds to
+one line (spaghetti) in the plot.}
 
-\item{data}{data set in which variable}
+\item{data}{data set in which variables X, Y and Z are defined.}
 
 \item{xlim}{Limits for x-axis}
 

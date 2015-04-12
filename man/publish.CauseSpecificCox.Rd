@@ -44,7 +44,7 @@ fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
             data=Melanoma)
 publish(fit1)
 publish(fit1,pvalue.stars=TRUE)
-publish(fit1,ci.format="(u--l)",factor.reference="inline",units=list("age"="years"))
+publish(fit1,factor.reference="inline",units=list("age"="years"))
 }
 \author{
 Thomas Alexander Gerds <tab@biostat.ku.dk>

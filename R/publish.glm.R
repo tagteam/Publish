@@ -27,6 +27,7 @@
 ##' @author Thomas Alexander Gerds <tag@@biostat.ku.dk>
 ##' @examples
 ##' data(Diabetes)
+##' ## Linear regression
 ##' f = glm(bp.2s~frame+gender+age,data=Diabetes)
 ##' publish(f)
 ##' publish(f,factor.reference="inline")
@@ -52,6 +53,14 @@
 ##'
 ##' lrfit2 <- glm(hyper1~frame*gender+age,data=Diabetes,family=binomial)
 ##' publish(lrfit2)
+##'
+##' ## Poisson regression
+##' data(trace)
+##' trace <- Units(trace,list("age"="years"))
+##' fit <- glm(dead ~ smoking+sex+age+Time+offset(log(ObsTime)), family="poisson",data=trace)
+##' rtf <- regressionTable(fit,factor.reference = "inline")
+##' summary(rtf)
+##' publish(fit)
 ##' 
 ##' @export
 publish.glm <- function(object,

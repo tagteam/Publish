@@ -23,7 +23,7 @@
 ##'             data=Melanoma)
 ##' publish(fit1)
 ##' publish(fit1,pvalue.stars=TRUE)
-##' publish(fit1,ci.format="(u--l)",factor.reference="inline",units=list("age"="years"))
+##' publish(fit1,factor.reference="inline",units=list("age"="years"))
 ##' @export
 publish.CauseSpecificCox <- function(object,
                                      cause,
@@ -69,7 +69,6 @@ publish.CauseSpecificCox <- function(object,
                        confint.method=confint.method,
                        ## digits=digits,
                        print=FALSE,
-                       ci.format=ci.format,
                        factor.reference=factor.reference,
                        units=units,...)
     }

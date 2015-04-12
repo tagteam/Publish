@@ -118,7 +118,7 @@ plot.ci <- function(x,
         if (is.logical(labels) && (length(labels)==1) && (labels==FALSE))
             title.labels <- FALSE
         else
-            title.labels <- TRUE
+            title.labels <- ""
     if (title.labels[1]!=FALSE)
         if (title.labels[1]==TRUE)
             if (is.null(colnames(x$labels)))
@@ -256,12 +256,3 @@ plot.ci <- function(x,
     invisible(smartA)
 }
 
-plotCI <- function(x,...){
-    UseMethod("plotCI",object=x)
-}
-
-plotCI.glm <- function(x,...){
-    X = publish(x,print=FALSE)
-    names(X)=c("coef","lower","upper")
-    plot.ci(X,title.labels=names(x$xlevels))
-}

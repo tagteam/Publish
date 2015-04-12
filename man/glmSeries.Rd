@@ -25,7 +25,9 @@ regression formula.}
 Matrix with regression coefficients, one for each element of \code{vars}.
 }
 \description{
-Run a series of generalized linear regression analyses and summarize the results in a table
+Run a series of generalized linear regression analyses for a list of predictor variables
+and summarize the results in a table.
+The regression models can be adjusted for a fixed set of covariates.
 }
 \author{
 Thomas Alexander Gerds
