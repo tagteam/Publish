@@ -80,7 +80,7 @@ plot.ci <- function(x,
                     value.pos=TRUE,
                     title.values,
                     factor.reference.pos,
-                    factor.reference.label="Ref",
+                    factor.reference.label="Reference",
                     pch=16,
                     cex=1,
                     lwd=2,
@@ -163,11 +163,10 @@ plot.ci <- function(x,
     if (missing(xlab)) xlab <- ""
     # }}}
     # {{{  default and smart arguments
-
     background.DefaultArgs <- list(bg="white")
     axis1.DefaultArgs <- list(side=1,las=1)
     axis2.DefaultArgs <- list(side=2,pos=xlim[1],lwd.ticks=0,at=c(0,len),labels=c("",""))
-    plot.DefaultArgs <- list(0,0,type="n",ylim=c(0,len+1),xlim=xlim,axes=FALSE,ylab="",xlab=xlab)
+    plot.DefaultArgs <- list(0,0,type="n",ylim=c(0,len+1+y.offset[length(y.offset)]),xlim=xlim,axes=FALSE,ylab="",xlab=xlab)
     points.DefaultArgs <- list(x=m,y=rat,pch=pch,cex=cex,col=col,xpd=NA)
     segments.DefaultArgs <- list(x0=lower,y0=rat,x1=upper,y1=rat,lwd=lwd,col=col,xpd=NA)
     labels.DefaultArgs <- list(x=xlim[1],
@@ -177,7 +176,7 @@ plot.ci <- function(x,
                                xpd=NA,
                                pos=2)
     title.labels.DefaultArgs <- list(x=xlim[1],
-                                     y=len+1,
+                                     y=len+1 + y.offset[length(y.offset)],
                                      cex=cex,
                                      labels=title.labels,
                                      xpd=NA,
@@ -190,7 +189,7 @@ plot.ci <- function(x,
                                xpd=NA,
                                pos=4)
     title.values.DefaultArgs <- list(x=xlim[2],
-                                     y=len+1,
+                                     y=len+1+ y.offset[length(y.offset)],
                                      labels=title.values,
                                      cex=cex,
                                      xpd=NA,

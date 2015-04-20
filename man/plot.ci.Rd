@@ -6,8 +6,8 @@
 \usage{
 \method{plot}{ci}(x, y.offset = 0, lower, upper, labels = TRUE, label.pos,
   title.labels, values = TRUE, value.pos = TRUE, title.values,
-  factor.reference.pos, factor.reference.label = "Ref", pch = 16, cex = 1,
-  lwd = 2, col = 1, xlim, ylim, ylab, xlab, automar = TRUE,
+  factor.reference.pos, factor.reference.label = "Reference", pch = 16,
+  cex = 1, lwd = 2, col = 1, xlim, ylim, ylab, xlab, automar = TRUE,
   margin.offset = 0.25, digits = 1, format = NULL, shift = 0,
   add = FALSE, axes = TRUE, axis2 = FALSE, ...)
 }
