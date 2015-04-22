@@ -185,9 +185,10 @@ regressionTable <- function(object,
     ## omnibus <- drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
     # }}}
     # {{{ missing values
-    allvars <- get_all_vars(delete.response(terms(formula)),data)
-    nmiss <- lapply(allvars,function(v){sum(is.na(v))})
-    names(nmiss) <- names(allvars)
+    allvars <- all.vars(delete.response(terms(formula)))
+    nmiss <- lapply(data[allvars],function(v){sum(is.na(v))})
+    ## nmiss <- lapply(allvars,function(v){sum(is.na(v))})
+    ## names(nmiss) <- names(allvars)
     ## nmiss <- NULL
     # }}}
     # {{{ blocks level 1
