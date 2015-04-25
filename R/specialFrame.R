@@ -86,10 +86,14 @@ specialFrame <- function(formula,
                          response=TRUE,
                          na.action=options()$na.action){
     # {{{ get all variables and remove missing values
-    if (na.action %in% c("na.omit","na.fail","na.exclude") || is.function(na.action))
-        mm <- do.call(na.action,list(object=get_all_vars(formula,data)))
-    else
-        mm <- get_all_vars(formula,data)
+    ## get_all_vars fails when data.frame contains labelled variables (Hmisc)
+    ## if (na.action %in% c("na.omit","na.fail","na.exclude") || is.function(na.action))
+    ## mm <- do.call(na.action,list(object=get_all_vars(formula,data)))
+    ## else
+    ## mm <- get_all_vars(formula,data)
+    ## allvars <- all.vars(terms(formula))
+    ## mm <- data.lapply(data[allvars],function(v){sum(is.na(v))})
+    mm <- model.frame(formula=formula,data=data,na.action=na.action)
     if (NROW(mm) == 0) stop("No (non-missing) observations")
     # }}}
     # {{{call model.frame
