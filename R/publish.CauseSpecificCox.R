@@ -42,7 +42,7 @@ publish.CauseSpecificCox <- function(object,
             "default")
     if (missing(cause)) {
         clist <- lapply(object$models,function(m){
-            m$call$data <- object$call$data
+            ## m$call$data <- object$call$data
             publish(m,
                     pvalue.method=pvalue.method,
                     confint.method=confint.method,
@@ -63,7 +63,7 @@ publish.CauseSpecificCox <- function(object,
         ## }
     } else{
         m <- object$models[[cause]]
-        m$call$data <- object$call$data
+        ## m$call$data <- object$call$data
         out <- publish(m,
                        pvalue.method=pvalue.method,
                        confint.method=confint.method,
