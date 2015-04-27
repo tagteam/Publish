@@ -1,23 +1,23 @@
-### plot.regressionTable.R --- 
+### plot.regressionTable.R ---
 #----------------------------------------------------------------------
 ## author: Thomas Alexander Gerds
-## created: Feb  2 2015 (06:55) 
-## Version: 
-## last-updated: Mar 31 2015 (15:06) 
+## created: Feb  2 2015 (06:55)
+## Version:
+## last-updated: Mar 31 2015 (15:06)
 ##           By: Thomas Alexander Gerds
 ##     Update #: 18
 #----------------------------------------------------------------------
-## 
-### Commentary: 
-## 
+##
+### Commentary:
+##
 ### Change Log:
 #----------------------------------------------------------------------
-## 
+##
 ### Code:
-##' Plotting regression coefficients with confidence limits 
+##' Plotting regression coefficients with confidence limits
 ##'
-##' 
-##' @title Plotting regression coefficients with confidence limits 
+##'
+##' @title Plotting regression coefficients with confidence limits
 ##' @param x regression table obtained with regressionTable
 ##' @param ... passed to plot.ci
 ##' @return NULL
@@ -29,7 +29,12 @@
 ##' rtf <- regressionTable(f,factor.reference = "inline")
 ##' plot(rtf)
 ##'
-##' 
+##' data(trace)
+##' fit<-glm(dead ~ smoking+ sex+ age+Time+offset(log(ObsTime)), family = poisson,data=trace)
+##' fit2<- regressionTable(fit,factor.reference = "inline")
+##' plot(fit2)
+##'
+##'
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.regressionTable <- function(x,...){
