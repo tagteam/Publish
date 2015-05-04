@@ -88,7 +88,6 @@ NULL
 #' }
 #' @references
 #' Kober et al 1995 Am. J. Cardiol 76,1-5
-#' @source
 #'
 #' @keywords datasets
 ##' @examples

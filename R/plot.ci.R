@@ -19,11 +19,9 @@
 ##' @param lower lower confidence limits
 ##' @param upper upper confidence limits
 ##' @param labels labels
-##' @param label.pos x-position of labels
 ##' @param title.labels title for label column
 ##' @param values Logical: if \code{TRUE} show the values of the point
 ##' estimates and confidence intervals on the graph
-##' @param value.pos x-postion of values
 ##' @param title.values Label for the column (or row) of the values.
 ##' @param factor.reference.pos Position of factor references.
 ##' @param factor.reference.label Label to use at factor.reference.pos instead of value.
@@ -38,11 +36,11 @@
 ##' @param xlab Label for the y-axis
 ##' @param automar If \code{TRUE} set margin elements 2 and 4 of
 ##' \code{par()$mar} based on string width of labels and values.
-##' @param margin.offset If \code{automar} is \code{TRUE} additional
-##' offset in inches added to margins.  Can be a vector of length 2,
-##' first element for left margin second for right margin.
-##' @param digits For rounding of values, passed to format and
-##' print.ci
+##' @param leftmargin If \code{automar} is \code{TRUE} additional
+##' offset -- measured in margin lines -- which is added to left margin.
+##' @param rightmargin If \code{automar} is \code{TRUE} additional
+##' offset -- measured in margin lines -- which is added to right margin.  
+##' @param digits For rounding of values, passed to \code{pubformat} and \code{print.ci}
 ##' @param format A string which indicates the format used for
 ##' confidence intervals.  The string is passed to
 ##' \code{\link{formatCI}} with two arguments: the lower and the upper
@@ -61,24 +59,32 @@
 ##' \code{"title.values"}, \code{"axis1"}, \code{"axis2"},
 ##' \code{"background"}.
 ##' @examples
-##'
+##' 
 ##' data(Diabetes)
 ##' x=ci.mean(bp.2s~frame,data=Diabetes)
 ##' plot(x)
-##'
-##'
-##'
+##' 
+##' 
+##' data(CiTable)
+##' names(CiTable)[2:6] <- c("Drug/Time","Dose","Mean","SD","n")
+##' with(CiTable,Publish:::plot.ci(x=list(Risk),
+##'                                lower=low,
+##'                                upper=high,
+##'                                labels=CiTable[,2:6],
+##'                                leftmargin=0,
+##'                                title.labels.cex=1.3,
+##'                                labels.cex=0.8))
+##' 
 #' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.ci <- function(x,
                     y.offset=0,
+                    y.title.offset=1.3,
                     lower,
                     upper,
-                    labels=TRUE,
-                    label.pos,
-                    title.labels="",
-                    values=TRUE,
-                    value.pos=TRUE,
+                    labels,
+                    title.labels,
+                    values,
                     title.values,
                     factor.reference.pos,
                     factor.reference.label="Reference",
@@ -91,7 +97,9 @@ plot.ci <- function(x,
                     ylab,
                     xlab,
                     automar=TRUE,
-                    margin.offset=0.25,
+                    leftmargin=0.25,
+                    rightmargin=0.25,
+                    labels.colintersp=1,
                     digits=1,
                     format=NULL,
                     shift=0,
@@ -101,7 +109,8 @@ plot.ci <- function(x,
                     ...){
     if (missing(format) || is.null(format)) format <- "[u;l]"
     # {{{  extract data
-
+    if (!is.list(x))
+        x <- list(x=x)
     m <- x[[1]]+shift
     if (!missing(lower)) x$lower <- lower
     if (!missing(upper)) x$upper <- upper
@@ -114,45 +123,40 @@ plot.ci <- function(x,
     else
         upper <- upper+shift
     # }}}
-    # {{{  labels
-    if (missing(title.labels))
-        if (is.logical(labels) && (length(labels)==1) && (labels==FALSE))
-            title.labels <- FALSE
-        else
-            title.labels <- ""
-    if (title.labels[1]!=FALSE)
-        if (title.labels[1]==TRUE)
-            if (is.null(colnames(x$labels)))
-                message("no title labels in object")
-            else
-                title.labels <- colnames(x$labels)
-    if (labels[1]!=FALSE)
-        if (labels[1]==TRUE)
-            if (is.null(x$labels))
-                message("no labels in object")
-            else{
-                labels <- x$labels
-            }
-    if (NCOL(labels)>1){
-        labels <- apply(labels,1,paste,collapse=" / ")
-        title.labels <- paste(title.labels,collapse=" / ")
+    # {{{ preprocessing of labels and title.labels
+    if (!missing(labels) && (is.logical(labels) && labels[[1]]==FALSE))
+        do.labels <- FALSE
+    else
+        do.labels <- TRUE
+    if (!do.labels || (!missing(title.labels) && (is.logical(title.labels) && title.labels[[1]]==FALSE)))
+        do.title.labels <- FALSE
+    else
+        do.title.labels <- TRUE
+    if (do.labels && missing(labels)) {
+        labels <- x$labels
+        if (is.null(labels)) do.labels <- FALSE
     }
-    if (values[1]){
+    # }}}
+    # {{{ preprocessing of values and confidence intervals 
+    if (!missing(values) && (is.logical(values) && values[[1]]==FALSE))
+        do.values <- FALSE
+    else
+        do.values <- TRUE
+    if (!missing(title.values) && (is.logical(title.values) && title.values[[1]]==FALSE))
+        do.title.values <- FALSE
+    else
+        do.title.values <- TRUE
+    if (do.values){
         valstring <- paste(pubformat(x[[1]],digits=digits),
                            apply(cbind(x[["lower"]],x[["upper"]]),
                                  1,
                                  function(x)formatCI(lower=x[1],upper=x[2],format=format,digits=digits)))
         if (!missing(factor.reference.pos) && is.numeric(factor.reference.pos) && all(factor.reference.pos<length(valstring)))
             valstring[factor.reference.pos] <- factor.reference.label
-        if (missing(title.values)) title.values <- TRUE
-        ## val <- cbind(x$labels)
-        ## print.ci(x,print=FALSE,digits=digits,format=format,se=FALSE)
-        ## valstring <- paste(val[,2],val[,3])
     } else{
-        valstring <- NULL
-        if (missing(title.values)) title.values <- FALSE
-    }
-    if (!is.expression(title.values) && !is.character(title.values) && title.values[1]!=FALSE)
+          valstring <- NULL
+      }
+    if (do.title.values && (missing(title.values)) || (!is.expression(title.values) && !is.character(title.values)))
         title.values <- expression(bold(CI[95]))
     # }}}
     # {{{  dimensions
@@ -170,32 +174,12 @@ plot.ci <- function(x,
     plot.DefaultArgs <- list(0,0,type="n",ylim=c(0,len+1+y.offset[length(y.offset)]),xlim=xlim,axes=FALSE,ylab="",xlab=xlab)
     points.DefaultArgs <- list(x=m,y=rat,pch=pch,cex=cex,col=col,xpd=NA)
     segments.DefaultArgs <- list(x0=lower,y0=rat,x1=upper,y1=rat,lwd=lwd,col=col,xpd=NA)
-    labels.DefaultArgs <- list(x=xlim[1],
-                               y=rat,
-                               cex=cex,
-                               labels=labels,
-                               xpd=NA,
-                               pos=2)
-    title.labels.DefaultArgs <- list(x=xlim[1],
-                                     y=len+1 + y.offset[length(y.offset)],
-                                     cex=cex,
-                                     labels=title.labels,
-                                     xpd=NA,
-                                     font=2,
-                                     pos=2)
-    values.DefaultArgs <- list(x=xlim[2],
-                               y=rat,
-                               labels=valstring,
-                               cex=cex,
-                               xpd=NA,
-                               pos=4)
-    title.values.DefaultArgs <- list(x=xlim[2],
-                                     y=len+1+ y.offset[length(y.offset)],
-                                     labels=title.values,
-                                     cex=cex,
-                                     xpd=NA,
-                                     font=2,
-                                     pos=4)
+    if (missing(labels)) labels <- NULL
+    if (missing(title.labels)) title.labels <- NULL
+    labels.DefaultArgs <- list(x=xlim[1],y=rat,cex=cex,labels=labels,xpd=NA,pos=4)
+    title.labels.DefaultArgs <- list(x=xlim[1],y=len+1*y.title.offset + y.offset[length(y.offset)],cex=cex,labels=title.labels,xpd=NA,font=2,pos=4)
+    values.DefaultArgs <- list(x=xlim[2],y=rat,labels=valstring,cex=cex,xpd=NA,pos=4)
+   title.values.DefaultArgs <- list(x=xlim[2],y=len+1*y.title.offset+ y.offset[length(y.offset)],labels=title.values,cex=cex,xpd=NA,font=2,pos=4)
     smartA <- prodlim::SmartControl(call=  list(...),
                                     keys=c("plot","points","segments","labels","values","title.labels","title.values","axis1","axis2","background"),
                                     ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","axis2","factor.reference.pos","factor.reference.label"),
@@ -204,22 +188,63 @@ plot.ci <- function(x,
                                     verbose=TRUE)
 
     # }}}
-    # {{{  margins
-
+    # {{{ force labels to list
+    labels <- smartA$labels$labels
+    if (do.labels){
+        if (is.matrix(labels)) {
+            cnames <- colnames(labels)
+            labels <- lapply(1:ncol(labels),function(j)labels[,j])
+            names(labels) <- cnames
+        }
+        if (is.factor(labels) || is.vector(labels)) labels <- list(col1=labels)
+        ncolumns <- length(labels)
+    }
+    title.labels <- smartA$title.labels$labels
+    if (do.title.labels && is.null(title.labels)){
+        title.labels <- names(labels)
+        if (is.null(title.labels)){
+            do.title.labels <- FALSE
+        }
+    }
+    if (do.title.labels && length(title.labels)!=length(labels)){
+        message(paste("Wrong number of title.labels: there are",ncolumns,"columns but ",length(title.labels),"title labels:",paste(title.labels,collapse=", ")))
+    }
+    # }}}
+    # {{{ left margin
+    ## plot.new()
+    inches2lines <- (par("mar") / par("mai"))[1]
+    if (do.labels){
+        if (length(smartA$labels$cex)<ncolumns){
+            smartA$labels$cex <- rep(smartA$labels$cex,length.out=ncolumns)
+        }
+        if (length(smartA$title.labels$cex)<ncolumns){
+            smartA$title.labels$cex <- rep(smartA$title.labels$cex,length.out=ncolumns)
+        }
+        if (is.null(title.labels)) title.labels <- rep(" ",ncolumns)
+        columnwidths <- sapply(1:ncolumns,function(f){
+                                   strwidth("m",units="inches")*labels.colintersp +
+                                       max(strwidth(as.character(title.labels[[f]]),cex=smartA$title.labels$cex[[f]],units="inches"),
+                                           strwidth(as.character(labels[[f]]),cex=smartA$labels$cex[[f]],units="inches"))
+                               })
+        labelstextwidth <- sum(columnwidths)
+        leftMargin <- leftmargin+labelstextwidth*inches2lines
+    }else{
+         leftMargin <- leftmargin
+     }
+    # }}}
+    # {{{ right margin
+    if (do.values){
+        valuestextwidth <- max(strwidth(as.character(smartA$values$labels),cex=smartA$values$cex, units="inches"),
+                               strwidth(as.character(smartA$title.values$labels),cex=smartA$title.values$cex, units="inches"))
+        rightMargin <- rightmargin+valuestextwidth *inches2lines
+    }else{
+         rightMargin <- rightmargin
+     }
     if (missing(automar) || automar==TRUE){
         oldmar <- par()$mar
-        if (length(margin.offset)==1) margin.offset <- rep(margin.offset,2)
-        labelstextwidth <- max(strwidth(smartA$labels$labels,cex=smartA$labels$cex, units="inches"),
-                               strwidth(smartA$title.labels$labels,cex=smartA$title.labels$cex, units="inches"))+margin.offset[[1]]
-        valuestextwidth <- max(strwidth(smartA$values$labels,cex=smartA$values$cex, units="inches"),
-                               strwidth(smartA$title.values$labels,cex=smartA$title.values$cex, units="inches"))+margin.offset[[2]]
-        inches2lines <- ( par("mar") / par("mai") )[1]
-        leftMargin <- labelstextwidth*inches2lines
-        rightMargin <- valuestextwidth*inches2lines
         newmar <- par()$mar + c(0,leftMargin,0,rightMargin)
         par(mar=newmar)
     }
-
     # }}}
     # {{{  plot and axis
     if (add==FALSE){
@@ -241,17 +266,46 @@ plot.ci <- function(x,
     do.call("segments",smartA$segments)
     # }}}
     # {{{  labels
-    if (is.expression(labels) || is.character(labels) || labels[1]!=FALSE)
-        do.call("text",smartA$labels)
-    if (!is.null(title.labels)&& (is.expression(title.labels) || title.labels[1]!=FALSE))
-        do.call("text",smartA$title.labels)
+    if (do.labels){
+        ## multiple label columns
+        labwidths <- sapply(labels,function(x)max(nchar(as.character(x))))
+        columnwidths.usr <- sapply(1:ncolumns,function(f){
+                                       strwidth("m",units="inches")*labels.colintersp +
+                                           max(strwidth(as.character(title.labels[[f]]),cex=smartA$title.labels$cex[[f]],units="user"),
+                                               strwidth(as.character(labels[[f]]),cex=smartA$labels$cex[[f]],units="user"))
+                                   })
+        fmt.columns <- paste0("%-",labwidths,"s")
+        columns <- lapply(1:ncolumns,function(cc){sprintf(fmt=fmt.columns[[cc]],labels[[cc]])})
+        largs <- smartA$labels
+        xpos <- rev(cumsum(rev(columnwidths.usr)))
+        nix <- lapply(1:ncolumns,function(l){
+                          largs$x <- largs$x-xpos[[l]]
+                          largs$labels <- columns[[l]]
+                          largs$cex <- largs$cex[[l]]
+                          do.call("text",largs)
+                      })
+        if (do.title.labels){
+            titlelabwidths <- sapply(title.labels,function(x)max(nchar(as.character(x))))
+            title.columns <- sprintf(paste0("%-",titlelabwidths,"s"),title.labels)
+            tlargs <- smartA$title.labels
+            xpos <- rev(cumsum(rev(columnwidths.usr)))
+            nix <- lapply(1:ncolumns,function(l){
+                              tlargs$x <- tlargs$x-xpos[[l]]
+                              tlargs$labels <- title.columns[[l]]
+                              tlargs$cex <- tlargs$cex[[l]]
+                              do.call("text",tlargs)
+                          })
+        }
+    }
     # }}}
     # {{{  values
-    if (is.expression(values) || is.character(values) || values[1]!=FALSE)
+    if (do.values){
         do.call("text",smartA$values)
+    }
     ## text
-    if (is.expression(title.values) || title.values[1]!=FALSE)
+    if (do.title.values){
         do.call("text",smartA$title.values)
+    }
     # }}}
     invisible(smartA)
 }
