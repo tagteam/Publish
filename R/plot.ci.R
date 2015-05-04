@@ -1,10 +1,10 @@
 ##  ------------------------------------------------------------------
-##  _____          _____                    
-## |_   _|_ _  __ |_   _|__  __ _ _ __ ___  
-##   | |/ _` |/ _` || |/ _ \/ _` | '_ ` _ \ 
+##  _____          _____
+## |_   _|_ _  __ |_   _|__  __ _ _ __ ___
+##   | |/ _` |/ _` || |/ _ \/ _` | '_ ` _ \
 ##   | | (_| | (_| || |  __/ (_| | | | | | |
 ##   |_|\__,_|\__, ||_|\___|\__,_|_| |_| |_|
-##            |___/                         
+##            |___/
 ##  ------------------------------------------------------------------
 ##' Function to plot confidence intervals
 ##'
@@ -26,7 +26,7 @@
 ##' @param value.pos x-postion of values
 ##' @param title.values Label for the column (or row) of the values.
 ##' @param factor.reference.pos Position of factor references.
-##' @param factor.reference.label Label to use at factor.reference.pos instead of value. 
+##' @param factor.reference.label Label to use at factor.reference.pos instead of value.
 ##' @param pch Point type for point estimates
 ##' @param cex Size of points
 ##' @param lwd Line type for the confidence intervals
@@ -66,7 +66,8 @@
 ##' x=ci.mean(bp.2s~frame,data=Diabetes)
 ##' plot(x)
 ##'
-##' 
+##'
+##'
 #' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.ci <- function(x,
@@ -212,7 +213,7 @@ plot.ci <- function(x,
                                strwidth(smartA$title.labels$labels,cex=smartA$title.labels$cex, units="inches"))+margin.offset[[1]]
         valuestextwidth <- max(strwidth(smartA$values$labels,cex=smartA$values$cex, units="inches"),
                                strwidth(smartA$title.values$labels,cex=smartA$title.values$cex, units="inches"))+margin.offset[[2]]
-        inches2lines <- ( par("mar") / par("mai") )[1] 
+        inches2lines <- ( par("mar") / par("mai") )[1]
         leftMargin <- labelstextwidth*inches2lines
         rightMargin <- valuestextwidth*inches2lines
         newmar <- par()$mar + c(0,leftMargin,0,rightMargin)
@@ -226,7 +227,7 @@ plot.ci <- function(x,
         ## do.call(prodlim::backGround,smartA$background)
     }
     if (missing(automar) || automar==TRUE) par(mar=oldmar) ## reset
-    
+
     if (axes==TRUE){
         if (is.null(smartA$axis1$labels))
             ## smartA$axis1$labels <- smartA$axis1$at - shift

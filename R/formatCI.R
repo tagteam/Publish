@@ -1,6 +1,6 @@
 ##' Format confidence intervals
 ##'
-##' The default format for confidence intervals is [lower; upper]. 
+##' The default format for confidence intervals is [lower; upper].
 ##' @title Formatting confidence intervals
 ##' @param x not used (for compatibility with format)
 ##' @param lower Numeric vector of lower limits
@@ -23,13 +23,14 @@
 ##' @return String vector with confidence intervals
 ##' @seealso plot.ci ci.mean
 ##' @examples
+##'
 ##' x=ci.mean(rnorm(10))
-##' format(x)
+##' formatCI(lower=x[3],upper=x[4])
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884))
 ##' # change format
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="(l, u)")
-##' 
-##' # if the first lower limit is shorter than the second (missing negative sign), 
+##'
+##' # if the first lower limit is shorter than the second (missing negative sign),
 ##' # then, option trim will make a difference:
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=FALSE)
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=TRUE)
@@ -40,7 +41,7 @@
 ##' cbind(format=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="format"),
 ##'       prettyNum=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="prettyNum"),
 ##'       sprintf=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="sprintf"))
-##' 
+##'
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 formatCI <- function(x,

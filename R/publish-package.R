@@ -62,39 +62,44 @@ NULL
 #' \url{http://192.38.117.59/~tag/Teaching/share/data/Diabetes.html}
 #' @keywords datasets
 ##' @examples
-##' 
+##'
 ##' data(Diabetes)
-##' 
+##'
 NULL
 
-#' trace data 
+#' trace data
 #'
-#' These data are from Christian Torp-Pedersen
+#' These data are from screening to the TRACE study, a comparison between the angiotensin converting
+#' enzyme inhibitor trandolapril and placebo ford large myocardial infarctions. A total of 6676
+#' patients were screened for the study. Survival has been followed for the screened population for
+#' 16 years. The current data has been prepared for a poisson regression to examine survival. The data
+#' has been "split" in 0.5 year intervals (plitLexis function from Epi package) and then collapsed
+#' on all variables (aggregate function).
 #' @name trace
 #' @docType data
 #' @format A data frame with 1832 observations on the following 6 variables.
 #' \describe{
-#' \item{Time}{dont know}
+#' \item{Time}{Time after myocardial infarction, in 6 months intervals}
 #' \item{smoking}{Smoking status. A factor with levels (Never, Current, Previous)}
 #' \item{sex}{A factor with levels (Female, Male)}
-#' \item{age}{Age in years}
-#' \item{ObsTime}{Observed time at risk}
+#' \item{age}{Age in years at the time of myocardial infarction}
+#' \item{ObsTime}{Cumulative risk time in each split}
 #' \item{dead}{Count of deaths}
 #' }
 #' @references
-#' XXX
+#' Kober et al 1995 Am. J. Cardiol 76,1-5
 #' @source
-#' CTP
+#'
 #' @keywords datasets
 ##' @examples
-##' 
+##'
 ##' data(trace)
 ##' Units(trace,list("age"="years"))
 ##' fit <- glm(dead ~ smoking+sex+age+Time+offset(log(ObsTime)), family="poisson",data=trace)
 ##' rtf <- regressionTable(fit,factor.reference = "inline")
 ##' summary(rtf)
 ##' publish(fit)
-##' 
+##'
 NULL
 
 #' @importFrom survival Surv
