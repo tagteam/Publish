@@ -91,22 +91,26 @@ specialFrame <- function(formula,
     ## mm <- do.call(na.action,list(object=get_all_vars(formula,data)))
     ## else
     ## mm <- get_all_vars(formula,data)
-    ## allvars <- all.vars(terms(formula))
-    ## mm <- data.lapply(data[allvars],function(v){sum(is.na(v))})
-    mm <- model.frame(formula=formula,data=data,na.action=na.action)
-    if (NROW(mm) == 0) stop("No (non-missing) observations")
     # }}}
     # {{{call model.frame
     ## data argument is used to resolve '.' see help(terms.formula)
     if (!is.null(stripSpecials)){
         ## eval without the data to avoid evaluating special specials
+        # Terms <- terms(x=formula, specials=unique(c(specials,unlist(stripAlias))))
         Terms <- terms(x=formula, specials=specials)
-        Terms <- prodlim::strip.terms(Terms,specials=stripSpecials,arguments=stripArguments)
+        Terms <- prodlim::strip.terms(Terms,
+                                      specials=stripSpecials,
+                                      arguments=stripArguments,
+                                      alias.names=stripAlias,
+                                      unspecials=stripUnspecials)
     }else{
-        ## data argument is used to resolve '.' see help(terms.formula)
-        Terms <- terms(x=formula, specials=specials, data = data)
-    }
-    # }}}
+         ## data argument is used to resolve '.' see help(terms.formula)
+         Terms <- terms(x=formula, specials=specials, data = data)
+     }
+    mm <- na.omit(get_all_vars(formula(Terms),data))
+    #mm <- model.frame(formula=formula(Terms),data=data,na.action=na.action)
+    if (NROW(mm) == 0) stop("No (non-missing) observations")
+
     # {{{ extract response
     if (response==TRUE && attr(Terms,"response")!=0){
         response <- model.frame(update(formula,".~1"), data=mm,na.action="na.pass")

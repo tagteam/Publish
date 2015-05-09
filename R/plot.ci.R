@@ -159,7 +159,7 @@ plot.ci <- function(x,
     if (do.title.values && (missing(title.values)) || (!is.expression(title.values) && !is.character(title.values)))
         title.values <- expression(bold(CI[95]))
     # }}}
-    # {{{  dimensions
+    # {{{ x- and y-dimensions
     len <- length(m)
     at <- (1:len)+y.offset
     rat <- rev(at)
@@ -167,7 +167,7 @@ plot.ci <- function(x,
         xlim <- c(min(lower)-0.1*min(lower),max(upper)+0.1*min(upper))
     if (missing(xlab)) xlab <- ""
     # }}}
-    # {{{  default and smart arguments
+    # {{{ default and smart arguments
     background.DefaultArgs <- list(bg="white")
     axis1.DefaultArgs <- list(side=1,las=1)
     axis2.DefaultArgs <- list(side=2,pos=xlim[1],lwd.ticks=0,at=c(0,len),labels=c("",""))
@@ -177,15 +177,17 @@ plot.ci <- function(x,
     if (missing(labels)) labels <- NULL
     if (missing(title.labels)) title.labels <- NULL
     labels.DefaultArgs <- list(x=xlim[1],y=rat,cex=cex,labels=labels,xpd=NA,pos=4)
-    title.labels.DefaultArgs <- list(x=xlim[1],y=len+1*y.title.offset + y.offset[length(y.offset)],cex=cex,labels=title.labels,xpd=NA,font=2,pos=4)
+    title.labels.DefaultArgs <- list(x=xlim[1],y=len+1*y.title.offset + y.offset[length(y.offset)],cex=cex,labels=title.labels,xpd=NA,font=2,pos=NULL)
     values.DefaultArgs <- list(x=xlim[2],y=rat,labels=valstring,cex=cex,xpd=NA,pos=4)
-   title.values.DefaultArgs <- list(x=xlim[2],y=len+1*y.title.offset+ y.offset[length(y.offset)],labels=title.values,cex=cex,xpd=NA,font=2,pos=4)
+    title.values.DefaultArgs <- list(x=xlim[2],y=len+1*y.title.offset+ y.offset[length(y.offset)],labels=title.values,cex=cex,xpd=NA,font=2,pos=NULL)
     smartA <- prodlim::SmartControl(call=  list(...),
                                     keys=c("plot","points","segments","labels","values","title.labels","title.values","axis1","axis2","background"),
                                     ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","axis2","factor.reference.pos","factor.reference.label"),
                                     defaults=list("plot"=plot.DefaultArgs,"points"=points.DefaultArgs,"labels"=labels.DefaultArgs,"title.labels"=title.labels.DefaultArgs,"background"=background.DefaultArgs,"values"=values.DefaultArgs,"title.values"=title.values.DefaultArgs,"segments"=segments.DefaultArgs,"axis1"=axis1.DefaultArgs,"axis2"=axis2.DefaultArgs),
                                     forced=list("plot"=list(axes=FALSE),"axis1"=list(side=1)),
                                     verbose=TRUE)
+    if (is.null(smartA$title.labels$pos)) smartA$title.labels$pos <- smartA$labels$pos
+    if (is.null(smartA$title.values$pos)) smartA$title.values$pos <- smartA$values$pos
 
     # }}}
     # {{{ force labels to list
@@ -196,7 +198,7 @@ plot.ci <- function(x,
             labels <- lapply(1:ncol(labels),function(j)labels[,j])
             names(labels) <- cnames
         }
-        if (is.factor(labels) || is.vector(labels)) labels <- list(col1=labels)
+        if (is.factor(labels) || is.numeric(labels) || is.character(labels)) labels <- list(col1=labels)
         ncolumns <- length(labels)
     }
     title.labels <- smartA$title.labels$labels
@@ -223,8 +225,8 @@ plot.ci <- function(x,
         if (is.null(title.labels)) title.labels <- rep(" ",ncolumns)
         columnwidths <- sapply(1:ncolumns,function(f){
                                    strwidth("m",units="inches")*labels.colintersp +
-                                       max(strwidth(as.character(title.labels[[f]]),cex=smartA$title.labels$cex[[f]],units="inches"),
-                                           strwidth(as.character(labels[[f]]),cex=smartA$labels$cex[[f]],units="inches"))
+                                       max(strwidth(title.labels[[f]],cex=smartA$title.labels$cex[[f]],units="inches"),
+                                           strwidth(labels[[f]],cex=smartA$labels$cex[[f]],units="inches"))
                                })
         labelstextwidth <- sum(columnwidths)
         leftMargin <- leftmargin+labelstextwidth*inches2lines
@@ -234,8 +236,8 @@ plot.ci <- function(x,
     # }}}
     # {{{ right margin
     if (do.values){
-        valuestextwidth <- max(strwidth(as.character(smartA$values$labels),cex=smartA$values$cex, units="inches"),
-                               strwidth(as.character(smartA$title.values$labels),cex=smartA$title.values$cex, units="inches"))
+        valuestextwidth <- max(strwidth(smartA$values$labels,cex=smartA$values$cex, units="inches"),
+                               strwidth(smartA$title.values$labels,cex=smartA$title.values$cex, units="inches"))
         rightMargin <- rightmargin+valuestextwidth *inches2lines
     }else{
          rightMargin <- rightmargin
@@ -268,30 +270,34 @@ plot.ci <- function(x,
     # {{{  labels
     if (do.labels){
         ## multiple label columns
-        labwidths <- sapply(labels,function(x)max(nchar(as.character(x))))
+        ## if (do.title.labels)
+        ## labwidths <- sapply(1:ncolumns,function(cc){max(nchar(labels))})
+        ## else
+        ## labwidths <- sapply(labels,function(x)max(nchar(as.character(x))))
         columnwidths.usr <- sapply(1:ncolumns,function(f){
                                        strwidth("m",units="inches")*labels.colintersp +
-                                           max(strwidth(as.character(title.labels[[f]]),cex=smartA$title.labels$cex[[f]],units="user"),
-                                               strwidth(as.character(labels[[f]]),cex=smartA$labels$cex[[f]],units="user"))
+                                           max(strwidth(title.labels[[f]],cex=smartA$title.labels$cex[[f]],units="user"),
+                                               strwidth(labels[[f]],cex=smartA$labels$cex[[f]],units="user"))
                                    })
-        fmt.columns <- paste0("%-",labwidths,"s")
-        columns <- lapply(1:ncolumns,function(cc){sprintf(fmt=fmt.columns[[cc]],labels[[cc]])})
+        ## fmt.columns <- paste0("%-",labwidths,"s")
+        ## columns <- lapply(1:ncolumns,function(cc){sprintf(fmt=fmt.columns[[cc]],labels[[cc]])})
         largs <- smartA$labels
-        xpos <- rev(cumsum(rev(columnwidths.usr)))
+        if (largs$pos==2)
+            xpos <- c(0,rev(cumsum(rev(columnwidths.usr)))[-ncolumns])
+        else
+            xpos <- rev(cumsum(rev(columnwidths.usr)))
         nix <- lapply(1:ncolumns,function(l){
                           largs$x <- largs$x-xpos[[l]]
-                          largs$labels <- columns[[l]]
+                          largs$labels <- labels[[l]]
                           largs$cex <- largs$cex[[l]]
                           do.call("text",largs)
                       })
         if (do.title.labels){
-            titlelabwidths <- sapply(title.labels,function(x)max(nchar(as.character(x))))
-            title.columns <- sprintf(paste0("%-",titlelabwidths,"s"),title.labels)
+            ## title.columns <- lapply(1:ncolumns,function(cc){sprintf(fmt=fmt.columns[[cc]],title.labels[[cc]])})
             tlargs <- smartA$title.labels
-            xpos <- rev(cumsum(rev(columnwidths.usr)))
             nix <- lapply(1:ncolumns,function(l){
                               tlargs$x <- tlargs$x-xpos[[l]]
-                              tlargs$labels <- title.columns[[l]]
+                              tlargs$labels <- title.labels[[l]]
                               tlargs$cex <- tlargs$cex[[l]]
                               do.call("text",tlargs)
                           })

@@ -100,11 +100,11 @@ univariateTable <- function(formula,
                           data,
                           specialsDesign=FALSE,
                           unspecialsDesign=FALSE,
-                          specials=c("F","S","Q"),
+                          specials=c("F","S","Q","strata","Strata","factor","Factor","Cont","nonpar"),
                           specialsFactor = FALSE,
                           stripSpecials=c("F","S","Q"),
                           stripArguments=list("S"="format"),
-                          stripAlias=list("strata"="F","factor"="F","Cont"="S","nonpar"="Q"),
+                          stripAlias=list("F"=c("strata","factor","Strata","Factor"),"S"="Cont","Q"="nonpar"),
                           na.action="na.pass")
     options(na.action=oldnaaction)
     # }}}
@@ -260,53 +260,58 @@ univariateTable <- function(formula,
     if (!is.null(groups)){
         if (!is.null(continuous.matrix)){
             p.cont <- sapply(names(continuous.matrix),function(v){
-                if (strataIsOutcome==TRUE){
-                    ## logistic regression
-                    px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
-                    px
-                }
-                else {
-                    ## glm fails when there are missing values
-                    ## in outcome, so we remove missing values
-                    fv <- formula(paste(v,"~",groupname))
-                    vdata <- model.frame(fv,data,na.action=na.omit)
-                    px <- anova(glm(fv,data=vdata),test="Chisq")$"Pr(>Chi)"[2]
-                    px
-                }
-            })
+                                      if (strataIsOutcome==TRUE){
+                                          ## logistic regression
+                                          px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                          px
+                                      }
+                                      else {
+                                          ## glm fails when there are missing values
+                                          ## in outcome, so we remove missing values
+                                          fv <- formula(paste(v,"~",groupname))
+                                          vdata <- model.frame(fv,data,na.action=na.omit)
+                                          px <- anova(glm(fv,data=vdata),test="Chisq")$"Pr(>Chi)"[2]
+                                          px
+                                      }
+                                  })
         }
         if (!is.null(Q.matrix)){
             p.Q <- sapply(names(Q.matrix),function(v){
-                if (strataIsOutcome==TRUE){
-                    ## logistic regression 
-                    px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
-                    px
-                }
-                else {
-                    px <- kruskal.test(formula(paste(v,"~",groupname)),data=data)$p.value
-                    px
-                }
-            })
+                                   if (strataIsOutcome==TRUE){
+                                       ## logistic regression 
+                                       px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                       px
+                                   }
+                                   else {
+                                       if (is.character(data[,groupname])){
+                                           data[,paste0(groupname,"asfactor")] <- factor(data[,groupname])
+                                           px <- kruskal.test(formula(paste0(v,"~",groupname,"asfactor")),data=data)$p.value
+                                       } else{
+                                             px <- kruskal.test(formula(paste(v,"~",groupname)),data=data)$p.value
+                                         }
+                                       px
+                                   }
+                               })
         }
         if (!is.null(factor.matrix)){
             p.freq <- sapply(names(factor.matrix),function(v){
-                if (strataIsOutcome==TRUE){
-                    ## logistic regression 
-                    px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
-                } else{
-                    tabx <- table(factor.matrix[,v],groupvar)
-                    if (sum(tabx)==0) {
-                        px <- NA
-                    } else{
-                        suppressWarnings(test <- chisq.test(tabx))
-                        px <- test$p.value
-                    }
-                    ## FIXME: need to catch and pass the warnings 
-                    ## test <- suppressWarnings(fisher.test(tabx))
-                    ## if (any(test$expected < 5) && is.finite(test$parameter))
-                    px
-                }
-            })
+                                      if (strataIsOutcome==TRUE){
+                                          ## logistic regression 
+                                          px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                      } else{
+                                            tabx <- table(factor.matrix[,v],groupvar)
+                                            if (sum(tabx)==0) {
+                                                px <- NA
+                                            } else{
+                                                  suppressWarnings(test <- chisq.test(tabx))
+                                                  px <- test$p.value
+                                              }
+                                            ## FIXME: need to catch and pass the warnings 
+                                            ## test <- suppressWarnings(fisher.test(tabx))
+                                            ## if (any(test$expected < 5) && is.finite(test$parameter))
+                                            px
+                                        }
+                                  })
         }
     }
     # }}}
