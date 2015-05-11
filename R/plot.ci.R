@@ -66,15 +66,27 @@
 ##' 
 ##' 
 ##' data(CiTable)
-##' names(CiTable)[2:6] <- c("Drug/Time","Dose","Mean","SD","n")
 ##' with(CiTable,Publish:::plot.ci(x=list(Risk),
 ##'                                lower=low,
 ##'                                upper=high,
 ##'                                labels=CiTable[,2:6],
-##'                                leftmargin=0,
-##'                                title.labels.cex=1.3,
-##'                                labels.cex=0.8))
+##'                                factor.reference.pos=c(1,10,19),
+##'                                format="(u-l)",
+##'                                points.col="blue",
+##'                                digits=2))
 ##' 
+##' with(CiTable,Publish:::plot.ci(x=list(Risk),
+##'                                lower=low,
+##'                                upper=high,
+##'                                labels=CiTable[,2:6],
+##'                                factor.reference.pos=c(1,10,19),
+##'                                format="(u-l)",
+##'                                points.col="blue",
+##'                                digits=2,
+##'                                leftmargin=-2,
+##'                                title.labels.cex=1.1,
+##'                                labels.cex=0.8,values.cex=0.8))
+ 
 #' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.ci <- function(x,
@@ -108,7 +120,7 @@ plot.ci <- function(x,
                     axis2=FALSE,
                     ...){
     if (missing(format) || is.null(format)) format <- "[u;l]"
-    # {{{  extract data
+    # {{{ extract data
     if (!is.list(x))
         x <- list(x=x)
     m <- x[[1]]+shift
@@ -124,6 +136,7 @@ plot.ci <- function(x,
         upper <- upper+shift
     # }}}
     # {{{ preprocessing of labels and title.labels
+
     if (!missing(labels) && (is.logical(labels) && labels[[1]]==FALSE))
         do.labels <- FALSE
     else
@@ -136,8 +149,10 @@ plot.ci <- function(x,
         labels <- x$labels
         if (is.null(labels)) do.labels <- FALSE
     }
+
     # }}}
     # {{{ preprocessing of values and confidence intervals 
+
     if (!missing(values) && (is.logical(values) && values[[1]]==FALSE))
         do.values <- FALSE
     else
@@ -158,8 +173,9 @@ plot.ci <- function(x,
       }
     if (do.title.values && (missing(title.values)) || (!is.expression(title.values) && !is.character(title.values)))
         title.values <- expression(bold(CI[95]))
+
     # }}}
-    # {{{ x- and y-dimensions
+    # {{{ x- and y-dimensions for confidence intervals
     len <- length(m)
     at <- (1:len)+y.offset
     rat <- rev(at)
@@ -248,7 +264,8 @@ plot.ci <- function(x,
         par(mar=newmar)
     }
     # }}}
-    # {{{  plot and axis
+    # {{{ plot and axis
+
     if (add==FALSE){
         do.call("plot",smartA$plot)
         ## do.call(prodlim::backGround,smartA$background)
@@ -263,11 +280,12 @@ plot.ci <- function(x,
     if (axis2==TRUE)
         do.call("axis",smartA$axis2)
     # }}}
-    # {{{  point estimates ci
+    # {{{ point estimates ci
     do.call("points",smartA$points)
     do.call("segments",smartA$segments)
     # }}}
-    # {{{  labels
+    # {{{ labels
+
     if (do.labels){
         ## multiple label columns
         ## if (do.title.labels)
@@ -303,8 +321,9 @@ plot.ci <- function(x,
                           })
         }
     }
+
     # }}}
-    # {{{  values
+    # {{{ values
     if (do.values){
         do.call("text",smartA$values)
     }
