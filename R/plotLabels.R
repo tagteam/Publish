@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 11 2015 (09:05) 
 ## Version: 
-## last-updated: May 11 2015 (15:11) 
+## last-updated: May 12 2015 (07:18) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 28
+##     Update #: 37
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -14,7 +14,7 @@
 #----------------------------------------------------------------------
 ## 
 ### Code:
-plotLabels <- function(labels,titles,width,ylim,...){
+plotLabels <- function(labels,titles,width,ylim,stripes,...){
     labs <- labels
     tits <- titles
     labels <- labs$labels
@@ -61,6 +61,10 @@ plotLabels <- function(labels,titles,width,ylim,...){
     else
         xpos <- cumsum(colwidths)
     plot(0,0,type="n",axes=FALSE,xlim=c(0,width),ylim=ylim,xlab="",ylab="")
+    if (!missing(stripes) && length(stripes)>0){
+        stripes$xlim <- c(0,width)
+        do.call("stripes",stripes)
+    }
     ## arrows(x0=0,x1=width,y0=12,y1=12,lwd=8,col="orange")
     ## abline(v=xpos,col=1:5)
     nix <- lapply(1:ncolumns,function(l){

@@ -1,18 +1,18 @@
 Package: Publish
 Type: Package
 Title: Publish
-Version: 1.1.4
+Version: 1.1.5
 Date: 2009-06-08
 Author: Thomas Gerds
 Maintainer: Thomas Gerds <tag@biostat.ku.dk>
-Description: Formatting output from R for publication
+Description: Neatly formatting output from R for publication
 Imports:
     prodlim (>= 1.5.4),
-    survival,
-    lava
+    survival (>= 2.38),
+    lava (>= 1.4.0)
 Suggests:
-    lme4,
-    pec,
+    lme4 (>= 1.1),
+    pec (>= 2.4.4),
     riskRegression (>= 1.0.8)
 License: GPL (>= 2)
 Packaged: Mon Jun 08 11:54:28 2009 ;tag
