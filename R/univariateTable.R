@@ -251,7 +251,6 @@ univariateTable <- function(formula,
     else {
         group.missing <- NULL
     }
-   
     # }}}
     # {{{ p-values
     p.cont <- NULL
