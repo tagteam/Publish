@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 12 2015 (06:52) 
 ## Version: 
-## last-updated: May 12 2015 (10:14) 
+## last-updated: May 14 2015 (10:38) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 20
+##     Update #: 21
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -64,8 +64,6 @@ stripes <- function(xlim,
                     vertical=NULL,
                     border="black",xpd=FALSE){
     U <- par("usr")
-    print("before")
-    print(U)
     if (!missing(xlim)){
         U[1] <- xlim[1]
         U[2] <- xlim[2]
@@ -74,8 +72,6 @@ stripes <- function(xlim,
         U[3] <- ylim[1]
         U[4] <- ylim[2]
     }
-    print("after")
-    print(U)
     # background
     if (!is.null(fill))
         rect(U[1],U[3],U[2],U[4],col=fill, border=border,xpd=xpd) 

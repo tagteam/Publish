@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03) 
 ## Version: 
-## last-updated: May 12 2015 (10:23) 
+## last-updated: May 14 2015 (10:41) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 189
+##     Update #: 234
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -14,11 +14,31 @@
 #----------------------------------------------------------------------
 ## 
 ### Code:
-##' Function to plot confidence intervals
+##' Function to plot confidence intervals with their values and additional labels
 ##'
-##' Function to plot means and other point estimates with confidence intervals
-##' If there are confidence limits outside the range determined by xlim, then
-##' arrows are drawn at the border to indicate that the confidence limits continue. 
+##' Function to plot means and other point estimates with confidence intervals,
+##' their values and additional labels .
+##' Horizonal margins as determined by par()$mar are ignored.
+##' Instead layout is used to divide the plotting region horizontally
+##' into two or three parts plus leftmargin and rightmargin.
+##'
+##' When values is FALSE there are only two parts. The default order is
+##' labels on the left confidence intervals on the right.
+##' When no labels are given or labels is FALSE there are only two parts. The default order is
+##' confidence intervals on the left values on the right.
+##' 
+##' The default order of three parts from left to right is
+##' labels, confidence intervals, values. The order can be changed as shown
+##' by the examples below. The relative widths of the two or three parts
+##' need to be adapted to the actual size of the text of the labels. This
+##' depends on the plotting device and the size of the font and figures and
+##' thus has to be adjusted manually.
+##'
+##' Oma can be used to further control horizontal margins, e.g., par(oma=c(0,4,0,4)). 
+##' 
+##' If confidence limits extend beyond the range determined by xlim, then
+##' arrows are drawn at the x-lim borders to indicate that the confidence
+##' limits continue. 
 ##' @title Plot confidence intervals
 ##' @param x Either a vector containing the point estimates or A list
 ##' whose first element contains the point estimates.  Further list
@@ -36,11 +56,11 @@
 ##' @param pch Symbol for points.
 ##' @param cex Defaults size of all figures and plotting symbol.
 ##' Single elements are controlled separately. See \code{...}.
-##' @param lwd Default width of all lines
-##' Single elements are controlled separately. See \code{...}.
+##' @param lwd Default width of all lines Single elements are
+##' controlled separately. See \code{...}.
 ##' @param col Default colour of confidence intervals.
-##' @param xlim Plotting limits for the confidence intervals. See also \code{xratio}
-##' on how to control the layout.
+##' @param xlim Plotting limits for the confidence intervals. See also
+##' \code{xratio} on how to control the layout.
 ##' @param xlab Label for the x-axis.
 ##' @param labels Vector or matrix or list with \code{labels}. Used if
 ##' object \code{x} is a vector and if \code{x} is a list it
@@ -56,9 +76,13 @@
 ##' @param title.values Title of the \code{values}. If \code{values}
 ##' is a matrix or list \code{title.labels} should be a vector with as
 ##' many elements as values has columns or elements.
-##' @param order Order of the three blocks: labels, confidence limits, values. See examples.
-##' @param stripes Vector of up to three Logicals. If \code{TRUE} draw stripes into the background. The
-##' first applies to the labels, the second to the graphical presentation of the confidence intervals
+##' @param order Order of the three blocks: labels, confidence limits,
+##' values. See examples.
+##' @param leftmargin Percentage of plotting region used for leftmargin. Default is 0.025. See also Details.
+##' @param rightmargin Percentage of plotting region used for rightmargin. Default is 0.025. See also Details.
+##' @param stripes Vector of up to three Logicals. If \code{TRUE} draw
+##' stripes into the background. The first applies to the labels, the
+##' second to the graphical presentation of the confidence intervals
 ##' and the third to the values. Thus, stripes
 ##' @param factor.reference.pos Position at which factors attain
 ##' reference values.
@@ -66,39 +90,56 @@
 ##' \code{factor.reference.pos} instead of values.
 ##' @param factor.reference.pch Plotting symbol to use at
 ##' \code{factor.reference.pos}
-##' @param refline Vertical line to indicate the null hypothesis. Default is 1 which
-##' would work for odds ratios and hazard ratios.
+##' @param refline Vertical line to indicate the null
+##' hypothesis. Default is 1 which would work for odds ratios and
+##' hazard ratios.
 ##' @param xratio One or two values between 0 and 1 which determine
 ##' how to split the plot window in horizontal x-direction. If there
 ##' are two blocks (labels, CI) or (CI, values) only one value is used
-##' and the default is 0.618 which gives the graphical presentation of
-##' the confidence intervals 38.2 % of the graph. The remaining 61.8 %
-##' are used for the labels (or values).  If there are three blocks
-##' (labels, CI, values), xratio has two values which default to
-##' c(0.5,0.2). The remaining 30 % are used for the graphical
-##' presentation of the confidence intervals. See examles
-##' @param y.offset Either a single value or a vector determining the vertical offset of all rows. 
-##' If it is a single value all rows are shifted up (or down if negative) by this value.
-##' This can be used to add a second group of confidence intervals to an existing
-##' graph or to achieve a visual differentiation of rows that belong together.
-##' See examples.
-##' @param y.title.offset Numeric value by which to vertically shift the titles of the labels and values.
-##' @param digits Number of digits, passed to \code{pubformat} and \code{formatCI}.
-##' @param format Format for constructing values of confidence intervals. Defaults to '(u;l)' if there are negative
-##' lower or upper values and to '(u-l)' otherwise.
-##' @param extremeArrowsLength Length of the arrows in case of confidence intervals that stretch beyond xlim.
-##' @param extremeArrowsAngle Angle of the arrows in case of confidence intervals that stretch beyond xlim.
-##' @param add Logical. If \code{TRUE} do not draw labels or values and add confidence intervals to existing plot.
+##' and the default is 0.618 (goldener schnitt) which gives the
+##' graphical presentation of the confidence intervals 38.2 % of the
+##' graph. The remaining 61.8 % are used for the labels (or values).
+##' If there are three blocks (labels, CI, values), xratio has two
+##' values which default to fractions of 0.7 according to the relative
+##' widths of labels and values, thus by default only 0.3 are used for
+##' the graphical presentation of the confidence intervals. The
+##' remaining 30 % are used for the graphical presentation of the
+##' confidence intervals. See examles
+##' @param y.offset Either a single value or a vector determining the
+##' vertical offset of all rows.  If it is a single value all rows are
+##' shifted up (or down if negative) by this value.  This can be used
+##' to add a second group of confidence intervals to an existing graph
+##' or to achieve a visual differentiation of rows that belong
+##' together.  See examples.
+##' @param y.title.offset Numeric value by which to vertically shift
+##' the titles of the labels and values.
+##' @param digits Number of digits, passed to \code{pubformat} and
+##' \code{formatCI}.
+##' @param format Format for constructing values of confidence
+##' intervals. Defaults to '(u;l)' if there are negative lower or
+##' upper values and to '(u-l)' otherwise.
+##' @param extremeArrowsLength Length of the arrows in case of
+##' confidence intervals that stretch beyond xlim.
+##' @param extremeArrowsAngle Angle of the arrows in case of
+##' confidence intervals that stretch beyond xlim.
+##' @param add Logical. If \code{TRUE} do not draw labels or values
+##' and add confidence intervals to existing plot.
 ##' @param xaxis Logical. If \code{FALSE} do not draw x-axis.
 ##' @param ... Used to control arguments of the following subroutines:
-##' \code{plot}: Applies to plotting frame of the graphical presentation of confidence intervals. Use arguments of \code{plot}, e.g., \code{plot.main="Odds ratio"}.
-##' \code{points}, \code{arrows}: Use arguments of \code{points} and \code{arrows}, respectively. E.g., \code{points.pch=8} and \code{arrows.lwd=2}.
-##' \code{refline}: Use arguments of \code{segments}, e.g., \code{refline.lwd=2}. See \link{segments}.
-##' \code{labels}, \code{values}, \code{title.labels}, \code{title.values}: Use arguments of \code{text}, e.g., \code{labels.col="red"} or \code{title.values.cex=1.8}.
-##' \code{xaxis}: Use arguments of \code{axis}, e.g., \code{xaxis.at=c(-0.3,0,0.3)}
-##' \code{xlab}: Use arguments of \code{mtext}, e.g., \code{xlab.line=2}.
+##' \code{plot}: Applies to plotting frame of the graphical
+##' presentation of confidence intervals. Use arguments of
+##' \code{plot}, e.g., \code{plot.main="Odds ratio"}.  \code{points},
+##' \code{arrows}: Use arguments of \code{points} and \code{arrows},
+##' respectively. E.g., \code{points.pch=8} and \code{arrows.lwd=2}.
+##' \code{refline}: Use arguments of \code{segments}, e.g.,
+##' \code{refline.lwd=2}. See \link{segments}.  \code{labels},
+##' \code{values}, \code{title.labels}, \code{title.values}: Use
+##' arguments of \code{text}, e.g., \code{labels.col="red"} or
+##' \code{title.values.cex=1.8}.  \code{xaxis}: Use arguments of
+##' \code{axis}, e.g., \code{xaxis.at=c(-0.3,0,0.3)} \code{xlab}: Use
+##' arguments of \code{mtext}, e.g., \code{xlab.line=2}.
 ##' \code{stripes}: Use arguments of \code{stripes}. See examples.
-##' See examples for usage. 
+##' See examples for usage.
 ##' @return List of dimensions and coordinates
 ##' @examples
 ##' 
@@ -126,8 +167,7 @@
 ##' ## 
 ##' ## The blocks are arranged with the function layout
 ##' ## and the default order is 1,3,2 such that the graphical
-##' ## display of the confidence intervals is in the middle
-##' ## (see Details above)
+##' ## display of the confidence intervals appears in the middle
 ##' ## 
 ##' ## the order of appearance of the three blocks can be changed as follows
 ##' plotConfidence(x=CiTable[,6:8],
@@ -151,6 +191,11 @@
 ##' ## by using the argument xratio. If there are only two blocks 
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],xratio=c(0.4,0.15))
+##'
+##' ## The amount of space on the left and right margin can be controlled
+##' ## as follows:
+##' plotConfidence(x=CiTable[,6:8],labels=CiTable[,1:5],xratio=c(0.4,0.15),
+##'                leftmargin=0.1,rightmargin=0.00)
 ##' 
 ##' ## The actual size of the current graphics device determines
 ##' ## the size of the figures and the space between them.
@@ -302,6 +347,8 @@ plotConfidence <- function(x,
                            values,
                            title.values,
                            order,
+                           leftmargin=0.025,
+                           rightmargin=0.025,
                            stripes,
                            factor.reference.pos,
                            factor.reference.label="Reference",
@@ -424,87 +471,113 @@ plotConfidence <- function(x,
     # }}}
     # {{{ layout
     oldmar <- par()$mar
+    on.exit(par(mar=oldmar))
     par(mar=c(0,0,0,0))
     ## layout
     dsize <- dev.size(units="cm")
+    leftmarginwidth <- leftmargin*dsize[1]
+    rightmarginwidth <- rightmargin*dsize[1]
+    plotwidth <- dsize[1]-leftmarginwidth-rightmarginwidth
     if (do.labels){
+        preplabels <- prepareLabels(labels=smartA$labels,
+                                    titles=smartA$title.labels)
+    }
+    if (do.values){
+        prepvalues <- prepareLabels(labels=smartA$values,
+                                    titles=smartA$title.values)
+    }
+    if (do.labels){
+        ## force label into list, then count label columns
+        ## and compute strwidth
         if (do.values){
             ## both values and labels
             do.stripes <- rep(do.stripes,length.out=3)
-            if (missing(xratio)) xratio <- c(0.5,0.2)
-            labelswidth <- dsize[1] * xratio[1]
-            valueswidth <- dsize[1] * xratio[2]
-            ciwidth <- dsize[1] - labelswidth - valueswidth
-            mat <- matrix(c(1,3,2),ncol=3)
+            names(do.stripes) <- c("labels","ci","values")
+            if (missing(xratio)) {
+                lwidth <- sum(preplabels$columnwidth)
+                vwidth <- sum(prepvalues$columnwidth)
+                if (lwidth>vwidth)
+                    xratio <- c((1-(vwidth/lwidth))*0.7,(vwidth/lwidth)*0.7)
+                else
+                    xratio <- c((1-(lwidth/vwidth))*0.7,(lwidth/vwidth)*0.7)
+                ## xratio <- c(0.5,0.2)
+            }
+            labelswidth <- plotwidth * xratio[1]
+            valueswidth <- plotwidth * xratio[2]
+            ciwidth <- plotwidth - labelswidth - valueswidth
+            mat <- matrix(c(0,c(1,3,2)[order],0),ncol=5)
             if (!missing(order) && length(order)!=3) order <- rep(order,length.out=3)
-            layout(mat[,order,drop=FALSE],width=c(labelswidth,ciwidth,valueswidth)[order])
+            layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth,valueswidth)[order],rightmarginwidth))
             ## layout.show(n=3)
         } else{
               ## only labels
               do.stripes <- rep(do.stripes,length.out=2)
+              names(do.stripes) <- c("labels","ci")
               if (missing(xratio)) xratio <- 0.618
-              labelswidth <- dsize[1] * xratio[1]
-              ciwidth <- dsize[1] - labelswidth
+              labelswidth <- plotwidth * xratio[1]
+              ciwidth <- plotwidth - labelswidth
               valueswidth <- 0
               if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
-              mat <- matrix(c(1,2),ncol=2)
-              layout(mat[,order,drop=FALSE],width=c(labelswidth,ciwidth)[order])
+              mat <- matrix(c(0,c(1,2)[order],0),ncol=4)
+              layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth)[order],rightmarginwidth))
           }
     } else{
           if (do.values){
               ## only values
               do.stripes <- rep(do.stripes,length.out=2)
+              names(do.stripes) <- c("ci","values")
               if (missing(xratio)) xratio <- 0.618
-              valueswidth <- dsize[1] * xratio[1]
-              ciwidth <- dsize[1] - valueswidth
+              valueswidth <- plotwidth * (1-xratio[1])
+              ciwidth <- plotwidth - valueswidth
               labelswidth <- 0
-              mat <- matrix(c(1,2),ncol=2)
+              mat <- matrix(c(0,c(2,1)[order],0),ncol=4)
               if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
-              layout(mat[,order,drop=FALSE],width=c(ciwidth,valueswidth)[order])
+              layout(mat,width=c(leftmarginwidth,c(ciwidth,valueswidth)[order],rightmarginwidth))
           }else{
                # none
+               xratio <- 1
+               ciwidth <- plotwidth
+               do.stripes <- do.stripes[1]
+               names(do.stripes) <- "ci"
                labelswidth <- 0
                valueswidth <- 0
+               mat <- matrix(c(0,1,0),ncol=3)
+               layout(mat,width=c(leftmarginwidth,ciwidth,rightmarginwidth))
            }
       }
     dimensions <- c(dimensions,list(xratio=xratio,
                                     labelswidth=labelswidth,
                                     valueswidth=valueswidth,
                                     ciwidth=ciwidth))
-    par(mar=oldmar*c(1,0,1,0))
     # }}}
-    # {{{ show labels
+    # {{{ labels
+    par(mar=oldmar*c(1,0,1,0))
     if (do.labels){
-        labels.args <- smartA[c("labels","title.labels")]
-        names(labels.args) <- c("labels","titles")
-        if (do.stripes[[1]])
-            labels.args <- c(labels.args,list(width=labelswidth,ylim=ylim,stripes=smartA$stripes))
+        if (do.stripes[["labels"]])
+            preplabels <- c(preplabels,list(width=labelswidth,ylim=ylim,stripes=smartA$stripes))
         else
-            labels.args <- c(labels.args,list(width=labelswidth,ylim=ylim))
-        do.call("plotLabels",labels.args)
+            preplabels <- c(preplabels,list(width=labelswidth,ylim=ylim))
+        do.call("plotLabels",preplabels)
     }
     # }}}
     # {{{ values
     if (do.values){
-        values.args <- smartA[c("values","title.values")]
-        names(values.args) <- c("labels","titles")
-        if (do.stripes[[3]])
-            values.args <- c(values.args,list(width=valueswidth,ylim=ylim,stripes=smartA$stripes))
+        if (do.stripes[["values"]])
+            prepvalues <- c(prepvalues,list(width=valueswidth,ylim=ylim,stripes=smartA$stripes))
         else
-            values.args <- c(values.args,list(width=valueswidth,ylim=ylim))
-        do.call("plotLabels",values.args)
+            prepvalues <- c(prepvalues,list(width=valueswidth,ylim=ylim))
+        do.call("plotLabels",prepvalues)
     }
     # }}}
     # {{{ plot which contains the confidence intervals
     if (add==FALSE){
         do.call("plot",smartA$plot)
-        if (do.stripes[[2]])
+        if (do.stripes[["ci"]])
             do.call("stripes",smartA$stripes)
         if (do.xaxis==TRUE){
             if (is.null(smartA$xaxis$labels))
                 do.call("axis",smartA$xaxis)
         }
-        print(smartA$xlab)
         do.call("mtext",smartA$xlab)
     }
     # }}}
@@ -545,7 +618,6 @@ plotConfidence <- function(x,
           suppressWarnings(do.call("arrows",smartA$arrows))
       }
     # }}}
-    par(mar=oldmar)
     invisible(dimensions)
 }
 #----------------------------------------------------------------------
