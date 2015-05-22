@@ -1,3 +1,17 @@
+##' print results of 2x2 contingency table analysis
+##'
+##' @title print results of 2x2 contingency table analysis
+##' @param x object obtained with table2x2
+##' @param digits rounding digits
+##' @param ...
+##' @return invisible x
+##' @seealso table2x2
+##' @examples
+##' table2x2(table("marker"=rbinom(100,1,0.4),"response"=rbinom(100,1,0.1)))
+##' table2x2(matrix(c(71,18,38,8),ncol=2),stats="table")
+##' table2x2(matrix(c(71,18,38,8),ncol=2),stats=c("rr","fisher"))
+##' @export 
+##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 print.table2x2 <- function(x,digits=1,...){
     stats <- x$stats
     table2x2 <- x$table2x2
@@ -82,5 +96,6 @@ print.table2x2 <- function(x,digits=1,...){
         cat("\n_____________________________\n\nFisher's exact test\n_____________________________\n\n")
         print(fisher.test(table2x2))
     }
+    invisible(x)
 }
 

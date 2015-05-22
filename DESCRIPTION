@@ -13,6 +13,6 @@ Imports:
 Suggests:
     lme4 (>= 1.1),
     pec (>= 2.4.4),
-    riskRegression (>= 1.0.8)
+        riskRegression (>= 1.0.8)
 License: GPL (>= 2)
 Packaged: Mon Jun 08 11:54:28 2009 ;tag

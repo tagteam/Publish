@@ -24,8 +24,8 @@ coxphSeries <- function(formula,data,vars,...){
     form.v <- update.formula(formula,paste(".~.+",v))
     cf <- survival::coxph(form.v,data=data,...)
     cf$call$data <- data
-    u <- publish(cf,missing=TRUE)
-    u <- u[grep(v,rownames(u)),]
+    u <- publish(cf,missing=TRUE,print=FALSE)
+    u <- u[grep(v,u$Variable),]
   })
   u <- sapply(clist,NCOL)
   if (any(v <- (u<max(u)))){
