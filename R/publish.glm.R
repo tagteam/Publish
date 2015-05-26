@@ -86,7 +86,7 @@ publish.glm <- function(object,
                                    print=FALSE,...)
     if (print==TRUE)
         publish(srt,...)
-    invisible(srt)
+    invisible(rt)
 }
 ##' @export
 publish.lm <- publish.glm

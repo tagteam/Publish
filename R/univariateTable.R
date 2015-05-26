@@ -122,6 +122,7 @@ univariateTable <- function(formula,
         stopifnot(NCOL(mr)==1)
         groupname <- colnames(mr)
         groupvar <- as.character(FRAME$response[,1,drop=TRUE])
+        mr <- FRAME$response[,1,drop=TRUE]
         ## deal with missing values in group var
         groupvar[is.na(groupvar)] <- "Missing"
         if (is.factor(mr))

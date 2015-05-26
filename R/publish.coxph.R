@@ -20,6 +20,8 @@
 ##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
 ##'             data=pbc)
 ##' publish(fit)
+##' ## forest plot
+##' plot(publish(fit))
 ##'
 ##' publish(fit,ci.digits=2,pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE)
 ##' publish(fit,ci.digits=2,ci.handler="prettyNum",pvalue.eps=0.01,pvalue.digits=2,pvalue.stars=TRUE)
@@ -49,7 +51,10 @@ publish.coxph <- function(object,
                           ...){
     if (missing(confint.method)) confint.method="default"
     if (missing(pvalue.method))
-        pvalue.method=switch(confint.method,"robust"={"robust"},"simultaneous"={"simultaneous"},"default")
+        pvalue.method=switch(confint.method,
+            "robust"={"robust"},
+            "simultaneous"={"simultaneous"},
+            "default")
     spec <- attr(terms(object),"specials")
     cluster <- spec$cluster-1
     strata <- spec$strata-1
@@ -64,7 +69,7 @@ publish.coxph <- function(object,
                                    print=FALSE,...)
     if (print==TRUE)
         publish(srt,...)
-    invisible(srt)
+    invisible(rt)
 }
 
 #----------------------------------------------------------------------

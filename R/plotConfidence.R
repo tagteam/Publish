@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03) 
 ## Version: 
-## last-updated: May 14 2015 (10:41) 
+## last-updated: May 26 2015 (09:43) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 234
+##     Update #: 243
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -200,7 +200,6 @@
 ##' ## The actual size of the current graphics device determines
 ##' ## the size of the figures and the space between them.
 ##' ## The sizes and line widths are increased as follows:
-##' par(cex.axis=1.3)
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                xlab="Hazard ratio",
 ##'                labels=CiTable[,1:5],
@@ -211,7 +210,6 @@
 ##' ## Note that 'cex' of axis ticks is controlled via 'par' but
 ##' ## cex of the label via argument 'cex' of 'mtext'.
 ##' ## The sizes and line widths are decreased as follows:
-##' par(cex.axis=0.8)
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                cex=0.8,
@@ -441,7 +439,7 @@ plotConfidence <- function(x,
                                 xlim=xlim,
                                 border=NA)
     if (xaxis) do.xaxis <- TRUE
-    xaxis.DefaultArgs <- list(side=1,las=1,pos=0)
+    xaxis.DefaultArgs <- list(side=1,las=1,pos=0,cex=cex)
     xlab.DefaultArgs <- list(text=xlab,side=1,line=1.5,xpd=NA,cex=cex)
     plot.DefaultArgs <- list(0,0,type="n",ylim=ylim,xlim=xlim,axes=FALSE,ylab="",xlab=xlab)
     points.DefaultArgs <- list(x=m,y=rat,pch=16,cex=cex,col="blue",xpd=NA)
@@ -496,10 +494,11 @@ plotConfidence <- function(x,
             if (missing(xratio)) {
                 lwidth <- sum(preplabels$columnwidth)
                 vwidth <- sum(prepvalues$columnwidth)
-                if (lwidth>vwidth)
-                    xratio <- c((1-(vwidth/lwidth))*0.7,(vwidth/lwidth)*0.7)
-                else
-                    xratio <- c((1-(lwidth/vwidth))*0.7,(lwidth/vwidth)*0.7)
+                xratio <- c(lwidth/(lwidth+vwidth)*0.7,vwidth/(lwidth+vwidth)*0.7)
+                ## if (lwidth>vwidth)
+                ## xratio <- c((1-(vwidth/lwidth))*0.7,(vwidth/lwidth)*0.7)
+                ## else
+                ## xratio <- c((1-(lwidth/vwidth))*0.7,(lwidth/vwidth)*0.7)
                 ## xratio <- c(0.5,0.2)
             }
             labelswidth <- plotwidth * xratio[1]
@@ -575,6 +574,9 @@ plotConfidence <- function(x,
         if (do.stripes[["ci"]])
             do.call("stripes",smartA$stripes)
         if (do.xaxis==TRUE){
+            oldcexaxis <- par()$cex.axis
+            on.exit(par(cex.axis=oldcexaxis))
+            par(cex.axis=smartA$xaxis$cex)
             if (is.null(smartA$xaxis$labels))
                 do.call("axis",smartA$xaxis)
         }

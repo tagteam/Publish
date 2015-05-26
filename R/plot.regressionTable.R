@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: May 14 2015 (10:41) 
+## last-updated: May 26 2015 (09:49) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 22
+##     Update #: 42
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -24,28 +24,48 @@
 ##' @seealso regressionTable
 ##' @examples
 ##'
+##' ## logistic regression
 ##' data(Diabetes)
 ##' f <- glm(bp.2s~bp.1s+age+chol+gender+location,data=Diabetes)
 ##' rtf <- regressionTable(f,factor.reference = "inline")
-##' plot(rtf,cex=2,xratio=c(0.2,0.3))
+##' plot(rtf,cex=2)
 ##'
+##' ## Poisson regression
 ##' data(trace)
-##' fit<-glm(dead ~ smoking+ sex+ age+Time+offset(log(ObsTime)), family = poisson,data=trace)
-##' fit2<- regressionTable(fit,factor.reference = "inline")
-##' plot(fit2,xlim=c(0.85,1.15),xratio=c(0.2,0.3),cex=2)
+##' fit <- glm(dead ~ smoking+ sex+ age+Time+offset(log(ObsTime)), family = poisson,data=trace)
+##' rtab <- regressionTable(fit,factor.reference = "inline")
+##' plot(rtab,xlim=c(0.85,1.15),cex=1.8,xaxis.cex=1.5)
 ##'
-##'
+##' ## Cox regression
+##' library(survival)
+##' data(pbc)
+##' coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(protime)+log(albumin)+edema+sex,data=pbc)
+##' pubcox <- publish(coxfit)
+##' plot(pubcox,cex=1.5)
+##' 
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-plot.regressionTable <- function(x,xlim,...){
+plot.regressionTable <- function(x,xlim,xlab,...){
     X <- do.call("rbind",x)
+    model <- attr(x,"model")
+    if (missing(xlab))
+        xlab <- switch(model,
+                       "Linear regression"="Difference",
+                       "Logistic regression"="Odds ratio",
+                       "Poisson regression"="Hazard ratio",
+                       "Cox regression"="Hazard ratio")
     Coef <- X[,grep("OddsRatio|HazardRatio|Coefficient",colnames(X))]
     Lower <- X$Lower
     Upper <- X$Upper
     if (missing(xlim)) xlim <- c(min(Lower),max(Upper))
+    U <- X$Units
+    if (any(U!=""))
+        Labs <- data.frame(Variable=X$Variable,Units=U)
+    else
+        Labs <- data.frame(Variable=X$Variable)
     plotConfidence(list(Coef,lower=Lower,upper=Upper),
                    xlim=xlim,
-                   labels=list("Variable"=X$Variable),...)
+                   labels=Labs,xlab=xlab,...)
 }
 
 

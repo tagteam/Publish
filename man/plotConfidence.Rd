@@ -233,7 +233,6 @@ plotConfidence(x=CiTable[,6:8],labels=CiTable[,1:5],xratio=c(0.4,0.15),
 ## The actual size of the current graphics device determines
 ## the size of the figures and the space between them.
 ## The sizes and line widths are increased as follows:
-par(cex.axis=1.3)
 plotConfidence(x=CiTable[,6:8],
                xlab="Hazard ratio",
                labels=CiTable[,1:5],
@@ -244,7 +243,6 @@ plotConfidence(x=CiTable[,6:8],
 ## Note that 'cex' of axis ticks is controlled via 'par' but
 ## cex of the label via argument 'cex' of 'mtext'.
 ## The sizes and line widths are decreased as follows:
-par(cex.axis=0.8)
 plotConfidence(x=CiTable[,6:8],
                labels=CiTable[,1:5],
                cex=0.8,
