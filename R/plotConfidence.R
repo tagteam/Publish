@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03) 
 ## Version: 
-## last-updated: May 26 2015 (09:43) 
+## last-updated: Jun  8 2015 (11:46) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 243
+##     Update #: 262
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -191,7 +191,7 @@
 ##' ## by using the argument xratio. If there are only two blocks 
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],xratio=c(0.4,0.15))
-##'
+##' 
 ##' ## The amount of space on the left and right margin can be controlled
 ##' ## as follows:
 ##' plotConfidence(x=CiTable[,6:8],labels=CiTable[,1:5],xratio=c(0.4,0.15),
@@ -290,12 +290,13 @@
 ##' ## to illustrate this we create the confidence intervals
 ##' ## before calling the function and then cbind them
 ##' ## to the pvalues
-##' CI95 <- formatCI(lower=CiTable[,7],upper=CiTable[,8],format="(u-l)")
+##' HR <- pubformat(CiTable[,6])
+##' CI95 <- formatCI(lower=CiTable[,7],upper=CiTable[,8],format="(l-u)")
 ##' pval <- format.pval(CiTable[,9],digits=3,eps=10^{-3})
 ##' pval[pval=="NA"] <- ""
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
-##'                values=list("CI-95"=CI95,"P-value"=pval),
+##'                values=list("HR"=HR,"CI-95"=CI95,"P-value"=pval),
 ##'                cex=1.2,
 ##'                xratio=c(0.5,0.3))
 ##' 
@@ -318,8 +319,8 @@
 ##'                stripes.col=c(col1,col2,col3))
 ##' 
 ##' threegreens <- c(prodlim::dimColor("green",density=55),
-##'                prodlim::dimColor("green",density=33),
-##'                prodlim::dimColor("green",density=22))
+##'                  prodlim::dimColor("green",density=33),
+##'                  prodlim::dimColor("green",density=22))
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                values=FALSE,
@@ -337,7 +338,7 @@ plotConfidence <- function(x,
                            pch=16,
                            cex=1,
                            lwd=1,
-                           col=1,
+                           col=4,
                            xlim,
                            xlab,
                            labels,
@@ -363,18 +364,28 @@ plotConfidence <- function(x,
                            xaxis=TRUE,
                            ...){
     # {{{ extract confidence data
+
     if (!is.list(x)) x <- list(x=x)
     m <- x[[1]]
-    if (missing(lower)) lower <- x$lower
+    names(x) <- tolower(names(x))
+    if (missing(lower)) {
+        lower <- x$lower
+    }
     if (missing(upper)) upper <- x$upper
     if (missing(xlim))
         xlim <- c(min(lower)-0.1*min(lower),max(upper)+0.1*min(upper))
     if (missing(xlab)) xlab <- ""
     NR <- length(x[[1]])
+    if (!(length(y.offset) %in% c(1,NR))){
+        warning(paste("The given",length(y.offset),"many y-offsets are pruned/extended to the length",NR,"lines of the plot."))
+    }
+    if (length(y.offset)!=NR)
+        y.offset <- rep(y.offset,length.out=NR)
     ylim <- c(0,NR+1+y.offset[[length(y.offset)]])
     at <- (1:NR)+y.offset
     rat <- rev(at)
     dimensions <- list("NumberRows"=NR,xlim=xlim,ylim=ylim,ypos=at)
+
     # }}}
     # {{{ preprocessing of labels and title.labels
     if (!missing(labels) && (is.logical(labels) && labels[[1]]==FALSE))
@@ -429,6 +440,7 @@ plotConfidence <- function(x,
     # }}}
     if (add==TRUE) do.values <- do.title.values <- do.labels <- do.title.labels <- FALSE
     # {{{ smart argument control
+
     dist <- (at[2]-at[1])/2
     if (missing(stripes) || is.null(stripes))
         do.stripes <- FALSE
@@ -442,8 +454,8 @@ plotConfidence <- function(x,
     xaxis.DefaultArgs <- list(side=1,las=1,pos=0,cex=cex)
     xlab.DefaultArgs <- list(text=xlab,side=1,line=1.5,xpd=NA,cex=cex)
     plot.DefaultArgs <- list(0,0,type="n",ylim=ylim,xlim=xlim,axes=FALSE,ylab="",xlab=xlab)
-    points.DefaultArgs <- list(x=m,y=rat,pch=16,cex=cex,col="blue",xpd=NA)
-    arrows.DefaultArgs <- list(x0=lower,y0=rat,x1=upper,y1=rat,lwd=lwd,col="blue",xpd=NA,length=0,code=3,angle=90)
+    points.DefaultArgs <- list(x=m,y=rat,pch=16,cex=cex,col=col,xpd=NA)
+    arrows.DefaultArgs <- list(x0=lower,y0=rat,x1=upper,y1=rat,lwd=lwd,col=col,xpd=NA,length=0,code=3,angle=90)
     refline.DefaultArgs <- list(x0=refline,y0=0,x1=refline,y1=max(at),lwd=lwd,col="red",xpd=NA)
     if (missing(labels)) labels <- NULL
     if (missing(title.labels)) title.labels <- NULL
@@ -466,91 +478,95 @@ plotConfidence <- function(x,
             smartA$points$pch <- rep(smartA$points$pch,length.out=NR)
         smartA$points$pch[factor.reference.pos] <- factor.reference.pch
     }
+
     # }}}
     # {{{ layout
-    oldmar <- par()$mar
-    on.exit(par(mar=oldmar))
-    par(mar=c(0,0,0,0))
-    ## layout
-    dsize <- dev.size(units="cm")
-    leftmarginwidth <- leftmargin*dsize[1]
-    rightmarginwidth <- rightmargin*dsize[1]
-    plotwidth <- dsize[1]-leftmarginwidth-rightmarginwidth
-    if (do.labels){
-        preplabels <- prepareLabels(labels=smartA$labels,
-                                    titles=smartA$title.labels)
-    }
-    if (do.values){
-        prepvalues <- prepareLabels(labels=smartA$values,
-                                    titles=smartA$title.values)
-    }
-    if (do.labels){
-        ## force label into list, then count label columns
-        ## and compute strwidth
+    if (add==FALSE){
+        oldmar <- par()$mar
+        on.exit(par(mar=oldmar))
+        par(mar=c(0,0,0,0))
+        ## layout
+        dsize <- dev.size(units="cm")
+        leftmarginwidth <- leftmargin*dsize[1]
+        rightmarginwidth <- rightmargin*dsize[1]
+        plotwidth <- dsize[1]-leftmarginwidth-rightmarginwidth
+        if (do.labels){
+            preplabels <- prepareLabels(labels=smartA$labels,
+                                        titles=smartA$title.labels)
+        }
         if (do.values){
-            ## both values and labels
-            do.stripes <- rep(do.stripes,length.out=3)
-            names(do.stripes) <- c("labels","ci","values")
-            if (missing(xratio)) {
-                lwidth <- sum(preplabels$columnwidth)
-                vwidth <- sum(prepvalues$columnwidth)
-                xratio <- c(lwidth/(lwidth+vwidth)*0.7,vwidth/(lwidth+vwidth)*0.7)
-                ## if (lwidth>vwidth)
-                ## xratio <- c((1-(vwidth/lwidth))*0.7,(vwidth/lwidth)*0.7)
-                ## else
-                ## xratio <- c((1-(lwidth/vwidth))*0.7,(lwidth/vwidth)*0.7)
-                ## xratio <- c(0.5,0.2)
-            }
-            labelswidth <- plotwidth * xratio[1]
-            valueswidth <- plotwidth * xratio[2]
-            ciwidth <- plotwidth - labelswidth - valueswidth
-            mat <- matrix(c(0,c(1,3,2)[order],0),ncol=5)
-            if (!missing(order) && length(order)!=3) order <- rep(order,length.out=3)
-            layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth,valueswidth)[order],rightmarginwidth))
-            ## layout.show(n=3)
+            prepvalues <- prepareLabels(labels=smartA$values,
+                                        titles=smartA$title.values)
+        }
+        if (do.labels){
+            ## force label into list, then count label columns
+            ## and compute strwidth
+            if (do.values){
+                ## both values and labels
+                do.stripes <- rep(do.stripes,length.out=3)
+                names(do.stripes) <- c("labels","ci","values")
+                if (missing(xratio)) {
+                    lwidth <- sum(preplabels$columnwidth)
+                    vwidth <- sum(prepvalues$columnwidth)
+                    xratio <- c(lwidth/(lwidth+vwidth)*0.7,vwidth/(lwidth+vwidth)*0.7)
+                    ## if (lwidth>vwidth)
+                    ## xratio <- c((1-(vwidth/lwidth))*0.7,(vwidth/lwidth)*0.7)
+                    ## else
+                    ## xratio <- c((1-(lwidth/vwidth))*0.7,(lwidth/vwidth)*0.7)
+                    ## xratio <- c(0.5,0.2)
+                }
+                labelswidth <- plotwidth * xratio[1]
+                valueswidth <- plotwidth * xratio[2]
+                ciwidth <- plotwidth - labelswidth - valueswidth
+                mat <- matrix(c(0,c(1,3,2)[order],0),ncol=5)
+                if (!missing(order) && length(order)!=3) order <- rep(order,length.out=3)
+                layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth,valueswidth)[order],rightmarginwidth))
+                ## layout.show(n=3)
+            } else{
+                  ## only labels
+                  do.stripes <- rep(do.stripes,length.out=2)
+                  names(do.stripes) <- c("labels","ci")
+                  if (missing(xratio)) xratio <- 0.618
+                  labelswidth <- plotwidth * xratio[1]
+                  ciwidth <- plotwidth - labelswidth
+                  valueswidth <- 0
+                  if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
+                  mat <- matrix(c(0,c(1,2)[order],0),ncol=4)
+                  layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth)[order],rightmarginwidth))
+              }
         } else{
-              ## only labels
-              do.stripes <- rep(do.stripes,length.out=2)
-              names(do.stripes) <- c("labels","ci")
-              if (missing(xratio)) xratio <- 0.618
-              labelswidth <- plotwidth * xratio[1]
-              ciwidth <- plotwidth - labelswidth
-              valueswidth <- 0
-              if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
-              mat <- matrix(c(0,c(1,2)[order],0),ncol=4)
-              layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth)[order],rightmarginwidth))
+              if (do.values){
+                  ## only values
+                  do.stripes <- rep(do.stripes,length.out=2)
+                  names(do.stripes) <- c("ci","values")
+                  if (missing(xratio)) xratio <- 0.618
+                  valueswidth <- plotwidth * (1-xratio[1])
+                  ciwidth <- plotwidth - valueswidth
+                  labelswidth <- 0
+                  mat <- matrix(c(0,c(2,1)[order],0),ncol=4)
+                  if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
+                  layout(mat,width=c(leftmarginwidth,c(ciwidth,valueswidth)[order],rightmarginwidth))
+              }else{
+                   # none
+                   xratio <- 1
+                   ciwidth <- plotwidth
+                   do.stripes <- do.stripes[1]
+                   names(do.stripes) <- "ci"
+                   labelswidth <- 0
+                   valueswidth <- 0
+                   mat <- matrix(c(0,1,0),ncol=3)
+                   layout(mat,width=c(leftmarginwidth,ciwidth,rightmarginwidth))
+               }
           }
-    } else{
-          if (do.values){
-              ## only values
-              do.stripes <- rep(do.stripes,length.out=2)
-              names(do.stripes) <- c("ci","values")
-              if (missing(xratio)) xratio <- 0.618
-              valueswidth <- plotwidth * (1-xratio[1])
-              ciwidth <- plotwidth - valueswidth
-              labelswidth <- 0
-              mat <- matrix(c(0,c(2,1)[order],0),ncol=4)
-              if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
-              layout(mat,width=c(leftmarginwidth,c(ciwidth,valueswidth)[order],rightmarginwidth))
-          }else{
-               # none
-               xratio <- 1
-               ciwidth <- plotwidth
-               do.stripes <- do.stripes[1]
-               names(do.stripes) <- "ci"
-               labelswidth <- 0
-               valueswidth <- 0
-               mat <- matrix(c(0,1,0),ncol=3)
-               layout(mat,width=c(leftmarginwidth,ciwidth,rightmarginwidth))
-           }
-      }
-    dimensions <- c(dimensions,list(xratio=xratio,
-                                    labelswidth=labelswidth,
-                                    valueswidth=valueswidth,
-                                    ciwidth=ciwidth))
+        dimensions <- c(dimensions,list(xratio=xratio,
+                                        labelswidth=labelswidth,
+                                        valueswidth=valueswidth,
+                                        ciwidth=ciwidth))
+    }
     # }}}
     # {{{ labels
-    par(mar=oldmar*c(1,0,1,0))
+
+    if (add==FALSE) par(mar=oldmar*c(1,0,1,0))
     if (do.labels){
         if (do.stripes[["labels"]])
             preplabels <- c(preplabels,list(width=labelswidth,ylim=ylim,stripes=smartA$stripes))
@@ -558,6 +574,7 @@ plotConfidence <- function(x,
             preplabels <- c(preplabels,list(width=labelswidth,ylim=ylim))
         do.call("plotLabels",preplabels)
     }
+
     # }}}
     # {{{ values
     if (do.values){
@@ -584,7 +601,9 @@ plotConfidence <- function(x,
     }
     # }}}
     # {{{ ref line
-    do.call("segments",smartA$refline)
+    if (add==FALSE){
+        do.call("segments",smartA$refline)
+    }
     # }}}
     # {{{ point estimates and confidence
     do.call("points",smartA$points)

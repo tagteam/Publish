@@ -93,8 +93,8 @@ regressionTable <- function(object,
                 formula <- object$call$formula
             }
         } else{
-            formula <- formula(object$terms)
-        }
+              formula <- formula(object$terms)
+          }
     }
     else{
         formula <- object$formula
@@ -127,8 +127,8 @@ regressionTable <- function(object,
     islogical <- grep("TRUE$",termnames,value=TRUE)
     if (length(islogical)>0){
         logicalnames <- lapply(islogical,function(l){
-            substring(l,1,nchar(l)-4)
-        })
+                                   substring(l,1,nchar(l)-4)
+                               })
         names(logicalnames) <- logicalnames
         factorlevels <- c(factorlevels,
                           lapply(logicalnames,function(l){c("FALSE","TRUE")}))
@@ -143,7 +143,8 @@ regressionTable <- function(object,
     # {{{ interactions
     terms2 <- parseInteractionTerms(terms,factorlevels)
     vars2 <- unique(unlist(lapply(terms2,function(x)attr(x,"variables"))))
-    contrasts <- unlist(terms2)
+    ## print(unlist(terms2))
+    ## contrasts <- unlist(terms2)
     # }}}
     # {{{ confidence intervals
     confint.method <- match.arg(confint.method,
@@ -186,7 +187,7 @@ regressionTable <- function(object,
     # }}}
     # {{{ missing values
     allvars <- all.vars(delete.response(terms(formula)))
-    nmiss <- lapply(data[allvars],function(v){sum(is.na(v))})
+    nmiss <- lapply(allvars,function(v)function(v){sum(is.na(data[[v]]))})
     ## nmiss <- lapply(allvars,function(v){sum(is.na(v))})
     ## names(nmiss) <- names(allvars)
     ## nmiss <- NULL
@@ -195,104 +196,107 @@ regressionTable <- function(object,
     ## reference.value <- ifelse((logisticRegression+coxRegression==0),0,1)
     reference.value <- 0
     blocks1 <- lapply(terms1,function(vn){
-        isfactor <- match(vn,factornames,nomatch=0)
-        isordered <- match(vn,orderednames,nomatch=0)
-        ## the regexp is supposed to catch the coefficients
-        ## in which term vn is involved
-        if (isfactor){
-            if (isordered){
-                vn.regexp <- paste("^",vn,".[LCQ]$","|","",vn,"\\^[0-9]+$",sep="")
-            }else{
-                levs.regexp <- paste("(",paste(factorlevels[[isfactor]],collapse="|"),")",sep="")
-                vn.regexp <- paste("^",vn,levs.regexp,"$","|","I\\(",vn,".*",levs.regexp,"|",vn,"\\)",".*",levs.regexp,sep="")
-            }
-        } else{
-            ## protect special characters
-            vn.protect <- sub("(","\\(",vn,fixed=TRUE)
-            vn.protect <- sub(")","\\)",vn.protect,fixed=TRUE)
-            vn.regexp <- paste("^",vn.protect,"$",sep="")
-        }
-        parms <- grep(vn.regexp,termnames)
-        coef.vn <- coef[parms]
-        ci.vn <- ci[parms,,drop=FALSE]
-        p.vn <- pval[parms]
-        Missing <- NULL
-        # {{{ factor variables
-        varname <- all.vars(formula(paste("~",vn)))
-        ## found <- match(v,names(nmiss),nomatch=0)
-        if (isfactor){
-            if (factor.reference=="inline"){
-                Variable <- c(vn,rep("",NROW(coef.vn)-1))
-                Units <- paste(factorlevels[[isfactor]][-1], "vs", factorlevels[[isfactor]][1])
-                Missing <- c(nmiss[varname],rep("",length(coef.vn)-1))
-            } else {
-                Variable <- c(vn,rep("",length(coef.vn)))
-                Units <- factorlevels[[isfactor]]
-                Missing <- c(nmiss[varname],rep("",length(coef.vn)))
-                coef.vn <- c(reference.value,coef.vn)
-                ci.vn <- rbind(c(reference.value,reference.value),ci.vn)
-                p.vn <- c(1,p.vn)
-            }
-        } else{
-            # }}}
-        # {{{ numeric variables
-            Variable <- vn
-            if (!is.null(units[[varname]]))
-                Units <- units[[varname]]
-            else
-                Units <- ""
-            if (!is.null(nmiss)){
-                Missing <- nmiss[varname]
-            }
-        }
-        block <- data.frame(Variable=Variable,
-                            Units=Units,
-                            Missing=as.character(Missing),
-                            Coefficient=coef.vn,
-                            Lower=ci.vn[,1],
-                            Upper=ci.vn[,2],
-                            Pvalue=p.vn)
-        rownames(block) <- NULL
-        block
-    })
+                          isfactor <- match(vn,factornames,nomatch=0)
+                          isordered <- match(vn,orderednames,nomatch=0)
+                          ## the regexp is supposed to catch the coefficients
+                          ## in which term vn is involved
+                          if (isfactor){
+                              if (isordered){
+                                  vn.regexp <- paste("^",vn,".[LCQ]$","|","",vn,"\\^[0-9]+$",sep="")
+                              }else{
+                                   levs.regexp <- paste("(",paste(factorlevels[[isfactor]],collapse="|"),")",sep="")
+                                   vn.regexp <- paste("^",vn,levs.regexp,"$","|","I\\(",vn,".*",levs.regexp,"|",vn,"\\)",".*",levs.regexp,sep="")
+                               }
+                          } else{
+                                ## protect special characters
+                                vn.protect <- sub("(","\\(",vn,fixed=TRUE)
+                                vn.protect <- sub(")","\\)",vn.protect,fixed=TRUE)
+                                vn.regexp <- paste("^",vn.protect,"$",sep="")
+                            }
+                          parms <- grep(vn.regexp,termnames)
+                          coef.vn <- coef[parms]
+                          ci.vn <- ci[parms,,drop=FALSE]
+                          p.vn <- pval[parms]
+                          Missing <- NULL
+                          # {{{ factor variables
+                          varname <- all.vars(formula(paste("~",vn)))
+                          ## found <- match(v,names(nmiss),nomatch=0)
+                          nmissvar <- nmiss[[varname]]
+                          if (is.null(nmissvar)) nmissvar <- 0
+                          if (isfactor){
+                              if (factor.reference=="inline"){
+                                  Variable <- c(vn,rep("",NROW(coef.vn)-1))
+                                  Units <- paste(factorlevels[[isfactor]][-1], "vs", factorlevels[[isfactor]][1])
+                                  Missing <- c(nmissvar,rep("",length(coef.vn)-1))
+                              } else {
+                                    Variable <- c(vn,rep("",length(coef.vn)))
+                                    Units <- factorlevels[[isfactor]]
+                                    Missing <- c(nmissvar,rep("",length(coef.vn)))
+                                    coef.vn <- c(reference.value,coef.vn)
+                                    ci.vn <- rbind(c(reference.value,reference.value),ci.vn)
+                                    p.vn <- c(1,p.vn)
+                                }
+                          } else{
+                                # }}}
+                                # {{{ numeric variables
+                                Variable <- vn
+                                if (!is.null(units[[varname]]))
+                                    Units <- units[[varname]]
+                                else
+                                    Units <- ""
+                                if (!is.null(nmiss)){
+                                    Missing <- nmiss[[varname]]
+                                }
+                            }
+                          if (is.null(Missing)) Missing <- 0
+                          block <- data.frame(Variable=Variable,
+                                              Units=Units,
+                                              Missing=as.character(Missing),
+                                              Coefficient=coef.vn,
+                                              Lower=ci.vn[,1],
+                                              Upper=ci.vn[,2],
+                                              Pvalue=p.vn,stringsAsFactors=FALSE)
+                          rownames(block) <- NULL
+                          block
+                      })
     # }}}
-        # }}}
-        # {{{ blocks level 2
+    # }}}
+    # {{{ blocks level 2
     if (length(terms2)>0){
         blocks2 <- lapply(terms2,function(t2){
-            block <- data.frame(lava::estimate(object,
-                                               f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
-                                               robust=confint.method=="robust")$coefmat)
-            colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
-            vars <- attr(t2,"variables")
-            miss2 <- sum(is.na(data[,all.vars(formula(paste("~",vars[[1]])))]))+sum(is.na(data[,all.vars(formula(paste("~",vars[[2]])))]))
-            block <- cbind(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
-            rownames(block) <- NULL
-            block
-        })
+                              block <- data.frame(lava::estimate(object,
+                                                                 f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
+                                                                 robust=confint.method=="robust")$coefmat)
+                              colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
+                              vars <- attr(t2,"variables")
+                              miss2 <- sum(is.na(data[,all.vars(formula(paste("~",vars[[1]])))]))+sum(is.na(data[,all.vars(formula(paste("~",vars[[2]])))]))
+                              block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
+                              rownames(block) <- NULL
+                              block
+                          })
         names(blocks2) <- names(terms2)
     }
     # }}}
-        # {{{ formatting
-        names(blocks1) <- terms1
-        out <- blocks1
-        if (length(terms2)>0) out <- c(out,blocks2)
-        if (logisticRegression)
-            out <- lapply(out,function(x){
-                colnames(x) <- sub("Coefficient","OddsRatio",colnames(x))
-                x$OddsRatio <- exp(x$OddsRatio)
-                x$Lower <- exp(x$Lower)
-                x$Upper <- exp(x$Upper)
-                x
-            })
-        if (coxRegression | poissonRegression)
-            out <- lapply(out,function(x){
-                colnames(x) <- sub("Coefficient","HazardRatio",colnames(x))
-                x$HazardRatio <- exp(x$HazardRatio)
-                x$Lower <- exp(x$Lower)
-                x$Upper <- exp(x$Upper)
-                x
-            })
+    # {{{ formatting
+    names(blocks1) <- terms1
+    out <- blocks1
+    if (length(terms2)>0) out <- c(out,blocks2)
+    if (logisticRegression)
+        out <- lapply(out,function(x){
+                          colnames(x) <- sub("Coefficient","OddsRatio",colnames(x))
+                          x$OddsRatio <- exp(x$OddsRatio)
+                          x$Lower <- exp(x$Lower)
+                          x$Upper <- exp(x$Upper)
+                          x
+                      })
+    if (coxRegression | poissonRegression)
+        out <- lapply(out,function(x){
+                          colnames(x) <- sub("Coefficient","HazardRatio",colnames(x))
+                          x$HazardRatio <- exp(x$HazardRatio)
+                          x$Lower <- exp(x$Lower)
+                          x$Upper <- exp(x$Upper)
+                          x
+                      })
 
     attr(out,"terms1") <- terms1
     attr(out,"terms2") <- terms2

@@ -15,14 +15,17 @@
 ##' @param ... passed to glm
 ##' @return Matrix with regression coefficients, one for each element of \code{vars}.
 ##' @author Thomas Alexander Gerds
+##' @examples
 ##'
 ##' data(Diabetes)
 ##' Diabetes$hyper1 <- factor(1*(Diabetes$bp.1s>140))
-##' uniodds <- glmSeries(hyper1~1,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
-##' uniodds
-##' ## control all univariate analyses for age and gender
-##' uniodds.control <- glmSeries(hyper1~age+gender,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
-##' uniodds.control
+##' ## collect odds ratios from three univariate logistic regression analyses
+##' uni.odds <- glmSeries(hyper1~1,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
+##' uni.odds
+##' ## control the logistic regression analyses for age and gender
+##' ## but collect only information on the variables in `vars'.
+##' controlled.odds <- glmSeries(hyper1~age+gender,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
+##' controlled.odds
 ##' ##' @export
 glmSeries <- function(formula,data,vars,...){
     ## ref <- glm(formula,data=data,...)
@@ -33,7 +36,7 @@ glmSeries <- function(formula,data,vars,...){
         gf <- glm(form.v,data=data,...)
         gf$call$data <- data
         nv <- length(gf$xlevels[[v]])
-        u <- publish(gf,print=FALSE)
+        u <- summary(regressionTable(gf),print=FALSE)
         first <- grep(v,u[,"Variable"])
         if (nv>1)
             sel <- seq(first,first+nv-1,1)

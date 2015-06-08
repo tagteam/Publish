@@ -18,13 +18,26 @@
 ##' @param ... passed to publish.coxph
 ##' @return matrix with results
 ##' @author Thomas Alexander Gerds
+##' @examples
+##' library(survival)
+##' data(pbc)
+##' ## collect hazard ratios from three univariate Cox regression analyses
+##' pbc$edema <- factor(pbc$edema,levels=c("0","0.5","1"),labels=c("0","0.5","1"))
+##' uni.hr <- coxphSeries(Surv(time,status==2)~1,vars=c("edema","bili","protime"),data=pbc)
+##' uni.hr
+##'
+##' ## control the logistic regression analyses for age and gender
+##' ## but collect only information on the variables in `vars'.
+##' controlled.hr <- coxphSeries(Surv(time,status==2)~age+sex,vars=c("edema","bili","protime"),data=pbc)
+##' controlled.hr
+##' 
 ##' @export
 coxphSeries <- function(formula,data,vars,...){
   clist <- lapply(vars,function(v){
     form.v <- update.formula(formula,paste(".~.+",v))
     cf <- survival::coxph(form.v,data=data,...)
     cf$call$data <- data
-    u <- publish(cf,missing=TRUE,print=FALSE)
+    u <- summary(regressionTable(cf),print=FALSE)
     u <- u[grep(v,u$Variable),]
   })
   u <- sapply(clist,NCOL)
