@@ -2,8 +2,12 @@
 ##'
 ##' @title Formatting regression tables
 ##' @param x
+##' @param showMissing Decide if number of missing values are shown.
+##' Either logical or character. If \code{'ifany'} then number missing values are
+##' shown if there are some.
 ##' @param print
-##' @param ... Used to control formatting of parameter estimates, confidence intervals and p-values. See examples.
+##' @param ... Used to control formatting of parameter estimates,
+##' confidence intervals and p-values. See examples.
 ##' @return Formatted regression table with raw values as attributes
 ##' @seealso publish.glm publish.coxph 
 ##' @examples
@@ -19,6 +23,7 @@
 #' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 summary.regressionTable <- function(x,
+                                    showMissing="ifany",
                                     print=TRUE,
                                     ...){
     pynt <- getPyntDefaults(list(...),names=list("digits"=c(2,3),"handler"="sprintf",nsmall=NULL))
@@ -54,17 +59,17 @@ summary.regressionTable <- function(x,
         attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
         Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
     } else{
-        if (attr(x,"model")=="Logistic regression"){
-            attr(Rtab,"model") <- "Logistic regression"
-            attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
-            Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-        } else{
-            ## assume "Linear regression"
-            attr(Rtab,"model") <- "Linear regression"
-            attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
-            Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-        }
-    }
+          if (attr(x,"model")=="Logistic regression"){
+              attr(Rtab,"model") <- "Logistic regression"
+              attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
+              Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+          } else{
+                ## assume "Linear regression"
+                attr(Rtab,"model") <- "Linear regression"
+                attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
+                Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+            }
+      }
     Rtab$CI.95 <- do.call("formatCI",smartF$ci)
     Rtab$"p-value" <- do.call("format.pval",smartF$pvalue)
     if (length(smartF$pvalue$stars)>0 && smartF$pvalue$stars==TRUE)
@@ -73,6 +78,10 @@ summary.regressionTable <- function(x,
     attr(Rtab,"Upper") <- Upper
     attr(Rtab,"Pvalue") <- Pvalue
     rownames(Rtab) <- NULL
+    ##
+    if (showMissing=="ifany") showMissing <- !all(Rtab[,"Missing"] %in% c("","0"))
+    if (!showMissing)
+        Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
     if (print==TRUE) {
         print(Rtab,...)
         ## if (smartF$pvalue$stars==TRUE)
