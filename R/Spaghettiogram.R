@@ -94,7 +94,7 @@ Spaghettiogram <- function(formula,
     if (length(pch) < nlines) pch <- rep(pch, nlines)
     # }}}
     # {{{ processing graphical arguments
-    axis1.DefaultArgs <- list(side=1,las=1)
+    axis1.DefaultArgs <- list(side=1,las=1,at=sort(unique(XY[,"X"])))
     axis2.DefaultArgs <- list(side=2,las=2)
     background.DefaultArgs <- list(bg="white")
     lines.DefaultArgs <- list(type="b",cex=1.3)
