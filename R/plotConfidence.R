@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03) 
 ## Version: 
-## last-updated: Jun  8 2015 (11:46) 
+## last-updated: Jun 18 2015 (14:24) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 262
+##     Update #: 266
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -78,8 +78,10 @@
 ##' many elements as values has columns or elements.
 ##' @param order Order of the three blocks: labels, confidence limits,
 ##' values. See examples.
-##' @param leftmargin Percentage of plotting region used for leftmargin. Default is 0.025. See also Details.
-##' @param rightmargin Percentage of plotting region used for rightmargin. Default is 0.025. See also Details.
+##' @param leftmargin Percentage of plotting region used for
+##' leftmargin. Default is 0.025. See also Details.
+##' @param rightmargin Percentage of plotting region used for
+##' rightmargin. Default is 0.025. See also Details.
 ##' @param stripes Vector of up to three Logicals. If \code{TRUE} draw
 ##' stripes into the background. The first applies to the labels, the
 ##' second to the graphical presentation of the confidence intervals
@@ -124,6 +126,9 @@
 ##' confidence intervals that stretch beyond xlim.
 ##' @param add Logical. If \code{TRUE} do not draw labels or values
 ##' and add confidence intervals to existing plot.
+##' @param layout Logical. If \code{FALSE} do not call layout. This is useful when
+##' several plotConfidence results should be combined in one graph and hence layout is called
+##' externally.
 ##' @param xaxis Logical. If \code{FALSE} do not draw x-axis.
 ##' @param ... Used to control arguments of the following subroutines:
 ##' \code{plot}: Applies to plotting frame of the graphical
@@ -361,6 +366,7 @@ plotConfidence <- function(x,
                            extremeArrowsLength=0.05,
                            extremeArrowsAngle=30,
                            add=FALSE,
+                           layout=TRUE,
                            xaxis=TRUE,
                            ...){
     # {{{ extract confidence data
@@ -520,7 +526,8 @@ plotConfidence <- function(x,
                 ciwidth <- plotwidth - labelswidth - valueswidth
                 mat <- matrix(c(0,c(1,3,2)[order],0),ncol=5)
                 if (!missing(order) && length(order)!=3) order <- rep(order,length.out=3)
-                layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth,valueswidth)[order],rightmarginwidth))
+                if (layout)
+                    layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth,valueswidth)[order],rightmarginwidth))
                 ## layout.show(n=3)
             } else{
                   ## only labels
@@ -532,7 +539,8 @@ plotConfidence <- function(x,
                   valueswidth <- 0
                   if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
                   mat <- matrix(c(0,c(1,2)[order],0),ncol=4)
-                  layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth)[order],rightmarginwidth))
+                  if (layout)
+                      layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth)[order],rightmarginwidth))
               }
         } else{
               if (do.values){
@@ -545,7 +553,8 @@ plotConfidence <- function(x,
                   labelswidth <- 0
                   mat <- matrix(c(0,c(2,1)[order],0),ncol=4)
                   if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
-                  layout(mat,width=c(leftmarginwidth,c(ciwidth,valueswidth)[order],rightmarginwidth))
+                  if (layout)
+                      layout(mat,width=c(leftmarginwidth,c(ciwidth,valueswidth)[order],rightmarginwidth))
               }else{
                    # none
                    xratio <- 1
@@ -555,13 +564,14 @@ plotConfidence <- function(x,
                    labelswidth <- 0
                    valueswidth <- 0
                    mat <- matrix(c(0,1,0),ncol=3)
-                   layout(mat,width=c(leftmarginwidth,ciwidth,rightmarginwidth))
+                   if (layout)
+                       layout(mat,width=c(leftmarginwidth,ciwidth,rightmarginwidth))
                }
           }
         dimensions <- c(dimensions,list(xratio=xratio,
                                         labelswidth=labelswidth,
                                         valueswidth=valueswidth,
-                                        ciwidth=ciwidth))
+                                        ciwidth=ciwidth,layout=mat))
     }
     # }}}
     # {{{ labels

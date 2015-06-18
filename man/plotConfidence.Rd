@@ -10,7 +10,7 @@ plotConfidence(x, lower, upper, pch = 16, cex = 1, lwd = 1, col = 4,
   factor.reference.label = "Reference", factor.reference.pch = 8,
   refline = 1, xratio, y.offset = 0, y.title.offset = 1.3, digits = 2,
   format, extremeArrowsLength = 0.05, extremeArrowsAngle = 30,
-  add = FALSE, xaxis = TRUE, ...)
+  add = FALSE, layout = TRUE, xaxis = TRUE, ...)
 }
 \arguments{
 \item{x}{Either a vector containing the point estimates or A list
@@ -65,9 +65,11 @@ many elements as values has columns or elements.}
 \item{order}{Order of the three blocks: labels, confidence limits,
 values. See examples.}
 
-\item{leftmargin}{Percentage of plotting region used for leftmargin. Default is 0.025. See also Details.}
+\item{leftmargin}{Percentage of plotting region used for
+leftmargin. Default is 0.025. See also Details.}
 
-\item{rightmargin}{Percentage of plotting region used for rightmargin. Default is 0.025. See also Details.}
+\item{rightmargin}{Percentage of plotting region used for
+rightmargin. Default is 0.025. See also Details.}
 
 \item{stripes}{Vector of up to three Logicals. If \code{TRUE} draw
 stripes into the background. The first applies to the labels, the
@@ -125,6 +127,10 @@ confidence intervals that stretch beyond xlim.}
 
 \item{add}{Logical. If \code{TRUE} do not draw labels or values
 and add confidence intervals to existing plot.}
+
+\item{layout}{Logical. If \code{FALSE} do not call layout. This is useful when
+several plotConfidence results should be combined in one graph and hence layout is called
+externally.}
 
 \item{xaxis}{Logical. If \code{FALSE} do not draw x-axis.}
 
