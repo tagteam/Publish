@@ -87,6 +87,7 @@ univariateTable <- function(formula,
                             digits=c(1,1,3),
                             strataIsOutcome=FALSE,
                             shortGroupNames,
+                            na.rm=FALSE,
                             ...){
     if (length(digits)<3) digits <- rep(digits,3)
     if (!is.numeric(digits.summary <- digits[[1]])) digits.summary <- 1
@@ -156,17 +157,17 @@ univariateTable <- function(formula,
     continuous.matrix <- NULL
     factor.matrix <- NULL
     auto.type <- sapply(1:NCOL(automatrix),function(i){
-        x <- automatrix[,i]
-        #  type 0=character
-        #       1=factor
-        #       2=numeric
-        ## set some useful default
-        type.i <- is.factor(x)+2*is.numeric(x)+3*is.logical(x)
-        # treat character and logical as factors
-        if (type.i %in% c(0,3)) type.i <- 1
-        # force variables with less than 3 distinct values to be factors (discrete)
-        if (length(unique(x))<3) type.i <- 1
-        type.i})
+                                  x <- automatrix[,i]
+                                  #  type 0=character
+                                  #       1=factor
+                                  #       2=numeric
+                                  ## set some useful default
+                                  type.i <- is.factor(x)+2*is.numeric(x)+3*is.logical(x)
+                                  # treat character and logical as factors
+                                  if (type.i %in% c(0,3)) type.i <- 1
+                                  # force variables with less than 3 distinct values to be factors (discrete)
+                                  if (length(unique(x))<3) type.i <- 1
+                                  type.i})
     if (any(auto.type==2)){
         if (is.null(FRAME$S))
             continuous.matrix <- automatrix[,auto.type==2,drop=FALSE]
@@ -245,10 +246,10 @@ univariateTable <- function(formula,
     totals.missing <- lapply(allmatrix,function(v){sum(is.na(v))})
     if (!is.null(groups)){
         group.missing <- lapply(allmatrix,function(v){
-            lapply(groups,function(g){
-                sum(is.na(v[groupvar==g]))
-            })
-        })}
+                                    lapply(groups,function(g){
+                                               sum(is.na(v[groupvar==g]))
+                                           })
+                                })}
     else {
         group.missing <- NULL
     }
@@ -278,8 +279,12 @@ univariateTable <- function(formula,
         if (!is.null(Q.matrix)){
             p.Q <- sapply(names(Q.matrix),function(v){
                                    if (strataIsOutcome==TRUE){
-                                       ## logistic regression 
-                                       px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                       ## logistic regression
+                                       ## glm fails when there are missing values
+                                       ## in outcome, so we remove missing values
+                                       fv <- formula(paste(v,"~",groupname))
+                                       vdata <- model.frame(fv,data,na.action=na.omit)
+                                       px <- anova(glm(update(formula,paste(".~",v)),data=vdata,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
                                        px
                                    }
                                    else {
@@ -296,10 +301,18 @@ univariateTable <- function(formula,
         if (!is.null(factor.matrix)){
             p.freq <- sapply(names(factor.matrix),function(v){
                                       if (strataIsOutcome==TRUE){
-                                          ## logistic regression 
-                                          px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                          ## logistic regression
+                                          fv <- formula(paste(v,"~",groupname))
+                                          vdata <- model.frame(fv,data,na.action=na.omit)
+                                          px <- anova(glm(update(formula,paste(".~",v)),data=vdata,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
                                       } else{
-                                            tabx <- table(factor.matrix[,v],groupvar)
+                                            fv <- factor.matrix[,v]
+                                            missv <- is.na(fv)
+                                            if (any(missv) & na.rm==TRUE){
+                                                fv <- factor(fv[!missv])
+                                                groupvar <- factor(groupvar[!missv])
+                                            }
+                                            tabx <- table(fv,groupvar)
                                             if (sum(tabx)==0) {
                                                 px <- NA
                                             } else{

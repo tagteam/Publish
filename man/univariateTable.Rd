@@ -7,7 +7,8 @@
 univariateTable(formula, data = parent.frame(),
   summary.format = "mean(x) (sd(x))", Q.format = "median(x) [iqr(x)]",
   freq.format = "count(x) (percent(x))", column.percent = TRUE,
-  digits = c(1, 1, 3), strataIsOutcome = FALSE, shortGroupNames, ...)
+  digits = c(1, 1, 3), strataIsOutcome = FALSE, shortGroupNames,
+  na.rm = FALSE, ...)
 }
 \arguments{
 \item{formula}{Formula specifying the grouping variable (strata)
