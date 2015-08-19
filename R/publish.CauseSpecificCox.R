@@ -42,15 +42,24 @@ publish.CauseSpecificCox <- function(object,
             "default")
     if (missing(cause)) {
         clist <- lapply(object$models,function(m){
-            ## m$call$data <- object$call$data
-            publish(m,
-                    pvalue.method=pvalue.method,
-                    confint.method=confint.method,
-                    ## digits=digits,
-                    print=FALSE,
-                    factor.reference=factor.reference,
-                    units=units,...)
-        })
+                            ## m$call$data <- object$call$data
+                            ## summary(publish(m,
+                            ## pvalue.method=pvalue.method,
+                            ## confint.method=confint.method,
+                            ## ## digits=digits,
+                            ## print=FALSE,
+                            ## factor.reference=factor.reference,
+                            ## units=units,...),print=FALSE)
+                            pm <- publish(m,
+                                          pvalue.method=pvalue.method,
+                                          confint.method=confint.method,
+                                          ## digits=digits,
+                                          print=FALSE,
+                                          factor.reference=factor.reference,
+                                          units=units,...)
+                            ## now pm is  a regression table
+                            out <- summary.regressionTable(pm,print=FALSE,...)
+                        })
         cause1 <- clist[[1]]
         colnames(cause1) <- paste(names(object$models)[[1]],names(cause1),sep=".")
         cause2 <- clist[[2]]
@@ -62,16 +71,18 @@ publish.CauseSpecificCox <- function(object,
         out <- clist
         ## }
     } else{
-        m <- object$models[[cause]]
-        ## m$call$data <- object$call$data
-        out <- publish(m,
-                       pvalue.method=pvalue.method,
-                       confint.method=confint.method,
-                       ## digits=digits,
-                       print=FALSE,
-                       factor.reference=factor.reference,
-                       units=units,...)
-    }
+          m <- object$models[[cause]]
+          ## m$call$data <- object$call$data
+          pm <- publish(m,
+                        pvalue.method=pvalue.method,
+                        confint.method=confint.method,
+                        ## digits=digits,
+                        print=FALSE,
+                        factor.reference=factor.reference,
+                        units=units,...)
+          ## now pm is  a regression table
+          out <- summary.regressionTable(pm,print=FALSE,...)
+      }
     if (print==TRUE) print(out)
     invisible(out)
 }
