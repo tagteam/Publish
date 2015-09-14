@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: May 26 2015 (09:49) 
+## last-updated: Sep 12 2015 (20:45) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 42
+##     Update #: 43
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -54,7 +54,7 @@ plot.regressionTable <- function(x,xlim,xlab,...){
                        "Logistic regression"="Odds ratio",
                        "Poisson regression"="Hazard ratio",
                        "Cox regression"="Hazard ratio")
-    Coef <- X[,grep("OddsRatio|HazardRatio|Coefficient",colnames(X))]
+    Coef <- X[,grep("OddsRatio|HazardRatio|ProbIndex|Coefficient",colnames(X))]
     Lower <- X$Lower
     Upper <- X$Upper
     if (missing(xlim)) xlim <- c(min(Lower),max(Upper))

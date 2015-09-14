@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03) 
 ## Version: 
-## last-updated: Jun 18 2015 (14:24) 
+## last-updated: Sep 11 2015 (19:11) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 266
+##     Update #: 269
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -428,7 +428,7 @@ plotConfidence <- function(x,
                 else
                     format <- "(u-l)"
             values.defaults <- paste(pubformat(x[[1]],digits=digits),
-                                     apply(cbind(x[["lower"]],x[["upper"]]),
+                                     apply(cbind(lower,upper),
                                            1,
                                            function(x)formatCI(lower=x[1],upper=x[2],format=format,digits=digits)))
             if (!missing(factor.reference.pos) && is.numeric(factor.reference.pos) && all(factor.reference.pos<length(values.defaults)))
@@ -446,7 +446,6 @@ plotConfidence <- function(x,
     # }}}
     if (add==TRUE) do.values <- do.title.values <- do.labels <- do.title.labels <- FALSE
     # {{{ smart argument control
-
     dist <- (at[2]-at[1])/2
     if (missing(stripes) || is.null(stripes))
         do.stripes <- FALSE
@@ -618,8 +617,8 @@ plotConfidence <- function(x,
     # {{{ point estimates and confidence
     do.call("points",smartA$points)
     ## treat arrows that go beyond the x-limits
-    tooHigh <- upper>xlim[2]
-    tooLow <- lower<xlim[1]
+    tooHigh <- upper[!is.na(upper)]>xlim[2]
+    tooLow <- lower[!is.na(lower)]<xlim[1]
     if (any(c(tooHigh,tooLow))){
         if (length(smartA$arrows$angle)<NR)
             smartA$arrows$angle <- rep(smartA$arrows$angle,length.out=NR)

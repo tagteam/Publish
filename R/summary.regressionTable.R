@@ -56,20 +56,25 @@ summary.regressionTable <- function(x,
                                     verbose=FALSE)
     if (attr(x,"model")%in%c("Cox regression","Poisson regression")){
         attr(Rtab,"model") <- "Cox regression"
-        attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
-        Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-    } else{
-          if (attr(x,"model")=="Logistic regression"){
-              attr(Rtab,"model") <- "Logistic regression"
-              attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
-              Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-          } else{
-                ## assume "Linear regression"
-                attr(Rtab,"model") <- "Linear regression"
-                attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
-                Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-            }
-      }
+        if (match("ProbIndex",colnames(Rtab),nomatch=0)){
+            attr(Rtab,"ProbIndex") <- Rtab[,"ProbIndex"]
+            Rtab$ProbIndex <- pubformat(Rtab$ProbIndex,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+        } else{
+              attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
+              Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+          }
+    }else{
+         if (attr(x,"model")=="Logistic regression"){
+             attr(Rtab,"model") <- "Logistic regression"
+             attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
+             Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+         } else{
+               ## assume "Linear regression"
+               attr(Rtab,"model") <- "Linear regression"
+               attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
+               Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+           }
+     }
     Rtab$CI.95 <- do.call("formatCI",smartF$ci)
     Rtab$"p-value" <- do.call("format.pval",smartF$pvalue)
     if (length(smartF$pvalue$stars)>0 && smartF$pvalue$stars==TRUE)

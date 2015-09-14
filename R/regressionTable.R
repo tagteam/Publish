@@ -65,6 +65,7 @@ regressionTable <- function(object,
                             factor.reference="extraline",
                             units=NULL,
                             noterms=NULL,
+                            probindex=FALSE,
                             ...){
     # {{{ model type
     if (is.character(object$family)){
@@ -291,11 +292,21 @@ regressionTable <- function(object,
                       })
     if (coxRegression | poissonRegression)
         out <- lapply(out,function(x){
-                          colnames(x) <- sub("Coefficient","HazardRatio",colnames(x))
-                          x$HazardRatio <- exp(x$HazardRatio)
-                          x$Lower <- exp(x$Lower)
-                          x$Upper <- exp(x$Upper)
-                          x
+                          if (probindex){
+                              colnames(x) <- sub("Coefficient","ProbIndex",colnames(x))
+                              x$ProbIndex <- 100/(1+exp(x$ProbIndex))
+                              tmp <- 100/(1+exp(x$Upper))
+                              x$Upper <- 100/(1+exp(x$Lower))
+                              x$Upper <- tmp
+                              rm(tmp)
+                              x
+                          }else{
+                               colnames(x) <- sub("Coefficient","HazardRatio",colnames(x))
+                               x$HazardRatio <- exp(x$HazardRatio)
+                               x$Lower <- exp(x$Lower)
+                               x$Upper <- exp(x$Upper)
+                               x
+                           }
                       })
 
     attr(out,"terms1") <- terms1

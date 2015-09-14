@@ -48,6 +48,7 @@ publish.coxph <- function(object,
                           print=TRUE,
                           factor.reference="extraline",
                           units=NULL,
+                          probindex=FALSE,
                           ...){
     if (missing(confint.method)) confint.method="default"
     if (missing(pvalue.method))
@@ -63,7 +64,8 @@ publish.coxph <- function(object,
                           noterms=c(cluster,strata),
                           confint.method=confint.method,
                           factor.reference=factor.reference,
-                          units=units)
+                          units=units,
+                          probindex=probindex)
     srt <- summary.regressionTable(rt,
                                    ## digits=digits,
                                    print=FALSE,...)
