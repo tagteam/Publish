@@ -139,11 +139,17 @@ regressionTable <- function(object,
     isordered <- grep("\\.L$",termnames,value=TRUE)
     if (length(isordered)>0){
         orderednames <- unlist(strsplit(isordered,"\\.L$"))
-    }else{orderednames <- ""}
+    }else{
+         orderednames <- ""
+     }
     # }}}
     # {{{ interactions
     terms2 <- parseInteractionTerms(terms,factorlevels)
     vars2 <- unique(unlist(lapply(terms2,function(x)attr(x,"variables"))))
+    if (length(isordered)>0 && length(terms2)>0 &&
+        any(hit <- match(vars2,sapply(isordered,function(x)substr(x,0,nchar(x)-2)),nomatch=0)))
+        stop(paste0("Cannot (not yet) handle interaction terms which involve ordered factors.\nOffending term(s): ",
+                    sapply(isordered,function(x)substr(x,0,nchar(x)-2))[hit]))
     ## print(unlist(terms2))
     ## contrasts <- unlist(terms2)
     # }}}
