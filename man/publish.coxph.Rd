@@ -5,7 +5,7 @@
 \title{Tabulize hazard ratios with confidence intervals and p-values.}
 \usage{
 \method{publish}{coxph}(object, confint.method, pvalue.method, print = TRUE,
-  factor.reference = "extraline", units = NULL, ...)
+  factor.reference = "extraline", units = NULL, probindex = FALSE, ...)
 }
 \arguments{
 \item{object}{A \code{coxph} object.}

@@ -6,6 +6,7 @@
 ##' 
 ##' 
 ##' @title Univariate table
+##' @aliases utable univariateTable 
 ##' @param formula Formula specifying the grouping variable (strata)
 ##' on the left hand side (can be omitted) and on the right hand side
 ##' the variables for which to obtain (descriptive) statistics.
@@ -351,3 +352,7 @@ univariateTable <- function(formula,
     out
     # }}}
 } 
+
+## the name utable is more handy
+##' @export utable
+utable <- univariateTable

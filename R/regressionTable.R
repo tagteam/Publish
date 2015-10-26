@@ -303,7 +303,7 @@ regressionTable <- function(object,
                               x$ProbIndex <- 100/(1+exp(x$ProbIndex))
                               tmp <- 100/(1+exp(x$Upper))
                               x$Upper <- 100/(1+exp(x$Lower))
-                              x$Upper <- tmp
+                              x$Lower <- tmp
                               rm(tmp)
                               x
                           }else{

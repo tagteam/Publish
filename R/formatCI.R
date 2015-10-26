@@ -47,6 +47,7 @@
 formatCI <- function(x,
                      lower,
                      upper,
+                     showX=FALSE,
                      handler="sprintf",
                      format="[l;u]",
                      degenerated="asis",
@@ -67,5 +68,7 @@ formatCI <- function(x,
             ci <- do.call("sprintf",list(fmt=format,lower[i],upper[i]))
         ci
     })
+    if (showX)
+        out <- paste(pubformat(x,digits=digits,handler=handler,nsmall=nsmall),out)
     out
 }
