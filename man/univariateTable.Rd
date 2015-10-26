@@ -2,6 +2,7 @@
 % Please edit documentation in R/univariateTable.R
 \name{univariateTable}
 \alias{univariateTable}
+\alias{utable}
 \title{Univariate table}
 \usage{
 univariateTable(formula, data = parent.frame(),
