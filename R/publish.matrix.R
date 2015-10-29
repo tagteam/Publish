@@ -186,7 +186,7 @@ publish.matrix <- function(object,
     }
     # }}}
     # {{{ colnames & rownames
-    if (!is.null(rrr) & rownames){
+    if (!is.null(rrr) & any(rrr!="") & rownames){
         if (!is.null(ccc)) ccc <- c(col1name,ccc)
         object <- cbind(Variable=rrr,object)
         object[,1] <- as.character(object[,1])

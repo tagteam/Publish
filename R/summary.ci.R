@@ -2,7 +2,7 @@
 ##'
 ##' This format of the confidence intervals is user-manipulable.
 ##' @title Summarize confidence intervals
-##' @param object Object containing point estimates and the
+##' @param object Object of class ci containing point estimates and the
 ##' corresponding confidence intervals
 ##' @param format A string which indicates the format used for
 ##' confidence intervals.  The string is passed to
