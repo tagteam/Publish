@@ -59,9 +59,6 @@ A spaghettiogram is showing repeated measures (longitudinal data)
 \examples{
 data(SpaceT)
 Spaghettiogram(HR~Status+id(ID),
-               data=SpaceT,
-               xlim=c(-0.5,1.5),
-               axis1.at=c(0,1),
-               axis1.lab=c("pre","post"))
+               data=SpaceT)
 }
 

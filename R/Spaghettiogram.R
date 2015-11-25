@@ -35,10 +35,7 @@
 ##' 
 ##' data(SpaceT)
 ##' Spaghettiogram(HR~Status+id(ID),
-##'                data=SpaceT,
-##'                xlim=c(-0.5,1.5),
-##'                axis1.at=c(0,1),
-##'                axis1.lab=c("pre","post"))
+##'                data=SpaceT)
 ##' @export
 Spaghettiogram <- function(formula,
                            data,
@@ -60,7 +57,7 @@ Spaghettiogram <- function(formula,
     cl <- match.call(expand.dots=TRUE)
     sf <- specialFrame(formula,
                        data,
-                       unspecialsDesign=TRUE,
+                       unspecialsDesign=FALSE,
                        specials=c("id"),
                        stripSpecials=c("id"),
                        specialsFactor=TRUE,
@@ -70,20 +67,42 @@ Spaghettiogram <- function(formula,
     ## special="id",
     ## specialsFactor=TRUE,
     ## dropIntercept=TRUE)
-    if (NCOL(sf$X)>1) stop("Can only handle one x-variable, formula must have the form: y~ x+id(z) where\ny is a measurement\nx tells when the measurement was taken\nand z identifies repeated measurements of the same subject. ")
-    XY <- data.frame(cbind(X=sf$design,Y=sf$response))
-    names(XY) <- c("X","Y")
-    object <- split(XY,sf$id)
-    xvar="X"
-    yvar="Y"
-    ## ff <- as.character(formula)
-    ## m <- model.frame(formula,data)
-    ## v <- all.vars(formula)
+    ## if (NCOL(X)!=1||NCOL(Y)!=1||NCOL(Y)!=1) stop("Can only handle one x-variable, one y-variable and one z-variable, formula must have the form: y~ x + id(z) where\ny is a measurement\nx tells when the measurement was taken\nand z identifies repeated measurements of the same subject. ")
+    X <- sf$design[[1]]
+    Y <- sf$response[[1]]
+    if (missing(ylab))
+        ylab <- names(sf$response)[1]
+    Z <- sf$id[[1]]
+    if (!is.numeric(Y)) {
+        if (is.factor(Y)){
+            ylevs <- levels(Y)
+            Y <- as.numeric(Y)
+        } else{
+              Y <- factor(Y)
+              ylevs <- levels(Y)
+              Y <- as.numeric(Y)
+          }
+    }else{
+         ylevs <- NULL
+     }
+    if (is.numeric(X)){
+        xat <- sort(unique(X))
+        xlevs <- as.character(xat)
+    }else{
+         if (!is.factor(X)) X <- factor(X)
+         xlevs <- levels(X)
+         ## now values are 1= xlev[1], 2= xlev[2], etc.
+         X <- as.numeric(X) 
+         xat <- sort(unique(X))
+     }
+    XY <- data.frame(cbind(X=X,Y=Y))
+    ## names(XY) <- c("X","Y")
+    object <- split(XY,Z)
     # }}}
     # {{{ resolve line type and color
     nlines <- length(object)
-    if (missing(xlim)) xlim <- range(XY[,"X"])
-    if (missing(ylim)) ylim <- range(XY[,"Y"])
+    if (missing(xlim)) xlim <- range(xat)
+    if (missing(ylim)) ylim <- range(Y)
     if (missing(lwd)) lwd <- rep(3,nlines)
     if (missing(col)) col <- 1:nlines
     if (missing(lty)) lty <- rep(1, nlines)
@@ -94,21 +113,20 @@ Spaghettiogram <- function(formula,
     if (length(pch) < nlines) pch <- rep(pch, nlines)
     # }}}
     # {{{ processing graphical arguments
-    axis1.DefaultArgs <- list(side=1,las=1,at=sort(unique(XY[,"X"])))
+    axis1.DefaultArgs <- list(side=1,las=1,at=xat,lab=xlevs)
     axis2.DefaultArgs <- list(side=2,las=2)
     background.DefaultArgs <- list(bg="white")
     lines.DefaultArgs <- list(type="b",cex=1.3)
     ## text.DefaultArgs <- list(cex=1.4,x=xlim[1],y=ylim[2],pos=3,offset=2,xpd=NA)
     ## mtext.DefaultArgs <- list(cex=1.4,xpd=NA,text="",line=2,cex=2,las=1)
     plot.DefaultArgs <- list(x=0,y=0,type = "n",ylim = ylim,xlim = xlim,xlab = xlab,ylab = ylab)
-    legend.DefaultArgs <- list(legend=names(object),lwd=2,col=col,lty=lty,cex=1.5,bty="n",y.intersp=1.3,x="topright")
+    legend.DefaultArgs <- list(legend=names(object),title=names(sf$id),lwd=2,col=col,lty=lty,cex=1.5,bty="n",y.intersp=1.3,x="topright")
     smartA <- prodlim::SmartControl(call=  list(...),
                                     keys=c("plot","lines","legend","background","axis1","axis2"),
                                     ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","legend","axes","background"),
                                     defaults=list("plot"=plot.DefaultArgs,"lines"=lines.DefaultArgs,"legend"=legend.DefaultArgs,"background"=background.DefaultArgs,"axis1"=axis1.DefaultArgs,"axis2"=axis2.DefaultArgs),
                                     forced=list("plot"=list(axes=FALSE),"axis1"=list(side=1)),
                                     verbose=TRUE)
-    ## print(smartA)
     # }}}
     # {{{ empty plot, background
     if (add==FALSE){
@@ -126,7 +144,6 @@ Spaghettiogram <- function(formula,
     }
     # }}}
     # {{{ text
-    ## browser()
     ## if (text) do.call("text",smartA$text)
     # }}}
     # {{{ mtext
@@ -138,19 +155,26 @@ Spaghettiogram <- function(formula,
     # }}}
     # {{{ adding spaghetti's
     nix <- sapply(1:length(object),function(i){
-        a=object[[i]]
-        tvar <- a[,xvar]
-        ## a <- a[!is.na(tvar),]
-        do.call("lines",c(list(x=tvar,
-                               y=a[,yvar],
-                               pch=pch[i],
-                               col=col[i],
-                               lty=lty[i],
-                               lwd=lwd[i]),smartA$lines))
-        do.call("lines",
-                c(list(x=tvar,y=a[,yvar],pch=pch[i],col=col[i],lty=lty[i],lwd=lwd[i]),
-                  replace(smartA$lines,"type","l")))
-    })
+                              a=object[[i]]
+                              a <- a[order(a["X"]),]
+                              a <- na.omit(a)
+                              tvar <- a[,"X"]
+                              do.call("lines",c(list(x=tvar,
+                                                     y=a[,"Y"],
+                                                     pch=pch[i],
+                                                     col=col[i],
+                                                     lty=lty[i],
+                                                     lwd=lwd[i]),smartA$lines))
+                              do.call("lines",
+                                      c(list(x=tvar,
+                                             y=a[,"Y"],
+                                             pch=pch[i],
+                                             col=col[i],
+                                             lty=lty[i],
+                                             lwd=lwd[i]),
+                                        replace(smartA$lines,"type","l")))
+                          })
+
     # }}}
     invisible(object)
 }

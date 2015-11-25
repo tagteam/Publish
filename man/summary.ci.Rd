@@ -8,7 +8,7 @@
   ...)
 }
 \arguments{
-\item{object}{Object containing point estimates and the
+\item{object}{Object of class ci containing point estimates and the
 corresponding confidence intervals}
 
 \item{format}{A string which indicates the format used for
