@@ -1,6 +1,6 @@
 ##' Label output tables
 ##'
-##' Change printed variable labels and values  
+##' Modify labels and values of variables in summary tables
 ##' @title labelUnits
 ##' @param x A matrix obtained with \code{univariateTable}.
 ##' @param ... not used
@@ -11,47 +11,49 @@
 ##' data(Diabetes)
 ##' tab <- summary(univariateTable(gender~AgeGroups+chol+waist,data=Diabetes))
 ##' publish(tab)
-##' ltab <- labelUnits(tab,"chol"="Cholesterol (mg/dL)","age<40"="younger than 40")
+##' ltab <- labelUnits(tab,"chol"="Cholesterol (mg/dL)","<40"="younger than 40")
 ##' publish(ltab)
+##'
+##' ## pass labels immediately to utable
+##' utable(gender~AgeGroups+chol+waist,data=Diabetes,
+##'       "chol"="Cholesterol (mg/dL)","<40"="younger than 40")
 ##' 
+##' ## sometimes useful to state explicitly which variables value
+##' ## should be re-labelled
+##' utable(gender~AgeGroups+chol+waist,data=Diabetes,
+##'       "chol"="Cholesterol (mg/dL)","AgeGroups.<40"="younger than 40")
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 labelUnits <- function(x,...){
     ## stopifnot(match("summary.univariateTable",class(x),nomatch=0)>0)
     units <- prodlim::SmartControl(list(...),
-                          keys=c("units",unique(x$Variable[x$Variable!=""])),
-                          defaults=NULL,
-                          ignore.case=TRUE,
-                          replaceDefaults=TRUE,
-                          verbose=FALSE)
+                                   keys=c("units",unique(x$Variable[x$Variable!=""])),
+                                   defaults=NULL,
+                                   ignore.case=TRUE,
+                                   replaceDefaults=TRUE,
+                                   verbose=FALSE)
     lunits <- sapply(units,length)
     units <- units[lunits>0]
     ## factor specific units
     if (length(units)>0){
         for (i in 1:length(units)){
-            if (tolower(names(units)[i])=="units"){
-                for (v in names(units[[i]])){
-                    x$Units[match(v,x$Variable,nomatch=0)] <- units[[i]][v]
-                }
-            }else{
-                uat <- grep(names(units)[i],x$Variable)
-                lat <- match(names(units[[i]]),x$Units[uat:length(x$Variable)],nomatch=FALSE)
-                lat <- lat[lat!=0]
-                vals <- unlist(units[[i]])
-                vals <- vals[lat!=0]
-                x$Units[uat -1 + lat] <- vals
-            }
+            uat <- grep(names(units)[i],x$Variable)
+            lat <- match(names(units[[i]]),x$Level[uat:length(x$Variable)],nomatch=FALSE)
+            lat <- lat[lat!=0]
+            vals <- unlist(units[[i]])
+            vals <- vals[lat!=0]
+            x$Level[uat -1 + lat] <- vals
         }
     }
-    ## labels
+    ## labels for variables
     labels <- list(...)
     if (length(labels)>0){
         keys <- names(labels)
         Flabels <- labels[match(keys,x$Variable,nomatch=0)!=0]
         x$Variable[match(keys,x$Variable,nomatch=0)] <- Flabels
-        Funits <- labels[match(keys,x$Units,nomatch=0)!=0]
+        Funits <- labels[match(keys,x$Level,nomatch=0)!=0]
         for (f in names(Funits)){
-            x$Units[x$Units%in%f] <- Funits[[f]]
+            x$Level[x$Level%in%f] <- Funits[[f]]
         }
     }
     x

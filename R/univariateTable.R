@@ -1,4 +1,4 @@
-##' ##' ##' ##' Categorical variables are summarized using counts and frequencies.
+##' Categorical variables are summarized using counts and frequencies.
 ##' Continuous variables are summarized by means and standard deviations.
 ##' Deviations from the above defaults are obtained when the 
 ##' arguments summary.format and freq.format are combined with suitable
@@ -15,7 +15,7 @@
 ##' variables. Default is mean (SD).  If different formats are
 ##' desired, either special Q can be used or the function is called
 ##' multiple times and the results are rbinded. See examples.
-##' @param Q.format Format for quantile summary of numerice variables:
+##' @param Q.format Format for quantile summary of numerical variables:
 ##' Default is median (inter quartile range).
 ##' @param freq.format Format for categorical variables. Default is
 ##' count (percentage).
@@ -27,7 +27,7 @@
 ##' instead of t-tests and Wilcoxon rank tests to compare numeric
 ##' variables across groups.
 ##' @param shortGroupNames If \code{TRUE} group names are abbreviated.
-##' @param ... Not used (not yet)
+##' @param ... saved as part of the result to be passed on to \code{labelUnits}
 ##' @return List with one summary table element for each variable on the right hand side of formula.
 ##' @author Thomas A. Gerds
 ##' @seealso summary.univariateTable, publish.univariateTable
@@ -36,7 +36,20 @@
 ##' univariateTable(~age,data=Diabetes)
 ##' univariateTable(~gender,data=Diabetes)
 ##' univariateTable(~age+gender+ height+weight,data=Diabetes)
+##' ## same thing but less typing
+##' utable(~age+gender+ height+weight,data=Diabetes)
 ##' univariateTable(location~age+gender+height+weight,data=Diabetes)
+##'
+##' ## change labels and values
+##' utable(location~age+gender+height+weight,data=Diabetes,
+##'        age="Age (years)",gender="Sex",
+##'        gender.female="Female",
+##'        gender.male="Male",
+##'        height="Body height (inches)",
+##'        weight="Body weight (pounds)")
+##'
+##' utable(location~age+gender+height+weight,data=Diabetes,
+##'        age="Age (years)",gender=c("Female","Male"))
 ##' 
 ##' ## Use quantiles and rank tests for some variables and mean and standard deviation for others
 ##' univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,
@@ -119,13 +132,12 @@ univariateTable <- function(formula,
         n.groups <- NROW(data)
     }
     else{
-        ## mr <- model.response(model.frame(formula=formList$Response,data=theData,drop.unused.levels = TRUE,na.action="na.pass"))
         mr <- FRAME$response
-        stopifnot(NCOL(mr)==1)
+        if(NCOL(mr)!=1) stop("Can only handle univariate outcome")
         groupname <- colnames(mr)
         groupvar <- as.character(FRAME$response[,1,drop=TRUE])
         mr <- FRAME$response[,1,drop=TRUE]
-        ## deal with missing values in group var
+        ## deal with missing values in group variable
         groupvar[is.na(groupvar)] <- "Missing"
         if (is.factor(mr))
             if (any(is.na(groupvar)))
@@ -328,8 +340,10 @@ univariateTable <- function(formula,
                                   })
         }
     }
+
     # }}}
-    # {{{ output
+# {{{ output
+
     ## xlevels <- lapply(factor.matrix,function(x){
     ## levels(as.factor(x,exclude=FALSE))
     ## levels(as.factor(x))
@@ -347,7 +361,9 @@ univariateTable <- function(formula,
                 xlevels=freqFactor$xlevels,
                 Q.format=Q.format,
                 summary.format=summary.format,
-                freq.format=freq.format)
+                freq.format=freq.format,
+                ## dots are passed to labelUnits without suitability checks
+                labels=list(...))
     class(out) <- "univariateTable"
     out
     # }}}

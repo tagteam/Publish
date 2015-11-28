@@ -14,7 +14,8 @@
 ##' otherwise use \code{format.pval}.
 ##' @param pvalue.eps Passed to \code{format.pval}.
 ##' @param pvalue.digits Passed to \code{format.pval}.
-##' @param ... passed on to labelUnits
+##' @param ... passed on to \code{labelUnits}. This overwrites 
+##' labels stored in \code{object$labels}
 ##' @export
 ##' @return Summary table 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
@@ -137,8 +138,9 @@ summary.univariateTable <- function(object,
     # }}}
     # {{{ labels & units
     class(XXtab) <- c("summary.univariateTable","data.frame")
-    XXtab <- labelUnits(XXtab,...)
+    XXtab <- do.call(labelUnits,c(list(x=XXtab),list(...),object$labels))
     # }}}
     rownames(XXtab) <- NULL
     XXtab
 }
+
