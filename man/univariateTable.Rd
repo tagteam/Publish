@@ -8,8 +8,8 @@
 univariateTable(formula, data = parent.frame(),
   summary.format = "mean(x) (sd(x))", Q.format = "median(x) [iqr(x)]",
   freq.format = "count(x) (percent(x))", column.percent = TRUE,
-  digits = c(1, 1, 3), strataIsOutcome = FALSE, shortGroupNames,
-  na.rm = FALSE, ...)
+  digits = c(1, 1, 3), shortGroupNames, compareGroups = TRUE,
+  outcome = NULL, na.rm = FALSE, ...)
 }
 \arguments{
 \item{formula}{Formula specifying the grouping variable (strata)
@@ -23,7 +23,7 @@ variables. Default is mean (SD).  If different formats are
 desired, either special Q can be used or the function is called
 multiple times and the results are rbinded. See examples.}
 
-\item{Q.format}{Format for quantile summary of numerice variables:
+\item{Q.format}{Format for quantile summary of numerical variables:
 Default is median (inter quartile range).}
 
 \item{freq.format}{Format for categorical variables. Default is
@@ -33,21 +33,20 @@ count (percentage).}
 freq.format is used then column percentages are given instead of
 row percentages for discrete factors.}
 
-\item{digits}{}
-
-\item{strataIsOutcome}{If \code{TRUE} logistic regression is used
-instead of t-tests and Wilcoxon rank tests to compare numeric
-variables across groups.}
+\item{digits}{Number of digits}
 
 \item{shortGroupNames}{If \code{TRUE} group names are abbreviated.}
 
-\item{...}{Not used (not yet)}
+\item{compareGroups}{If \code{"logistic"} and there are exactly two groups
+variables across groups.}
+
+\item{...}{saved as part of the result to be passed on to \code{labelUnits}}
 }
 \value{
 List with one summary table element for each variable on the right hand side of formula.
 }
 \description{
-##' ##' ##' Categorical variables are summarized using counts and frequencies.
+Categorical variables are summarized using counts and frequencies.
 Continuous variables are summarized by means and standard deviations.
 Deviations from the above defaults are obtained when the
 arguments summary.format and freq.format are combined with suitable
@@ -58,7 +57,20 @@ data(Diabetes)
 univariateTable(~age,data=Diabetes)
 univariateTable(~gender,data=Diabetes)
 univariateTable(~age+gender+ height+weight,data=Diabetes)
+## same thing but less typing
+utable(~age+gender+ height+weight,data=Diabetes)
 univariateTable(location~age+gender+height+weight,data=Diabetes)
+
+## change labels and values
+utable(location~age+gender+height+weight,data=Diabetes,
+       age="Age (years)",gender="Sex",
+       gender.female="Female",
+       gender.male="Male",
+       height="Body height (inches)",
+       weight="Body weight (pounds)")
+
+utable(location~age+gender+height+weight,data=Diabetes,
+       age="Age (years)",gender=c("Female","Male"))
 
 ## Use quantiles and rank tests for some variables and mean and standard deviation for others
 univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,

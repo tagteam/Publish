@@ -22,12 +22,28 @@
 ##' @param column.percent Logical, if \code{TRUE} and the default
 ##' freq.format is used then column percentages are given instead of
 ##' row percentages for discrete factors.
-##' @param digits 
-##' @param strataIsOutcome If \code{TRUE} logistic regression is used
-##' instead of t-tests and Wilcoxon rank tests to compare numeric
+##' @param digits Number of digits 
+##' @param compareGroups Method used to compare groups. If \code{"logistic"} and there are exactly two groups
+##         logistic regression is used instead of t-tests and Wilcoxon rank
+##         tests to compare numeric
 ##' variables across groups.
+##' @param formula
+##' @param data
+##' @param summary.format
+##' @param Q.format
+##' @param freq.format
+##' @param column.percent
+##' @param digits
 ##' @param shortGroupNames If \code{TRUE} group names are abbreviated.
-##' @param ... saved as part of the result to be passed on to \code{labelUnits}
+##' @param compareGroups
+##' @param showTotals
+##' @param n If \code{TRUE} show the number of subjects as a separate row.
+##' If equal to \code{"inNames"}, show the numbers in
+##' parentheses in the column names. If \code{FALSE} do not show number of subjects.
+##' @param outcome
+##' @param na.rm
+##' @param ... saved as part of the result to be passed on to
+##' \code{labelUnits}
 ##' @return List with one summary table element for each variable on the right hand side of formula.
 ##' @author Thomas A. Gerds
 ##' @seealso summary.univariateTable, publish.univariateTable
@@ -99,8 +115,11 @@ univariateTable <- function(formula,
                             freq.format="count(x) (percent(x))",
                             column.percent=TRUE,
                             digits=c(1,1,3),
-                            strataIsOutcome=FALSE,
                             shortGroupNames,
+                            compareGroups=TRUE,
+                            showTotals=TRUE,
+                            n="inNames",
+                            outcome=NULL,
                             na.rm=FALSE,
                             ...){
     if (length(digits)<3) digits <- rep(digits,3)
@@ -149,8 +168,8 @@ univariateTable <- function(formula,
         groupvar <- factor(groupvar,levels=groups)
         n.groups <- table(groupvar)
         n.groups <- c(n.groups,sum(n.groups))
-        if (strataIsOutcome==TRUE & (length(groups)!=2))
-            stop("strataIsOutcome can only be TRUE when there are exactly two groups. You have ",length(groups)," groups")
+        if (compareGroups=="logistic" & (length(groups)!=2))
+            stop("compareGroups can only be equal to 'logistic' when there are exactly two groups. You have ",length(groups)," groups")
         ## if (length(groups)>30) stop("More than 30 groups")
         if (missing(shortGroupNames)){
             if(all(nchar(groups)<2) || all(groups %in% c(TRUE,FALSE)))
@@ -271,78 +290,100 @@ univariateTable <- function(formula,
     p.cont <- NULL
     p.Q <- NULL
     p.freq <- NULL
-    if (!is.null(groups)){
+    if (!is.null(groups) && (compareGroups!=FALSE)){
         if (!is.null(continuous.matrix)){
             p.cont <- sapply(names(continuous.matrix),function(v){
-                                      if (strataIsOutcome==TRUE){
-                                          ## logistic regression
-                                          px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
-                                          px
-                                      }
-                                      else {
-                                          ## glm fails when there are missing values
-                                          ## in outcome, so we remove missing values
-                                          fv <- formula(paste(v,"~",groupname))
-                                          vdata <- model.frame(fv,data,na.action=na.omit)
-                                          px <- anova(glm(fv,data=vdata),test="Chisq")$"Pr(>Chi)"[2]
-                                          px
-                                      }
+                                      switch(tolower(as.character(compareGroups[[1]])),
+                                             "false"={NULL},
+                                             "logistic"={
+                                                 ## logistic regression
+                                                 px <- anova(glm(update(formula,paste(".~",v)),data=data,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                                 px
+                                             },
+                                             "cox"={
+                                                 px <- anova(coxph(formula(paste("Surv(time,status)~",v)),data=cbind(outcome,data)))$"Pr(>|Chi|)"[2]
+                                                 px
+                                             }, 
+                                             "true"={
+                                                 ## glm fails when there are missing values
+                                                 ## in outcome, so we remove missing values
+                                                 fv <- formula(paste(v,"~",groupname))
+                                                 vdata <- model.frame(fv,data,na.action=na.omit)
+                                                 px <- anova(glm(fv,data=vdata),test="Chisq")$"Pr(>Chi)"[2]
+                                                 px
+                                             },NULL)
                                   })
         }
         if (!is.null(Q.matrix)){
             p.Q <- sapply(names(Q.matrix),function(v){
-                                   if (strataIsOutcome==TRUE){
-                                       ## logistic regression
-                                       ## glm fails when there are missing values
-                                       ## in outcome, so we remove missing values
-                                       fv <- formula(paste(v,"~",groupname))
-                                       vdata <- model.frame(fv,data,na.action=na.omit)
-                                       px <- anova(glm(update(formula,paste(".~",v)),data=vdata,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
-                                       px
-                                   }
-                                   else {
-                                       if (is.character(data[,groupname])){
-                                           data[,paste0(groupname,"asfactor")] <- factor(data[,groupname])
-                                           px <- kruskal.test(formula(paste0(v,"~",groupname,"asfactor")),data=data)$p.value
-                                       } else{
-                                             px <- kruskal.test(formula(paste(v,"~",groupname)),data=data)$p.value
-                                         }
-                                       px
-                                   }
+                                   switch(tolower(as.character(compareGroups[[1]])),
+                                          "false"={NULL},
+                                          "logistic"={
+                                              ## logistic regression
+                                              ## glm fails when there are missing values
+                                              ## in outcome, so we remove missing values
+                                              fv <- formula(paste(v,"~",groupname))
+                                              vdata <- model.frame(fv,data,na.action=na.omit)
+                                              px <- anova(glm(update(formula,paste(".~",v)),data=vdata,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                              px
+                                          },
+                                          "cox"={
+                                              px <- anova(coxph(formula(paste("Surv(time,status)~",v)),data=cbind(outcome,data)))$"Pr(>|Chi|)"[2]
+                                              px
+                                          }, 
+                                          "true"={
+                                              if (is.character(data[,groupname])){
+                                                  data[,paste0(groupname,"asfactor")] <- factor(data[,groupname])
+                                                  px <- kruskal.test(formula(paste0(v,"~",groupname,"asfactor")),data=data)$p.value
+                                              } else{
+                                                    px <- kruskal.test(formula(paste(v,"~",groupname)),data=data)$p.value
+                                                }
+                                              px
+                                          },NULL)
                                })
         }
         if (!is.null(factor.matrix)){
             p.freq <- sapply(names(factor.matrix),function(v){
-                                      if (strataIsOutcome==TRUE){
-                                          ## logistic regression
-                                          fv <- formula(paste(v,"~",groupname))
-                                          vdata <- model.frame(fv,data,na.action=na.omit)
-                                          px <- anova(glm(update(formula,paste(".~",v)),data=vdata,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
-                                      } else{
-                                            fv <- factor.matrix[,v]
-                                            missv <- is.na(fv)
-                                            if (any(missv) & na.rm==TRUE){
-                                                fv <- factor(fv[!missv])
-                                                groupvar <- factor(groupvar[!missv])
-                                            }
-                                            tabx <- table(fv,groupvar)
-                                            if (sum(tabx)==0) {
-                                                px <- NA
-                                            } else{
-                                                  suppressWarnings(test <- chisq.test(tabx))
-                                                  px <- test$p.value
-                                              }
-                                            ## FIXME: need to catch and pass the warnings 
-                                            ## test <- suppressWarnings(fisher.test(tabx))
-                                            ## if (any(test$expected < 5) && is.finite(test$parameter))
-                                            px
-                                        }
+                                      switch(tolower(as.character(compareGroups[[1]])),
+                                             "false"={NULL},
+                                             "logistic"={
+                                                 ## logistic regression
+                                                 fv <- formula(paste(v,"~",groupname))
+                                                 vdata <- model.frame(fv,data,na.action=na.omit)
+                                                 px <- anova(glm(update(formula,paste(".~",v)),data=vdata,family=binomial),test="Chisq")$"Pr(>Chi)"[2]
+                                             },
+                                             "cox"={
+                                                 px <- anova(coxph(formula(paste("Surv(time,status)~",v)),data=cbind(outcome,data)))$"Pr(>|Chi|)"[2]
+                                                 px
+                                             },
+                                             "true"={
+                                                 fv <- factor.matrix[,v]
+                                                 missv <- is.na(fv)
+                                                 if (any(missv) & na.rm==TRUE){
+                                                     fv <- factor(fv[!missv])
+                                                     groupvar <- factor(groupvar[!missv])
+                                                 }
+                                                 tabx <- table(fv,groupvar)
+                                                 if (sum(tabx)==0) {
+                                                     px <- NA
+                                                 } else{
+                                                       suppressWarnings(test <- chisq.test(tabx))
+                                                       px <- test$p.value
+                                                   }
+                                                 ## FIXME: need to catch and pass the warnings 
+                                                 ## test <- suppressWarnings(fisher.test(tabx))
+                                                 ## if (any(test$expected < 5) && is.finite(test$parameter))
+                                                 px
+                                             },NULL)
                                   })
         }
     }
-
+    p.values <- c(p.cont,p.Q,p.freq)
+    if (length(p.values)>0)
+        if (is.null(p.values[[1]]))
+            p.values <- NULL
     # }}}
-# {{{ output
+    # {{{ output
 
     ## xlevels <- lapply(factor.matrix,function(x){
     ## levels(as.factor(x,exclude=FALSE))
@@ -354,7 +395,7 @@ univariateTable <- function(formula,
                 summary.totals=c(freqFactor$totals,summaryNumeric$totals,qNumeric$totals),
                 missing=list(group=group.missing,totals=totals.missing),
                 n.groups=n.groups,
-                p.values=c(p.cont,p.Q,p.freq),
+                p.values=p.values,
                 formula=formula,
                 groups=grouplabels,
                 vartype=vartypes,
@@ -362,7 +403,10 @@ univariateTable <- function(formula,
                 Q.format=Q.format,
                 summary.format=summary.format,
                 freq.format=freq.format,
+                compareGroups=compareGroups,
                 ## dots are passed to labelUnits without suitability checks
+                showTotals=showTotals,
+                n=n,
                 labels=list(...))
     class(out) <- "univariateTable"
     out

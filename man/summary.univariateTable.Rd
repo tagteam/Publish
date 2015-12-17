@@ -23,7 +23,8 @@ otherwise use \code{format.pval}.}
 
 \item{pvalue.digits}{Passed to \code{format.pval}.}
 
-\item{...}{passed on to labelUnits}
+\item{...}{passed on to \code{labelUnits}. This overwrites
+labels stored in \code{object$labels}}
 
 \item{pvalue.eps}{Passed to \code{format.pval}.}
 }
