@@ -15,12 +15,15 @@
 ##' construct Wald type intervals (see
 ##' \code{lava::estimate.default}). \code{simultaneous} calls
 ##' \code{multcomp::glht} to obtain simultaneous confidence intervals.
-##' @param pvalue.method
+##' @param pvalue.method Method to obtain p-values. If \code{'default'} show raw p-values.
+##' If \code{'robust'} use p-value corresponding to robust standard error as provided by
+##' \code{lava::estimate.default}. If \code{'simultaneous'} call
+##' \code{multcomp::glht} to obtain p-values.
 ##' @param factor.reference Style for showing results for categorical
 ##' variables. If \code{'extraline'} show an additional line for the
 ##' reference category. If \code{'inline'} display as level
 ##' vs. reference.
-##' @param units
+##' @param units List of units for continuous variables. See examples.
 ##' @param noterms Position of terms that should be ignored. E.g., for a Cox model with a cluster(id) term, there will be no hazard ratio for variable id.
 ##' @param ... Not yet used
 ##' @return List of regression blocks
@@ -29,6 +32,7 @@
 ##' data(Diabetes)
 ##' f1 <- glm(bp.1s~age+gender+frame+chol,data=Diabetes)
 ##' regressionTable(f1)
+##' regressionTable(f1,units=list("chol"="mmol/L","age"="years"))
 ##' ## with interaction
 ##' f2 <- glm(bp.1s~age*gender+frame+chol,data=Diabetes)
 ##' regressionTable(f2)

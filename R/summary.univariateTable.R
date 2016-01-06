@@ -9,13 +9,17 @@
 ##' 
 ##' @param n If not missing, show the number of subjects in each
 ##' column. If equal to \code{"inNames"}, show the numbers in
-##' parentheses in the column names.
-##' If missing the value \code{object$n} is used.
+##' parentheses in the column names.  If missing the value
+##' \code{object$n} is used.
 ##' @param pvalue.stars If TRUE use \code{symnum} to parse p-values
 ##' otherwise use \code{format.pval}.
 ##' @param pvalue.digits Passed to \code{format.pval}.
-##' @param showTotals Logical. If set to \code{FALSE} the column \code{Totals} is removed. If missing the value \code{object$showTotals} is used.
-##' @param showPvalues Logical. If set to \code{FALSE} the column \code{p-values} is removed. If missing the value \code{object$compareGroups[[1]]==TRUE} is used.
+##' @param showPvalues Logical. If set to \code{FALSE} the column
+##' \code{p-values} is removed. If missing the value
+##' \code{object$compareGroups[[1]]==TRUE} is used.
+##' @param showTotals Logical. If set to \code{FALSE} the column
+##' \code{Totals} is removed. If missing the value
+##' \code{object$showTotals} is used.
 ##' @param ... passed on to \code{labelUnits}. This overwrites labels
 ##' stored in \code{object$labels}
 ##' @param pvalue.eps Passed to \code{format.pval}.
@@ -139,6 +143,8 @@ summary.univariateTable <- function(object,
         colnames(XXtab) <- c("Variable","Levels","Value")
         XXtab$Variable <- as.character(XXtab$Variable)
         XXtab$Levels <- as.character(XXtab$Levels)
+        totalName <- "Total"
+        pname <- NULL
     }
     else{
         if ((showPvalues==TRUE) && !is.null(object$p.values)){

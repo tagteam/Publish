@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Oct 29 2015 (06:41) 
 ## Version: 
-## last-updated: Oct 29 2015 (06:50) 
+## last-updated: Dec 17 2015 (09:23) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 3
+##     Update #: 5
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -27,7 +27,7 @@
 ##' round parenthesis in which the upper and the lower limits are
 ##' separated by semicolon.
 ##' @param se If \code{TRUE} add standard error.
-##' @param ...
+##' @param ... passed to \code{publish}
 ##' @return table with confidence intervals
 ##' @seealso summary.ci
 ##' @examples

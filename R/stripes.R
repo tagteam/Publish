@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 12 2015 (06:52) 
 ## Version: 
-## last-updated: May 14 2015 (10:38) 
+## last-updated: Dec 17 2015 (09:36) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 21
+##     Update #: 22
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -22,9 +22,9 @@
 #' \code{\link{plot.prodlim}}.
 #' 
 #' 
-#' @param xlim Limits for the x-dimension. Defaults to
+#' @param xlim Limits for the horizontal x-dimension. Defaults to
 #' par("usr")[1:2].
-#' @param ylim
+#' @param ylim Limits for the vertical y-dimension.
 #' @param col Colors use for the stripes. Can be a vector of colors
 #' which are then repeated appropriately.
 #' @param lwd Line width 

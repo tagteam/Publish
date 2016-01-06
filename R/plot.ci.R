@@ -66,7 +66,7 @@
 ##' 
 ##' 
 ##' data(CiTable)
-##' with(CiTable,Publish:::plot.ci(x=list(Risk),
+##' with(CiTable,Publish:::plot.ci(x=list(HazardRatio),
 ##'                                lower=low,
 ##'                                upper=high,
 ##'                                labels=CiTable[,2:6],
@@ -75,7 +75,7 @@
 ##'                                points.col="blue",
 ##'                                digits=2))
 ##' 
-##' with(CiTable,Publish:::plot.ci(x=list(Risk),
+##' with(CiTable,Publish:::plot.ci(x=list(HazardRatio),
 ##'                                lower=low,
 ##'                                upper=high,
 ##'                                labels=CiTable[,2:6],

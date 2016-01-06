@@ -2,15 +2,18 @@
 ##'
 ##' The cause-specific hazard ratio's are combined into one table.
 ##' @title Tabulizing cause-specific hazard ratio from all causes with confidence limits and Wald test p-values.
-##' @param object Cause-specific hazard model obtained with \code{CSC}.
-##' @param cause Show a table for this cause. If omitted, list all causes.
-##' @param confint.method See \code{publish.coxph}
-##' @param pvalue.method See \code{publish.coxph}
+##' @param object Cause-specific hazard model obtained with
+##' \code{CSC}.
+##' @param cause Show a table for this cause. If omitted, list all
+##' causes.
+##' @param confint.method See \code{regressionTable}
+##' @param pvalue.method See \code{regressionTable}
 ##' @param factor.reference See \code{regressionTable}
-##' @param units  See \code{regressionTable}
+##' @param units See \code{regressionTable}
 ##' @param print If \code{TRUE} print the table(s).
-##' @param ... passed on to control formatting of parameters, confidence intervals and p-values.
-##' See \code{summary.regressionTable}. 
+##' @param ... passed on to control formatting of parameters,
+##' confidence intervals and p-values.  See
+##' \code{summary.regressionTable}.
 ##' @return Table with cause-specific hazard ratios, confidence limits and p-values.
 ##' @author Thomas Alexander Gerds <tab@@biostat.ku.dk>
 ##' @examples

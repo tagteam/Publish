@@ -15,33 +15,28 @@
 ##' variables. Default is mean (SD).  If different formats are
 ##' desired, either special Q can be used or the function is called
 ##' multiple times and the results are rbinded. See examples.
-##' @param Q.format Format for quantile summary of numerical variables:
-##' Default is median (inter quartile range).
+##' @param Q.format Format for quantile summary of numerical
+##' variables: Default is median (inter quartile range).
 ##' @param freq.format Format for categorical variables. Default is
 ##' count (percentage).
 ##' @param column.percent Logical, if \code{TRUE} and the default
 ##' freq.format is used then column percentages are given instead of
 ##' row percentages for discrete factors.
-##' @param digits Number of digits 
-##' @param compareGroups Method used to compare groups. If \code{"logistic"} and there are exactly two groups
-##         logistic regression is used instead of t-tests and Wilcoxon rank
-##         tests to compare numeric
-##' variables across groups.
-##' @param formula
-##' @param data
-##' @param summary.format
-##' @param Q.format
-##' @param freq.format
-##' @param column.percent
-##' @param digits
+##' @param digits Number of digits
 ##' @param shortGroupNames If \code{TRUE} group names are abbreviated.
-##' @param compareGroups
-##' @param showTotals
-##' @param n If \code{TRUE} show the number of subjects as a separate row.
-##' If equal to \code{"inNames"}, show the numbers in
-##' parentheses in the column names. If \code{FALSE} do not show number of subjects.
-##' @param outcome
-##' @param na.rm
+##' @param compareGroups Method used to compare groups. If
+##' \code{"logistic"} and there are exactly two groups logistic
+##' regression is used instead of t-tests and Wilcoxon rank tests to
+##' compare numeric variables across groups.
+##' @param showTotals If \code{TRUE} show a column with totals.
+##' @param n If \code{TRUE} show the number of subjects as a separate
+##' row.  If equal to \code{"inNames"}, show the numbers in
+##' parentheses in the column names. If \code{FALSE} do not show
+##' number of subjects.
+##' @param outcome Outcome data used to calculate p-values when
+##' compare groups method is \code{'logistic'} or \code{'cox'}.
+##' @param na.rm If \code{TRUE} remove missing values from categorical
+##' variables when calculating p-values.
 ##' @param ... saved as part of the result to be passed on to
 ##' \code{labelUnits}
 ##' @return List with one summary table element for each variable on the right hand side of formula.
@@ -54,7 +49,15 @@
 ##' univariateTable(~age+gender+ height+weight,data=Diabetes)
 ##' ## same thing but less typing
 ##' utable(~age+gender+ height+weight,data=Diabetes)
+##'
+##' ## summary by location
 ##' univariateTable(location~age+gender+height+weight,data=Diabetes)
+##'
+##' ## export result to csv
+##' table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),showPvalues=FALSE)
+##' \dontrun{
+##'   write.csv(table1,file="~/table1.csv",rownames=FALSE)
+##' }
 ##'
 ##' ## change labels and values
 ##' utable(location~age+gender+height+weight,data=Diabetes,

@@ -4,7 +4,7 @@
 ##' @export
 ##' @param object Result of \code{t.test} or \code{wilcox.test}
 ##' @param title Decoration also used to name output
-##' @param ...
+##' @param ... Used to transport arguments \code{ci.arg} and \code{pvalue.arg} to subroutines \code{format.pval} and \code{formatCI}. See also \code{prodlim::SmartControl}.
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk> 
 ##' @examples
 ##' data(Diabetes)

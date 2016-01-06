@@ -3,7 +3,7 @@
 ##' @title print results of 2x2 contingency table analysis
 ##' @param x object obtained with table2x2
 ##' @param digits rounding digits
-##' @param ...
+##' @param ... not used
 ##' @return invisible x
 ##' @seealso table2x2
 ##' @examples

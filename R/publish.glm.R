@@ -5,7 +5,14 @@
 ##' @title Tabulize regression coefficients with confidence intervals and p-values.
 ##' @export
 ##' @param object A \code{glm} object.
+##' @param confint.method See \code{regressionTable}.
+##' @param pvalue.method See \code{regressionTable}.
 ##' @param digits Rounding digits for all numbers but the p-values.
+##' @param print If \code{FALSE} do not print results.
+##' @param factor.reference See \code{regressionTable}.
+##' @param units See \code{regressionTable}.
+##' @param ... passed to \code{summary.regressionTable} and also
+##' to \code{labelUnits}.
 ##' @param showMissing If \code{TRUE} show number of missing values in
 ##' table
 ##' @param output.columns Select which parameters of the result are
@@ -14,7 +21,6 @@
 ##' regression and to \code{c("OddsRatio","CI.95","pValue","Missing")}
 ##' for logistic regression. Can also include \code{StandardError}.
 ##' @param intercept If \code{FALSE} suppress intercept
-##' @param print If \code{FALSE} do not print results.
 ##' @param transform Transformation for regression coefficients.
 ##' @param profile For logistic regression only. If \code{FALSE} run
 ##' with Wald confidence intervals instead of waiting for profile
@@ -22,7 +28,6 @@
 ##' @param reference Style for showing results for categorical
 ##' variables. If \code{"extraline"} show an additional line for the
 ##' reference category.
-##' @param ...  ... passed to \code{summary.regressionTable} and also to \code{labelUnits}.
 ##' @return Table with regression coefficients, confidence intervals and p-values.
 ##' @author Thomas Alexander Gerds <tag@@biostat.ku.dk>
 ##' @examples
@@ -79,6 +84,7 @@ publish.glm <- function(object,
             "default")
     rt <- regressionTable(object,
                           confint.method=confint.method,
+                          pvalue.method=pvalue.method,                          
                           factor.reference=factor.reference,
                           units=units)
     srt <- summary.regressionTable(rt,

@@ -1,11 +1,11 @@
 ##' Preparing regression results for publication
 ##'
 ##' @title Formatting regression tables
-##' @param x
+##' @param x object obtained with \code{regressionTable}.
 ##' @param showMissing Decide if number of missing values are shown.
 ##' Either logical or character. If \code{'ifany'} then number missing values are
 ##' shown if there are some.
-##' @param print
+##' @param print If \code{TRUE} print results.
 ##' @param ... Used to control formatting of parameter estimates,
 ##' confidence intervals and p-values. See examples.
 ##' @return Formatted regression table with raw values as attributes
@@ -22,7 +22,7 @@
 ##' summary(regressionTable(fit),handler="sprintf",digits=c(2,2),pValue.stars=TRUE)
 #' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-summary.regressionTable <- function(x,
+summary.regressionTable <- function(object,
                                     showMissing="ifany",
                                     print=TRUE,
                                     ...){
@@ -31,7 +31,7 @@ summary.regressionTable <- function(x,
     handler <- pynt$handler
     if (length(digits)==1) digits <- rep(digits,2)
     if (length(pynt$nsmall)>0) nsmall <- pynt$nsmall else nsmall <- pynt$digits
-    Rtab <- do.call("rbind",x)
+    Rtab <- do.call("rbind",object)
     Lower <- Rtab[,"Lower"]
     Upper <- Rtab[,"Upper"]
     Pvalue <- Rtab[,"Pvalue"]
@@ -45,7 +45,7 @@ summary.regressionTable <- function(x,
                         degenerated="asis")
     smartF <- prodlim::SmartControl(call=list(...),
                                     keys=c("ci","pvalue"),
-                                    ignore=c("x","print","handler","digits","nsmall"),
+                                    ignore=c("object","print","handler","digits","nsmall"),
                                     defaults=list("ci"=ci.defaults,"pvalue"=pvalue.defaults),
                                     forced=list("ci"=list(lower=Lower,
                                                     upper=Upper,
@@ -54,7 +54,7 @@ summary.regressionTable <- function(x,
                                                     nsmall=nsmall[[1]]),
                                         "pvalue"=list(Pvalue)),
                                     verbose=FALSE)
-    if (attr(x,"model")%in%c("Cox regression","Poisson regression")){
+    if (attr(object,"model")%in%c("Cox regression","Poisson regression")){
         attr(Rtab,"model") <- "Cox regression"
         if (match("ProbIndex",colnames(Rtab),nomatch=0)){
             attr(Rtab,"ProbIndex") <- Rtab[,"ProbIndex"]
@@ -64,7 +64,7 @@ summary.regressionTable <- function(x,
               Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
           }
     }else{
-         if (attr(x,"model")=="Logistic regression"){
+         if (attr(object,"model")=="Logistic regression"){
              attr(Rtab,"model") <- "Logistic regression"
              attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
              Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])

@@ -26,7 +26,7 @@
 ##' ## but collect only information on the variables in `vars'.
 ##' controlled.odds <- glmSeries(hyper1~age+gender,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
 ##' controlled.odds
-##' ##' @export
+##' @export
 glmSeries <- function(formula,data,vars,...){
     ## ref <- glm(formula,data=data,...)
     glist <- lapply(vars,function(v){

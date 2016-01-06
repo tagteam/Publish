@@ -5,11 +5,11 @@
 ##' ratio and its standard-error. 
 ##' @title Tabulize hazard ratios with confidence intervals and p-values.
 ##' @param object A \code{coxph} object.
-##' @param confint.method
-##' @param pvalue.method
+##' @param confint.method See \code{regressionTable}
+##' @param pvalue.method See \code{regressionTable}
 ##' @param print If \code{FALSE} do not print results.
-##' @param factor.reference
-##' @param units
+##' @param factor.reference  See \code{regressionTable}
+##' @param units See \code{regressionTable}
 ##' @param ... passed to \code{summary.regressionTable} and also to \code{labelUnits}.
 ##' @return Table with hazard ratios, confidence intervals and p-values.
 ##' @author Thomas Alexander Gerds
@@ -63,6 +63,7 @@ publish.coxph <- function(object,
     rt <- regressionTable(object,
                           noterms=c(cluster,strata),
                           confint.method=confint.method,
+                          pvalue.method=pvalue.method,
                           factor.reference=factor.reference,
                           units=units,
                           probindex=probindex)
