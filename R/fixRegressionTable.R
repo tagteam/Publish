@@ -1,9 +1,12 @@
 ##' Expand regression coefficient table
 ##'
+##' This function expands results from "regressionTable" with
+##' extralines and columns
+##'
 ##' For factor variables the reference group is shown.
 ##' For continuous variables the units are shown and
 ##' for transformed continuous variables also the scale.
-##' For all variables the numbers of missing values are added. 
+##' For all variables the numbers of missing values are added.
 ##' @title Expand regression coefficient table
 ##' @param x object resulting from \code{lm}, \code{glm} or \code{coxph}.
 ##' @param varnames Names of variables
@@ -23,7 +26,7 @@ fixRegressionTable <- function(x,
                                reference.value,
                                reference.style=NULL,
                                factorlevels,
-                               scale,
+                               scale=NULL,
                                nmiss,
                                intercept){
     if (missing(nmiss)) nmiss <- NULL
@@ -84,7 +87,7 @@ fixRegressionTable <- function(x,
                 }
                 if (!is.null(nmiss)){
                     Missing <- c(nmiss[vn],rep("",NROW(block)))
-                } 
+                }
                 block <- rbind(c(reference.value,rep("",NCOL(block)-1)),block)
             }
         } else{
@@ -119,7 +122,7 @@ fixRegressionTable <- function(x,
     out$Units <- as.character(out$Units)
     rownames(out) <- 1:NROW(out)
     # {{{ add intercept if it is wanted
-    if (intercept!=0 && 
+    if (intercept!=0 &&
         (found <- match("(Intercept)",rownames(x),nomatch=0))){
         inter <- x[found,,drop=FALSE]
         out <- rbind(unlist(c(Variable="Intercept",

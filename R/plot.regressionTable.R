@@ -3,7 +3,7 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Sep 12 2015 (20:45) 
+## last-updated: Sep 12 2015 (20:45)
 ##           By: Thomas Alexander Gerds
 ##     Update #: 43
 #----------------------------------------------------------------------
@@ -15,6 +15,7 @@
 ##
 ### Code:
 ##' Plotting regression coefficients with confidence limits
+##'
 ##'
 ##'
 ##' @title Plotting regression coefficients with confidence limits
@@ -42,7 +43,7 @@
 ##' coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(protime)+log(albumin)+edema+sex,data=pbc)
 ##' pubcox <- publish(coxfit)
 ##' plot(pubcox,cex=1.5)
-##' 
+##'
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.regressionTable <- function(x,xlim,xlab,...){

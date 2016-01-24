@@ -1,20 +1,24 @@
-### plotConfidence.R --- 
+### plotConfidence.R ---
 #-------
 ## author: Thomas Alexander Gerds
-## created: May 10 2015 (11:03) 
-## Version: 
-## last-updated: Oct 28 2015 (08:15) 
+## created: May 10 2015 (11:03)
+## Version:
+## last-updated: Oct 28 2015 (08:15)
 ##           By: Thomas Alexander Gerds
 ##     Update #: 271
 #----------------------------------------------------------------------
-## 
-### Commentary: 
-## 
+##
+### Commentary:
+##
 ### Change Log:
 #----------------------------------------------------------------------
-## 
+##
 ### Code:
-##' Function to plot confidence intervals with their values and additional labels
+##' Function to plot confidence intervals with their values and additional labels.
+##' One anticipated use of this function involves first the generation of a regression object,
+##' then arrangement of a result table with "regressionTable", further arrangment of table with
+##' with e.g. "fixRegressionTable" and various user defined changes - and then finally table
+##' along with forest plot using the current function.
 ##'
 ##' Function to plot means and other point estimates with confidence intervals,
 ##' their values and additional labels .
@@ -26,7 +30,7 @@
 ##' labels on the left confidence intervals on the right.
 ##' When no labels are given or labels is FALSE there are only two parts. The default order is
 ##' confidence intervals on the left values on the right.
-##' 
+##'
 ##' The default order of three parts from left to right is
 ##' labels, confidence intervals, values. The order can be changed as shown
 ##' by the examples below. The relative widths of the two or three parts
@@ -34,11 +38,11 @@
 ##' depends on the plotting device and the size of the font and figures and
 ##' thus has to be adjusted manually.
 ##'
-##' Oma can be used to further control horizontal margins, e.g., par(oma=c(0,4,0,4)). 
-##' 
+##' Oma can be used to further control horizontal margins, e.g., par(oma=c(0,4,0,4)).
+##'
 ##' If confidence limits extend beyond the range determined by xlim, then
 ##' arrows are drawn at the x-lim borders to indicate that the confidence
-##' limits continue. 
+##' limits continue.
 ##' @title Plot confidence intervals
 ##' @param x Either a vector containing the point estimates or A list
 ##' whose first element contains the point estimates.  Further list
@@ -147,33 +151,33 @@
 ##' See examples for usage.
 ##' @return List of dimensions and coordinates
 ##' @examples
-##' 
+##'
 ##' library(Publish)
 ##' data(CiTable)
-##' 
+##'
 ##' ## columns 6, 7, 8, 9 contain the hazard ratio, the lower
 ##' ## and the upper confidence limits and the p-values, respectively
 ##' head(CiTable[,6:9])
-##' 
+##'
 ##' ## columns 1,2,3,4,5 contain the labels
 ##' head(CiTable[,1:5])
-##' 
+##'
 ##' ## A first draft version of the plot is obtained as follows
 ##' plotConfidence(x=CiTable[,6:8], labels=CiTable[,1:5])
-##' 
+##'
 ##' ## The graph consist of at most three blocks:
 ##' ##
 ##' ## block 1: labels
 ##' ## block 2: printed values of the confidence intervals
 ##' ## block 3: graphical presentation of the confidence intervals
-##' ## 
+##' ##
 ##' ## NOTE: block 3 appears always, the user decides if also
 ##' ##       blocks 1, 2 shouldappear
-##' ## 
+##' ##
 ##' ## The blocks are arranged with the function layout
 ##' ## and the default order is 1,3,2 such that the graphical
 ##' ## display of the confidence intervals appears in the middle
-##' ## 
+##' ##
 ##' ## the order of appearance of the three blocks can be changed as follows
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
@@ -181,7 +185,7 @@
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                order=c(2,3,1))
-##' ## if there are only two blocks the order is 1, 2 
+##' ## if there are only two blocks the order is 1, 2
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                values=FALSE,
@@ -190,18 +194,18 @@
 ##'                labels=CiTable[,1:5],
 ##'                values=FALSE,
 ##'                order=c(1,2))
-##' 
-##' 
+##'
+##'
 ##' ## The relative size of the blocks needs to be controlled manually
-##' ## by using the argument xratio. If there are only two blocks 
+##' ## by using the argument xratio. If there are only two blocks
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],xratio=c(0.4,0.15))
-##' 
+##'
 ##' ## The amount of space on the left and right margin can be controlled
 ##' ## as follows:
 ##' plotConfidence(x=CiTable[,6:8],labels=CiTable[,1:5],xratio=c(0.4,0.15),
 ##'                leftmargin=0.1,rightmargin=0.00)
-##' 
+##'
 ##' ## The actual size of the current graphics device determines
 ##' ## the size of the figures and the space between them.
 ##' ## The sizes and line widths are increased as follows:
@@ -221,9 +225,9 @@
 ##'                lwd=0.8,
 ##'                xaxis.lwd=0.8,
 ##'                xaxis.cex=0.8)
-##' 
+##'
 ##' ## Another good news is that all figures can be controlled separately
-##' 
+##'
 ##' ## The size of the graphic device can be controlled in the usual way, e.g.:
 ##' \dontrun{
 ##'     pdf("~/tmp/testCI.pdf",width=8,height=8)
@@ -231,7 +235,7 @@
 ##'                    labels=CiTable[,1:5])
 ##'     dev.off()
 ##' }
-##' 
+##'
 ##' ## More control of the x-axis and confidence intervals that
 ##' ## stretch outside the x-range.
 ##' plotConfidence(x=CiTable[,6:8],
@@ -239,7 +243,7 @@
 ##'                xlab.line=1.8,
 ##'                xaxis.at=c(0.8,1,1.3),
 ##'                labels=CiTable[,1:5],xlim=c(0.8,1.3))
-##' 
+##'
 ##' ## More pronounced arrows
 ##' ## Coloured xlab expression
 ##' plotConfidence(x=CiTable[,6:8],
@@ -249,7 +253,7 @@
 ##'                extremeArrowsAngle=50,
 ##'                extremeArrowsLength=0.1,
 ##'                labels=CiTable[,1:5],xlim=c(0.8,1.3))
-##' 
+##'
 ##' ## Controlling the labels and their titles
 ##' ## and the values and their titles
 ##' plotConfidence(x=CiTable[,6:8],
@@ -260,7 +264,7 @@
 ##'                factor.reference.pos=c(1,10,19),
 ##'                cex=1.3,
 ##'                xaxis.at=c(0.75,1,1.25,1.5,2))
-##' 
+##'
 ##' ## For factor reference groups, one may want to replace the
 ##' ## confidence intervals by the word Reference, as in the previous example.
 ##' ## To change the word 'Reference' we use the argument factor.reference.label:
@@ -276,8 +280,8 @@
 ##'                factor.reference.pch=NA,
 ##'                cex=1.3,
 ##'                xaxis.at=c(0.75,1,1.25,1.5,2))
-##' 
-##' 
+##'
+##'
 ##' ## changing the style of the graphical confidence intervals
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
@@ -289,8 +293,8 @@
 ##'                cex=1.3,
 ##'                order=c(1,3,2),
 ##'                xaxis.at=c(0.75,1,1.25,1.5))
-##' 
-##' 
+##'
+##'
 ##' ## the values block of the graph can have multiple columns as well
 ##' ## to illustrate this we create the confidence intervals
 ##' ## before calling the function and then cbind them
@@ -304,7 +308,7 @@
 ##'                values=list("HR"=HR,"CI-95"=CI95,"P-value"=pval),
 ##'                cex=1.2,
 ##'                xratio=c(0.5,0.3))
-##' 
+##'
 ##' ## Finally, vertical blocks can be delimited with background color
 ##' ## NOTE: this may slow things down and potentially create
 ##' ##       large figures
@@ -322,7 +326,7 @@
 ##'                labels=CiTable[,1:5],
 ##'                stripes=c(1,1,1),
 ##'                stripes.col=c(col1,col2,col3))
-##' 
+##'
 ##' threegreens <- c(prodlim::dimColor("green",density=55),
 ##'                  prodlim::dimColor("green",density=33),
 ##'                  prodlim::dimColor("green",density=22))
@@ -334,8 +338,8 @@
 ##'                xratio=c(0.5,0.15),
 ##'                stripes.horizontal=c(0,9,18,27)+0.5,
 ##'                stripes.col=threegreens)
-##' 
-##' @export 
+##'
+##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plotConfidence <- function(x,
                            lower,
@@ -449,7 +453,7 @@ plotConfidence <- function(x,
     dist <- (at[2]-at[1])/2
     if (missing(stripes) || is.null(stripes))
         do.stripes <- FALSE
-    else 
+    else
         do.stripes <- stripes
     stripes.DefaultArgs <- list(col=c(prodlim::dimColor("orange"),"white"),
                                 horizontal=seq(min(at)-dist,max(at)+dist,1),
@@ -627,7 +631,7 @@ plotConfidence <- function(x,
         if (length(smartA$arrows$code)<NR)
             smartA$arrows$code <- rep(smartA$arrows$code,length.out=NR)
         smartA$arrows$x0[tooLow] <- xlim[1]
-        smartA$arrows$x1[tooHigh] <- xlim[2]        
+        smartA$arrows$x1[tooHigh] <- xlim[2]
         smartA$arrows$code[tooLow & tooHigh] <- 3
         smartA$arrows$code[tooLow & !tooHigh] <- 1
         smartA$arrows$code[!tooLow & tooHigh] <- 2

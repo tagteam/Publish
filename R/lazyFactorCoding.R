@@ -1,6 +1,8 @@
-##' For all discrete and factor variables in a data set write R-code
-##' which can quickly be modified to change the levels.
-##' 
+##' This function eases the process of generating factor variables
+##' with relevant labels. All variables in a data.frame with less than
+##' a user set number of levels result in a line which suggests levels and
+##' labels. The result can then be modified for use.
+##'
 ##' The code needs to be copy-and-pasted from the R-output
 ##' buffer into the R-code buffer. This can be customized
 ##' for the really efficiently working people e.g. in emacs.
@@ -12,7 +14,7 @@
 ##' @examples
 ##' data(Diabetes)
 ##' lazyFactorCoding(Diabetes)
-##' 
+##'
 ##' @export
 lazyFactorCoding <- function(data,maxlevels=10){
     if (!is.character(data))
