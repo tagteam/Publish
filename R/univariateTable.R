@@ -1,12 +1,23 @@
 ##' Categorical variables are summarized using counts and frequencies.
+##'
+##' This function can generate the baseline demographic characteristics
+##' that forms table 1 in many publications. It is also useful for generating
+##' other tables of univariate statistics.
+##'
+##' The result of the function is an object (list) which containe the various data
+##' generated.  For most use the "summary" function should be applied which generates
+##' a data.frame with a (nearly) publication ready table. Standard manipulation can be
+##' used to modify, add or remove columns/rows and for users not accustomed to R the table
+##' generated can easily be exported to excell for further adjustment with
+##' write.csv(table.generated,file="....").
+##'
 ##' Continuous variables are summarized by means and standard deviations.
-##' Deviations from the above defaults are obtained when the 
+##' Deviations from the above defaults are obtained when the
 ##' arguments summary.format and freq.format are combined with suitable
-##' summary functions. 
-##' 
-##' 
+##' summary functions.
+##'
 ##' @title Univariate table
-##' @aliases utable univariateTable 
+##' @aliases utable univariateTable
 ##' @param formula Formula specifying the grouping variable (strata)
 ##' on the left hand side (can be omitted) and on the right hand side
 ##' the variables for which to obtain (descriptive) statistics.
@@ -69,30 +80,30 @@
 ##'
 ##' utable(location~age+gender+height+weight,data=Diabetes,
 ##'        age="Age (years)",gender=c("Female","Male"))
-##' 
+##'
 ##' ## Use quantiles and rank tests for some variables and mean and standard deviation for others
 ##' univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,
 ##'                 data=Diabetes)
-##' 
+##'
 ##' ## Factor with more than 2 levels
 ##' Diabetes$AgeGroups <- cut(Diabetes$age,
 ##'                           c(19,29,39,49,59,69,92),
 ##'                           include.lowest=TRUE)
 ##' univariateTable(location~AgeGroups+gender+height+weight,
 ##'                 data=Diabetes)
-##' 
+##'
 ##' ## Column percent
 ##' univariateTable(location~gender+age+AgeGroups,
 ##'                 data=Diabetes,
 ##'                 column.percent=TRUE)
-##' 
+##'
 ##' ## changing Labels
 ##' u <- univariateTable(location~gender+AgeGroups+ height + weight,
 ##'                      data=Diabetes,
 ##'                      column.percent=TRUE,
 ##'                      freq.format="count(x) (percent(x))")
 ##' summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
-##' 
+##'
 ##' ## multiple summary formats
 ##' ## suppose we want for some reason mean (range) for age
 ##' ## and median (range) for BMI.
@@ -101,7 +112,7 @@
 ##'                 data=na.omit(Diabetes),
 ##'                 Q.format="mean(x) (range(x))",
 ##'                 summary.format="median(x) (range(x))")
-##' ## method 2: 
+##' ## method 2:
 ##' u1 <- summary(univariateTable(frame~age,
 ##'                               data=na.omit(Diabetes),
 ##'                               summary.format="mean(x) (range(x))"))
@@ -164,7 +175,7 @@ univariateTable <- function(formula,
         if (is.factor(mr))
             if (any(is.na(groupvar)))
                 groups <- c(levels(mr),"Missing")
-            else 
+            else
                 groups <- levels(mr)
         else
             groups <- unique(groupvar)
@@ -185,7 +196,7 @@ univariateTable <- function(formula,
         else
             grouplabels <- paste(groupname,"=",groups)
     }
-   
+
     # }}}
     # {{{ classify variables into continuous numerics and grouping factors
     automatrix <- FRAME$design
@@ -210,7 +221,7 @@ univariateTable <- function(formula,
             continuous.matrix <- cbind(FRAME$S,automatrix[,auto.type==2,drop=FALSE])
     }
     if (any(auto.type==1)){
-        if (is.null(FRAME$F))        
+        if (is.null(FRAME$F))
             factor.matrix <- automatrix[,auto.type==1,drop=FALSE]
         else
             factor.matrix <- cbind(FRAME$F,automatrix[,auto.type==1,drop=FALSE])
@@ -252,7 +263,7 @@ univariateTable <- function(formula,
         Qformat <- NULL
         qNumeric <- NULL
     }
-    # }}}  
+    # }}}
     # {{{ discrete variables (factors)
     if (!is.null(factor.matrix)){
         if (column.percent==TRUE){
@@ -260,7 +271,7 @@ univariateTable <- function(formula,
             freq.format <- sub("colcolpercent","colpercent",freq.format)
         }
         # prepare format
-        freqformat <- parseFrequencyFormat(format=freq.format,digits=digits.freq)  
+        freqformat <- parseFrequencyFormat(format=freq.format,digits=digits.freq)
         #  get frequencies excluding missing in groups and in totals
         freqFactor <- getFrequency(matrix=factor.matrix,
                                    varnames=names(factor.matrix),
@@ -306,7 +317,7 @@ univariateTable <- function(formula,
                                              "cox"={
                                                  px <- anova(coxph(formula(paste("Surv(time,status)~",v)),data=cbind(outcome,data)))$"Pr(>|Chi|)"[2]
                                                  px
-                                             }, 
+                                             },
                                              "true"={
                                                  ## glm fails when there are missing values
                                                  ## in outcome, so we remove missing values
@@ -333,7 +344,7 @@ univariateTable <- function(formula,
                                           "cox"={
                                               px <- anova(coxph(formula(paste("Surv(time,status)~",v)),data=cbind(outcome,data)))$"Pr(>|Chi|)"[2]
                                               px
-                                          }, 
+                                          },
                                           "true"={
                                               if (is.character(data[,groupname])){
                                                   data[,paste0(groupname,"asfactor")] <- factor(data[[groupname]])
@@ -373,7 +384,7 @@ univariateTable <- function(formula,
                                                        suppressWarnings(test <- chisq.test(tabx))
                                                        px <- test$p.value
                                                    }
-                                                 ## FIXME: need to catch and pass the warnings 
+                                                 ## FIXME: need to catch and pass the warnings
                                                  ## test <- suppressWarnings(fisher.test(tabx))
                                                  ## if (any(test$expected < 5) && is.finite(test$parameter))
                                                  px
@@ -414,7 +425,7 @@ univariateTable <- function(formula,
     class(out) <- "univariateTable"
     out
     # }}}
-} 
+}
 
 ## the name utable is more handy
 ##' @export utable

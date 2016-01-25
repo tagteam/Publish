@@ -1,5 +1,13 @@
 ##' Tabulate the results of a regression analysis.
 ##'
+##' The basic use of this function is to generate a near publication worthy table from a regression
+##' object. As with summary(object) reference levels of factor variables are not included. Expansion
+##' of the table with such values can be performed using the "fixRegressionTable" function. Forest
+##' plot can be added to the output with "plotRegressionTable".
+##'
+##' regressionTable produces an object (list) with the parameters deriveds. The summary function creates
+##' a data frame which can be used as a (near) publication ready table.
+##'
 ##' The table shows changes in mean for linear regression,
 ##' odds ratios for logistic regression (family = binomial) and hazard ratios for
 ##' Cox regression.
@@ -31,14 +39,16 @@
 ##' # linear regression
 ##' data(Diabetes)
 ##' f1 <- glm(bp.1s~age+gender+frame+chol,data=Diabetes)
-##' regressionTable(f1)
-##' regressionTable(f1,units=list("chol"="mmol/L","age"="years"))
+##' summary(regressionTable(f1))
+##' summary(regressionTable(f1,units=list("chol"="mmol/L","age"="years")))
 ##' ## with interaction
 ##' f2 <- glm(bp.1s~age*gender+frame+chol,data=Diabetes)
-##' regressionTable(f2)
+##' summary(regressionTable(f2))
+##' #Add reference values
+##' summary(regressionTable(f2))
 ##' f3 <- glm(bp.1s~age+gender*frame+chol,data=Diabetes)
 ##' regressionTable(f3)
-##' 
+##'
 ##' # logistic regression
 ##' Diabetes$hyp1 <- factor(1*(Diabetes$bp.1s>140))
 ##' l1 <- glm(hyp1~age+gender+frame+chol,data=Diabetes,family="binomial")
@@ -60,8 +70,8 @@
 ##' regressionTable(c2)
 ##' c3 <- coxph(Surv(time,status!=0)~edema*log(bili)+age+protime+sex+edema+edema:sex,data=pbc)
 ##' regressionTable(c3)
-##' 
-##' @export 
+##'
+##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 regressionTable <- function(object,
                             confint.method=c("default","profile","robust","simultaneous"),
