@@ -1,20 +1,14 @@
 Package: Publish
 Type: Package
-Title: Publish
-Version: 1.1.8
+Title: Turn R Output Into Publishable Format
+Description: Routines that turn results of common basic R functions into table/graph format suitable for publications.  
+Version: 1.1.9
 Date: 2009-06-08
 Author: Thomas Gerds
 Maintainer: Thomas Gerds <tag@biostat.ku.dk>
-Description: Neatly Formated Output from R for Publications
-Depends:
-    prodlim (>= 1.5.4)
-Imports:
-    survival (>= 2.38),
-    lava (>= 1.4.0)
-Suggests:
-    lme4 (>= 1.1),
-    pec (>= 2.4.4),
-    riskRegression (>= 1.0.8)
+Depends: prodlim (>= 1.5.4)
+Imports: survival (>= 2.38), lava (>= 1.4.0)
+Suggests: lme4 (>= 1.1), pec (>= 2.4.4), riskRegression (>= 1.0.8)
 License: GPL (>= 2)
 Packaged: Mon Jun 08 11:54:28 2009 ;tag
 RoxygenNote: 5.0.1

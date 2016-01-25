@@ -336,7 +336,7 @@ univariateTable <- function(formula,
                                           }, 
                                           "true"={
                                               if (is.character(data[,groupname])){
-                                                  data[,paste0(groupname,"asfactor")] <- factor(data[,groupname])
+                                                  data[,paste0(groupname,"asfactor")] <- factor(data[[groupname]])
                                                   px <- kruskal.test(formula(paste0(v,"~",groupname,"asfactor")),data=data)$p.value
                                               } else{
                                                     px <- kruskal.test(formula(paste(v,"~",groupname)),data=data)$p.value

@@ -83,15 +83,15 @@ summary.univariateTable <- function(object,
             if (showTotals)
                 sum <- data.frame(Total=object$summary.totals[[s]],stringsAsFactors = FALSE)
         }
-        if (showTotals && (missing!="never") && (missing=="always" || any(object$missing$totals[[s]]>0))){
-            if (is.null(object$groups)){
-                miss <- object$missing$totals[[s]]
-            }
-            else{
+        if ((missing!="never") && (missing=="always" || any(object$missing$totals[[s]]>0))){
+            if (!showTotals){
+                if (is.null(object$groups)){
+                    miss <- object$missing$totals[[s]]
+                }
+            } else{
                 miss <- c(unlist(object$missing$group[[s]]),object$missing$totals[[s]])
             }
-        }
-        else{
+        } else{
             miss <- NULL
         }
         sum <- rbind(sum,miss)
