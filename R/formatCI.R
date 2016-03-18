@@ -6,12 +6,12 @@
 ##' @param lower Numeric vector of lower limits
 ##' @param upper Numeric vector of upper limits
 ##' @param handler Function to format numeric values. Default is
-##' 'sprintf', also supported are 'format' and 'prettyNum'
-##' @param format Character string in which 'l' will be replaced by
-##' the value of the lower limit (argument lower) and 'u' by the value
-##' of the upper upper limit. For example, \code{'(l,u)'} yields
+##' \code{sprintf}, also supported are \code{format} and \code{prettyNum}
+##' @param format Character string in which \code{l} will be replaced by
+##' the value of the lower limit (argument lower) and \code{u} by the value
+##' of the upper upper limit. For example, \code{(l,u)} yields
 ##' confidence intervals in round parenthesis in which the upper and
-##' lower limits are comma separated. Default is '[l;u]'.
+##' lower limits are comma separated. Default is \code{[l;u]}.
 ##' @param degenerated String to show when lower==upper.  Default is
 ##' '--'
 ##' @param digits If handler \code{format} or \code{prettyNum} used format numeric vectors.

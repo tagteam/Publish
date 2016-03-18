@@ -207,8 +207,9 @@ regressionTable <- function(object,
     ## omnibus <- drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
     # }}}
     # {{{ missing values
-    allvars <- all.vars(delete.response(terms(formula)))
-    nmiss <- lapply(allvars,function(v)function(v){sum(is.na(data[[v]]))})
+    ## allvars <- all.vars(delete.response(terms(formula),data=data))
+    allvars <- get_all_vars(delete.response(terms(formula)),data=data)
+    nmiss <- lapply(allvars,function(v)sum(is.na(v)))
     ## nmiss <- lapply(allvars,function(v){sum(is.na(v))})
     ## names(nmiss) <- names(allvars)
     ## nmiss <- NULL
@@ -240,7 +241,9 @@ regressionTable <- function(object,
                           p.vn <- pval[parms]
                           Missing <- NULL
                           # {{{ factor variables
-                          varname <- all.vars(formula(paste("~",vn)))
+                          ## varname <- all.vars(formula(paste("~",vn)),data=data)
+                          ## varname <- names(get_all_vars(formula(paste("~",vn)),data=data))
+                          varname <- vn
                           ## found <- match(v,names(nmiss),nomatch=0)
                           nmissvar <- nmiss[[varname]]
                           if (is.null(nmissvar)) nmissvar <- 0
@@ -290,7 +293,7 @@ regressionTable <- function(object,
                                                                  robust=confint.method=="robust")$coefmat)
                               colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
                               vars <- attr(t2,"variables")
-                              miss2 <- sum(is.na(data[,all.vars(formula(paste("~",vars[[1]])))]))+sum(is.na(data[,all.vars(formula(paste("~",vars[[2]])))]))
+                              miss2 <- sum(is.na(get_all_vars(formula(paste("~",vars[[1]])))))+sum(is.na(get_all_vars(formula(paste("~",vars[[2]])))))
                               block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
                               rownames(block) <- NULL
                               block

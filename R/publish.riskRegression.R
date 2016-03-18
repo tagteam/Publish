@@ -27,7 +27,8 @@ publish.riskRegression <- function(object,
     if (length(digits)==1) digits <- rep(digits,2)
     sv <- summary(object,verbose=FALSE,digits=digits[[1]],eps=10^{-digits[[2]]})
     out <- sv[,c("Factor","exp(Coef)","CI_95","Pvalue")]
-    colnames(out) <- c("Factor","ARR","CI_95","p-value")
+    modeltype <- if (as.name("LRR")==object$call[[1]]) "LRR" else "ARR"
+    colnames(out) <- c("Factor",modeltype,"CI_95","p-value")
     if (print) publish(out,...)
     invisible(out)
 }
