@@ -78,23 +78,23 @@ Spaghettiogram <- function(formula,
             ylevs <- levels(Y)
             Y <- as.numeric(Y)
         } else{
-              Y <- factor(Y)
-              ylevs <- levels(Y)
-              Y <- as.numeric(Y)
-          }
+            Y <- factor(Y)
+            ylevs <- levels(Y)
+            Y <- as.numeric(Y)
+        }
     }else{
-         ylevs <- NULL
-     }
+        ylevs <- NULL
+    }
     if (is.numeric(X)){
         xat <- sort(unique(X))
         xlevs <- as.character(xat)
     }else{
-         if (!is.factor(X)) X <- factor(X)
-         xlevs <- levels(X)
-         ## now values are 1= xlev[1], 2= xlev[2], etc.
-         X <- as.numeric(X) 
-         xat <- sort(unique(X))
-     }
+        if (!is.factor(X)) X <- factor(X)
+        xlevs <- levels(X)
+        ## now values are 1= xlev[1], 2= xlev[2], etc.
+        X <- as.numeric(X) 
+        xat <- sort(unique(X))
+    }
     XY <- data.frame(cbind(X=X,Y=Y))
     ## names(XY) <- c("X","Y")
     object <- split(XY,Z)
@@ -155,25 +155,25 @@ Spaghettiogram <- function(formula,
     # }}}
     # {{{ adding spaghetti's
     nix <- sapply(1:length(object),function(i){
-                              a=object[[i]]
-                              a <- a[order(a["X"]),]
-                              a <- na.omit(a)
-                              tvar <- a[,"X"]
-                              do.call("lines",c(list(x=tvar,
-                                                     y=a[,"Y"],
-                                                     pch=pch[i],
-                                                     col=col[i],
-                                                     lty=lty[i],
-                                                     lwd=lwd[i]),smartA$lines))
-                              do.call("lines",
-                                      c(list(x=tvar,
-                                             y=a[,"Y"],
-                                             pch=pch[i],
-                                             col=col[i],
-                                             lty=lty[i],
-                                             lwd=lwd[i]),
-                                        replace(smartA$lines,"type","l")))
-                          })
+        a=object[[i]]
+        a <- a[order(a["X"]),]
+        a <- na.omit(a)
+        tvar <- a[,"X"]
+        do.call("lines",c(list(x=tvar,
+                               y=a[,"Y"],
+                               pch=pch[i],
+                               col=col[i],
+                               lty=lty[i],
+                               lwd=lwd[i]),smartA$lines))
+        do.call("lines",
+                c(list(x=tvar,
+                       y=a[,"Y"],
+                       pch=pch[i],
+                       col=col[i],
+                       lty=lty[i],
+                       lwd=lwd[i]),
+                  replace(smartA$lines,"type","l")))
+    })
 
     # }}}
     invisible(object)

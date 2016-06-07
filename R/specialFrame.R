@@ -104,9 +104,9 @@ specialFrame <- function(formula,
                                       alias.names=stripAlias,
                                       unspecials=stripUnspecials)
     }else{
-         ## data argument is used to resolve '.' see help(terms.formula)
-         Terms <- terms(x=formula, specials=specials, data = data)
-     }
+        ## data argument is used to resolve '.' see help(terms.formula)
+        Terms <- terms(x=formula, specials=specials, data = data)
+    }
     ## mm <- na.omit(get_all_vars(formula(Terms),data))
     mm <- do.call(na.action,list(get_all_vars(formula(Terms),data)))
     #mm <- model.frame(formula=formula(Terms),data=data,na.action=na.action)
