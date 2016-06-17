@@ -8,31 +8,36 @@
 ##' regressionTable produces an object (list) with the parameters deriveds. The summary function creates
 ##' a data frame which can be used as a (near) publication ready table.
 ##'
-##' The table shows changes in mean for linear regression,
-##' odds ratios for logistic regression (family = binomial) and hazard ratios for
+##' The table shows changes in mean for linear regression, odds ratios
+##' for logistic regression (family = binomial) and hazard ratios for
 ##' Cox regression.
 ##' @title Regression table
 ##' @param object Fitted regression model obtained with \code{lm},
-##' \code{glm} or \code{coxph}.
+##'     \code{glm} or \code{coxph}.
 ##' @param confint.method Method to obtain confidence
-##' intervals. Default is \code{'default'} which leads to Wald type
-##' intervals using the model based estimate of standard error.
-##' \code{'profile'} yields profile likelihood confidence intervals,
-##' available from library MASS for \code{lm} and \code{glm}
-##' objects. \code{'robust'} uses the sandwich form standard error to
-##' construct Wald type intervals (see
-##' \code{lava::estimate.default}). \code{simultaneous} calls
-##' \code{multcomp::glht} to obtain simultaneous confidence intervals.
-##' @param pvalue.method Method to obtain p-values. If \code{'default'} show raw p-values.
-##' If \code{'robust'} use p-value corresponding to robust standard error as provided by
-##' \code{lava::estimate.default}. If \code{'simultaneous'} call
-##' \code{multcomp::glht} to obtain p-values.
+##'     intervals. Default is \code{'default'} which leads to Wald
+##'     type intervals using the model based estimate of standard
+##'     error.  \code{'profile'} yields profile likelihood confidence
+##'     intervals, available from library MASS for \code{lm} and
+##'     \code{glm} objects. \code{'robust'} uses the sandwich form
+##'     standard error to construct Wald type intervals (see
+##'     \code{lava::estimate.default}). \code{simultaneous} calls
+##'     \code{multcomp::glht} to obtain simultaneous confidence
+##'     intervals.
+##' @param pvalue.method Method to obtain p-values. If
+##'     \code{'default'} show raw p-values.  If \code{'robust'} use
+##'     p-value corresponding to robust standard error as provided by
+##'     \code{lava::estimate.default}. If \code{'simultaneous'} call
+##'     \code{multcomp::glht} to obtain p-values.
 ##' @param factor.reference Style for showing results for categorical
-##' variables. If \code{'extraline'} show an additional line for the
-##' reference category. If \code{'inline'} display as level
-##' vs. reference.
+##'     variables. If \code{'extraline'} show an additional line for
+##'     the reference category. If \code{'inline'} display as level
+##'     vs. reference.
 ##' @param units List of units for continuous variables. See examples.
-##' @param noterms Position of terms that should be ignored. E.g., for a Cox model with a cluster(id) term, there will be no hazard ratio for variable id.
+##' @param noterms Position of terms that should be ignored. E.g., for
+##'     a Cox model with a cluster(id) term, there will be no hazard
+##'     ratio for variable id.
+##' @param probindex Logical. If \code{TRUE} show coefficients on probabilistic index scale instead of hazard ratio scale.
 ##' @param ... Not yet used
 ##' @return List of regression blocks
 ##' @examples
@@ -296,7 +301,8 @@ regressionTable <- function(object,
                                                robust=confint.method=="robust")$coefmat)
             colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
             vars <- attr(t2,"variables")
-            miss2 <- sum(is.na(get_all_vars(formula(paste("~",vars[[1]])))))+sum(is.na(get_all_vars(formula(paste("~",vars[[2]])))))
+            ## miss2 <- sum(is.na(get_all_vars(formula(paste("~",vars[[1]])))))+sum(is.na(get_all_vars(formula(paste("~",vars[[2]])))))
+            miss2 <- NA
             block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
             rownames(block) <- NULL
             block

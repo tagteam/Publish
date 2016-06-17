@@ -5,19 +5,25 @@
 ##' @param x not used (for compatibility with format)
 ##' @param lower Numeric vector of lower limits
 ##' @param upper Numeric vector of upper limits
+##' @param showX Logical. If \code{TRUE} show value of x in front of confidence interval.
 ##' @param handler Function to format numeric values. Default is
-##' \code{sprintf}, also supported are \code{format} and \code{prettyNum}
-##' @param format Character string in which \code{l} will be replaced by
-##' the value of the lower limit (argument lower) and \code{u} by the value
-##' of the upper upper limit. For example, \code{(l,u)} yields
-##' confidence intervals in round parenthesis in which the upper and
-##' lower limits are comma separated. Default is \code{[l;u]}.
+##'     \code{sprintf}, also supported are \code{format} and
+##'     \code{prettyNum}
+##' @param format Character string in which \code{l} will be replaced
+##'     by the value of the lower limit (argument lower) and \code{u}
+##'     by the value of the upper upper limit. For example,
+##'     \code{(l,u)} yields confidence intervals in round parenthesis
+##'     in which the upper and lower limits are comma
+##'     separated. Default is \code{[l;u]}.
 ##' @param degenerated String to show when lower==upper.  Default is
-##' '--'
-##' @param digits If handler \code{format} or \code{prettyNum} used format numeric vectors.
-##' @param nsmall If handler \code{format} or \code{prettyNum} used format numeric vectors.
-##' @param trim Used to aligning resulting intervals. Also, if handler \code{format}
-##' or \code{prettyNum} used format numeric vectors .
+##'     '--'
+##' @param digits If handler \code{format} or \code{prettyNum} used
+##'     format numeric vectors.
+##' @param nsmall If handler \code{format} or \code{prettyNum} used
+##'     format numeric vectors.
+##' @param trim Used to aligning resulting intervals. Also, if handler
+##'     \code{format} or \code{prettyNum} used format numeric vectors
+##'     .
 ##' @param sep Field separator
 ##' @param ... passed to handler
 ##' @return String vector with confidence intervals
@@ -29,6 +35,8 @@
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884))
 ##' # change format
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="(l, u)")
+##' # show x
+##' formatCI(x=x$mean,lower=x$lower,upper=x$upper,format="(l, u)",showX=TRUE)
 ##'
 ##' # if the first lower limit is shorter than the second (missing negative sign),
 ##' # then, option trim will make a difference:

@@ -24,7 +24,9 @@
 ##' uni.odds
 ##' ## control the logistic regression analyses for age and gender
 ##' ## but collect only information on the variables in `vars'.
-##' controlled.odds <- glmSeries(hyper1~age+gender,vars=c("chol","hdl","location"),data=Diabetes,family=binomial)
+##' controlled.odds <- glmSeries(hyper1~age+gender,
+##'                              vars=c("chol","hdl","location"),
+##'                              data=Diabetes, family=binomial)
 ##' controlled.odds
 ##' @export
 glmSeries <- function(formula,data,vars,...){

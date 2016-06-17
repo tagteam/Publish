@@ -101,5 +101,42 @@ NULL
 ##'
 NULL
 
-#' @importFrom survival Surv
-#' @importFrom prodlim Hist
+#' CiTable data
+#'
+#' These data are used for testing Publish package functionality.
+#' @name CiTable
+#' @docType data
+#' @format A data frame with 27 observations on the following 9 variables.
+#' \describe{
+#' \item{Drug.Time}{}
+#' \item{Dose}{}
+#' \item{Mean}{}
+#' \item{SD}{}
+#' \item{n}{}
+#' \item{HazardRatio}{}
+#' \item{lower}{}
+#' \item{upper}{}
+#' \item{p}{}
+#' }
+#'
+#' @keywords datasets
+##' @examples
+##'
+##' data(CiTable)
+##' plotConfidence(x=CiTable[,6:8], labels=CiTable[,1:5])
+##' 
+##'
+NULL
+
+
+#' Format output of various routines suitably for reports and publications 
+#'
+#' Collection of user level functions that modify standard R-output 
+#' @docType package
+#' @name Publish
+#' @importFrom survival Surv coxph
+#' @importFrom prodlim Hist getEvent
+#' @importFrom grDevices dev.size 
+#' @importFrom graphics abline par plot polygon rect segments strwidth   
+#' @importFrom stats anova binom.test binomial chisq.test coef confint delete.response fisher.test get_all_vars glm kruskal.test model.frame model.response na.omit na.pass naprint pchisq pt qnorm qt quantile symnum terms update update.formula var
+NULL

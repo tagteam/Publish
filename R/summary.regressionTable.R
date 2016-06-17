@@ -1,7 +1,7 @@
 ##' Preparing regression results for publication
 ##'
 ##' @title Formatting regression tables
-##' @param x object obtained with \code{regressionTable}.
+##' @param object object obtained with \code{regressionTable}.
 ##' @param showMissing Decide if number of missing values are shown.
 ##' Either logical or character. If \code{'ifany'} then number missing values are
 ##' shown if there are some.

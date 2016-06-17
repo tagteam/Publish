@@ -16,6 +16,7 @@
 ##' text on y-axis. When \code{y.offset=0} the positions are integers
 ##' between the number of intervals (upper most) and 1 (lowest
 ##' interval).
+##' @param y.title.offset Vertical offset for title line
 ##' @param lower lower confidence limits
 ##' @param upper upper confidence limits
 ##' @param labels labels
@@ -39,7 +40,8 @@
 ##' @param leftmargin If \code{automar} is \code{TRUE} additional
 ##' offset -- measured in margin lines -- which is added to left margin.
 ##' @param rightmargin If \code{automar} is \code{TRUE} additional
-##' offset -- measured in margin lines -- which is added to right margin.  
+##' offset -- measured in margin lines -- which is added to right margin.
+##' @param labels.colintersp Interspace between label columns
 ##' @param digits For rounding of values, passed to \code{pubformat} and \code{print.ci}
 ##' @param format A string which indicates the format used for
 ##' confidence intervals.  The string is passed to
@@ -62,22 +64,23 @@
 ##' 
 ##' data(Diabetes)
 ##' x=ci.mean(bp.2s~frame,data=Diabetes)
-##' plot(x)
+##' \dontrun{
+##' plot(x, leftmargin=0, rightmargin=0)
 ##' 
 ##' 
 ##' data(CiTable)
-##' with(CiTable,Publish:::plot.ci(x=list(HazardRatio),
-##'                                lower=low,
-##'                                upper=high,
+##' with(CiTable,Publish::plot.ci(x=list(HazardRatio),
+##'                                lower=lower,
+##'                                upper=upper,
 ##'                                labels=CiTable[,2:6],
 ##'                                factor.reference.pos=c(1,10,19),
 ##'                                format="(u-l)",
 ##'                                points.col="blue",
 ##'                                digits=2))
 ##' 
-##' with(CiTable,Publish:::plot.ci(x=list(HazardRatio),
-##'                                lower=low,
-##'                                upper=high,
+##' with(CiTable,Publish::plot.ci(x=list(HazardRatio),
+##'                                lower=lower,
+##'                                upper=upper,
 ##'                                labels=CiTable[,2:6],
 ##'                                factor.reference.pos=c(1,10,19),
 ##'                                format="(u-l)",
@@ -86,9 +89,9 @@
 ##'                                leftmargin=-2,
 ##'                                title.labels.cex=1.1,
 ##'                                labels.cex=0.8,values.cex=0.8))
- 
-#' @export
+##' }
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
+##' @export
 plot.ci <- function(x,
                     y.offset=0,
                     y.title.offset=1.3,

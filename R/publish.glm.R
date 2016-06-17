@@ -13,18 +13,6 @@
 ##' @param units See \code{regressionTable}.
 ##' @param ... passed to \code{summary.regressionTable} and also
 ##' to \code{labelUnits}.
-##' @param showMissing If \code{TRUE} show number of missing values in
-##' table
-##' @param output.columns Select which parameters of the result are
-##' shown in the table. Defaults to
-##' \code{c("Coefficient","CI.95","pValue","Missing")} for linear
-##' regression and to \code{c("OddsRatio","CI.95","pValue","Missing")}
-##' for logistic regression. Can also include \code{StandardError}.
-##' @param intercept If \code{FALSE} suppress intercept
-##' @param transform Transformation for regression coefficients.
-##' @param profile For logistic regression only. If \code{FALSE} run
-##' with Wald confidence intervals instead of waiting for profile
-##' confidence intervals.
 ##' @param reference Style for showing results for categorical
 ##' variables. If \code{"extraline"} show an additional line for the
 ##' reference category.

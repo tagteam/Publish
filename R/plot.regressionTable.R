@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Sep 12 2015 (20:45)
+## last-updated: Jun 17 2016 (10:17) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 43
+##     Update #: 44
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -20,6 +20,8 @@
 ##'
 ##' @title Plotting regression coefficients with confidence limits
 ##' @param x regression table obtained with regressionTable
+##' @param xlim Limits for x-axis
+##' @param xlab Label for x-axis
 ##' @param ... passed to plot.ci
 ##' @return NULL
 ##' @seealso regressionTable

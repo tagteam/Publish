@@ -11,6 +11,11 @@
 ##' column. If equal to \code{"inNames"}, show the numbers in
 ##' parentheses in the column names.  If missing the value
 ##' \code{object$n} is used.
+##' @param suppressFactorReference Logical or character (vector). Decide if line with reference
+##' level should be suppressed for factors. If \code{TRUE} or \code{"all"}
+##' suppress for all categorical factors. If \code{'binary'} suppress only for binary variables.
+##' Can be character vector in which case reference lines are suppressed for variables
+##' that are included in the vector.
 ##' @param pvalue.stars If TRUE use \code{symnum} to parse p-values
 ##' otherwise use \code{format.pval}.
 ##' @param pvalue.digits Passed to \code{format.pval}.
@@ -22,7 +27,6 @@
 ##' \code{object$showTotals} is used.
 ##' @param ... passed on to \code{labelUnits}. This overwrites labels
 ##' stored in \code{object$labels}
-##' @param pvalue.eps Passed to \code{format.pval}.
 ##' @export
 ##' @return Summary table 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
@@ -38,6 +42,7 @@
 summary.univariateTable <- function(object,
                                     missing=c("ifany","always","never"),
                                     n="inNames",
+                                    suppressFactorReference=FALSE,
                                     pvalue.stars=FALSE,
                                     pvalue.digits=4,
                                     showPvalues,
@@ -97,6 +102,14 @@ summary.univariateTable <- function(object,
         sum <- rbind(sum,miss)
         if (object$vartype[[s]]=="factor"){
             lev <- object$xlevels[[s]]
+            if ((is.logical(suppressFactorReference) && suppressFactorReference[1]==TRUE)
+                || (is.character(suppressFactorReference) && (s in suppressFactorReference))
+                || (is.character(suppressFactorReference) && suppressFactorReference[1]=="binary" && length(lev)==2)
+                || (is.character(suppressFactorReference) && suppressFactorReference[1]=="all")){
+                ## remove redundant line for reference level
+                lev <- lev[1]
+                sum <- sum[-1,,drop=FALSE]
+            }
         }
         else{
             if (object$vartype[[s]]=="Q") 

@@ -1,5 +1,4 @@
 publish.lme <- function (object, adjustSigma = TRUE, print = FALSE, handler="sprintf",digits=c(2,4),nsmall=digits, ...){
-    require(lme4)
     fixed <- lme4::fixef(object)
     stdFixed <- sqrt(diag(as.matrix(object$varFix)))
     object$corFixed <- array(t(object$varFix/stdFixed)/stdFixed, 

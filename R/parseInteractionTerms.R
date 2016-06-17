@@ -4,15 +4,35 @@
 ##' to describe statistical interactions.
 ##' @title Parse interaction terms
 ##' @param terms Terms of a formula
-##' @param xlevels Factor levels corresponding to the variables in \code{terms}
+##' @param xlevels Factor levels corresponding to the variables in
+##'     \code{terms}
+##' @param units named list with unit labels. names should match variable names in formula.
+##' @param format.factor For categorical variables. A string which specifies the format for factor labels.
+##' The string should contain the keywords \code{"var"} and \code{"level"} which will be
+##' replaced by the name of the variable and the current level, respectively.
+##' Default is \code{"var(level)"}.
+##' @param format.contrast For categorical variables. A string which specifies the format for constrast statements.
+##' The string should contain the keywords \code{"var"}, \code{"level"} and \code{"ref"} which will be
+##' replaced by the name of the variable, the current level and the reference level, respectively.
+##' @param format.scale For continuous variables. For categorical variables. A string which specifies the format for factor labels.
+##' The string should contain the keywords \code{"var"} and \code{"level"} which will be
+##' replaced by the name of the variable and the current level, respectively.
+##' Default is \code{"var(level)"}.
+##' @param format.scale.unit For continuous variables which have a unit. A string which specifies the format for factor labels.
+##' The string should contain the keywords \code{"var"} and \code{"unit"} which will be
+##' replaced by the name of the variable and the unit, respectively.
+##' Default is \code{"var(unit)"}.
+##' @param sep a character string to separate the terms. Default is \code{": "}.
 ##' @param ... Not yet used
-##' @return List of contrasts which can be passed to \code{lava::estimate}.
+##' @return List of contrasts which can be passed to
+##'     \code{lava::estimate}.
 ##' @seealso lava::estimate
 ##' @examples
 ##' 
 ##' tt <- terms(formula(SBP~age+sex*BMI))
 ##' xlev <- list(sex=c("male","female"),BMI=c("normal","overweight","obese"))
 ##' parseInteractionTerms(terms=tt,xlevels=xlev)
+##' parseInteractionTerms(terms=tt,xlevels=xlev,format.factor="var level")
 ##' parseInteractionTerms(terms=tt,xlevels=xlev,format.contrast="var(level:ref)")
 ##'
 ##' tt2 <- terms(formula(SBP~age*factor(sex)+BMI))
@@ -23,6 +43,10 @@
 ##'
 ##' data(Diabetes)
 ##' fit <- glm(bp.2s~age*factor(gender)+BMI,data=Diabetes)
+##' parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels,
+##'                       format.scale="var -- level:ref",units=list("age"='years'))
+##' parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels,
+##'                       format.scale.unit="var -- level:ref",units=list("age"='years'))
 ##' it <- parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels)
 ##' ivars <- unlist(lapply(it,function(x)attr(x,"variables")))
 ##' lava::estimate(fit,function(p)lapply(unlist(it),eval,envir=sys.parent(-1)))

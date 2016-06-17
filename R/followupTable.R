@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Nov 28 2015 (08:23) 
 ## Version: 
-## last-updated: Dec  5 2015 (11:38) 
+## last-updated: Jun 17 2016 (10:43) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 46
+##     Update #: 49
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -72,38 +72,43 @@ followupTable <- function(formula,data,followup.time,compareGroups,...){
         status[event.history[,"time"]>followup.time] <- "Event-free"
         ## ehs <- prodlim::stopTime(event.history)
     }else{ 
-         if (model!="competing.risks") stop("Can only handle survival and competing risks outcome.")
-         ## status <- getEvent(event.history,mode="numeric")
-         status <- getEvent(event.history,mode="factor")
-         ## status <- getEvent(event.history,mode="character")
-         slevs <- unique(c(levels(status),"Event-free"))
-         levels(status) <- slevs
-         ## status[event.history[,"time"]>followup.time] <- length(attr(event.history,"states"))+1
-         status[event.history[,"time"]>followup.time] <- "Event-free"
-     }
+        if (model!="competing.risks") stop("Can only handle survival and competing risks outcome.")
+        ## status <- getEvent(event.history,mode="numeric")
+        status <- getEvent(event.history,mode="factor")
+        ## status <- getEvent(event.history,mode="character")
+        slevs <- unique(c(levels(status),"Event-free"))
+        levels(status) <- slevs
+        ## status[event.history[,"time"]>followup.time] <- length(attr(event.history,"states"))+1
+        status[event.history[,"time"]>followup.time] <- "Event-free"
+    }
     if (length(followup.time)==0) stop("Need a followup time.")
     ## FIXME: need a time otherwise all are unknown.
     uformula <- update(formula,"fstatus~.")
     ## groupname <- "status"
     data$fstatus <- status
     if (missing(compareGroups)){
-        compareGroups <- list(...)$compareGroups
+        dots <- match.call(expand.dots=TRUE)
+        compareGroups <- dots$compareGroups
         if (length(compareGroups)==0)
             compareGroups <- "Cox"
         else
-            list(...)$compareGroups <- NULL
+            compareGroups <- NULL
     }
-    if (compareGroups!=FALSE){
+    if (length(compareGroups)>0 && compareGroups!=FALSE){
         outcome <- unclass(prodlim::stopTime(event.history,stop.time=followup.time))
         ## for now: effect on event-free survival 
         if (model=="competing.risks"){
             outcome[,"status"] <- outcome[,"status"]!=0
         }
     } else{
-          compareGroups <- FALSE
-          outcome <- NULL
-      }
-    utable(formula=uformula,data=data,outcome=outcome,compareGroups=compareGroups,...)
+        compareGroups <- FALSE
+        outcome <- NULL
+    }
+    utable(formula=uformula,
+           data=data,
+           outcome=outcome,
+           compareGroups=compareGroups,
+           ...)
 }
 
 
