@@ -37,6 +37,15 @@
 ##' summary(u)
 ##' summary(u,n=NULL)
 ##' summary(u,pvalue.digits=2,"age"="Age (years)","height"="Body height (cm)")
+##'
+##' u2 <- univariateTable(location~age+gender+height+weight,
+##'                 data=Diabetes)
+##' summary(u2)
+##' summary(u2,suppressFactorReference=TRUE)
+##' ## same but more flexible
+##' summary(u2,suppressFactorReference=c("binary"))
+##' ## same but even more flexible
+##' summary(u2,suppressFactorReference=c("gender"))
 ##' 
 ##' 
 summary.univariateTable <- function(object,
@@ -103,15 +112,14 @@ summary.univariateTable <- function(object,
         if (object$vartype[[s]]=="factor"){
             lev <- object$xlevels[[s]]
             if ((is.logical(suppressFactorReference) && suppressFactorReference[1]==TRUE)
-                || (is.character(suppressFactorReference) && (s in suppressFactorReference))
+                || (is.character(suppressFactorReference) && (s %in% suppressFactorReference))
                 || (is.character(suppressFactorReference) && suppressFactorReference[1]=="binary" && length(lev)==2)
                 || (is.character(suppressFactorReference) && suppressFactorReference[1]=="all")){
                 ## remove redundant line for reference level
                 lev <- lev[1]
                 sum <- sum[-1,,drop=FALSE]
             }
-        }
-        else{
+        } else{
             if (object$vartype[[s]]=="Q") 
                 lev <- gsub("\\(x\\)","",object$Q.format)
             else
