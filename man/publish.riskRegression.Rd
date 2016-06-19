@@ -27,6 +27,7 @@ Preparing a publishable table from riskRegression results
 library(prodlim)
 library(riskRegression)
 library(lava)
+library(survival)
 set.seed(20)
 d <- SimCompRisk(20)
 f <- ARR(Hist(time,event)~X1+X2,data=d,cause=1)

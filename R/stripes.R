@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 12 2015 (06:52) 
 ## Version: 
-## last-updated: Dec 17 2015 (09:36) 
+## last-updated: Jun 19 2016 (09:19) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 22
+##     Update #: 23
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -47,7 +47,7 @@
 #' 
 #' 
 #' plot(0,0)
-#' backGround(col="beige",fg="red",vertical=0,horizontal=0)
+#' backGround(bg="beige",fg="red",vertical=0,horizontal=0)
 #' 
 #' plot(0,0)
 #' stripes(col=c("yellow","green"),gridcol="red",xlim=c(-1,1),horizontal=seq(0,1,.1))

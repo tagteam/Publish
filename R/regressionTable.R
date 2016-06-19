@@ -301,8 +301,7 @@ regressionTable <- function(object,
                                                robust=confint.method=="robust")$coefmat)
             colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
             vars <- attr(t2,"variables")
-            ## miss2 <- sum(is.na(get_all_vars(formula(paste("~",vars[[1]])))))+sum(is.na(get_all_vars(formula(paste("~",vars[[2]])))))
-            miss2 <- NA
+            miss2 <- sum(unlist(nmiss[vars]))
             block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
             rownames(block) <- NULL
             block

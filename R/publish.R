@@ -6,8 +6,13 @@
 ##' @title Publishing tables and figures
 ##' @param object object to be published 
 ##' @param ... Passed to method.
+#' @importFrom survival Surv coxph
+#' @importFrom prodlim Hist getEvent
+#' @importFrom grDevices dev.size 
+#' @importFrom graphics abline par plot polygon rect segments strwidth   
+#' @importFrom stats anova binom.test binomial chisq.test coef confint delete.response fisher.test get_all_vars glm kruskal.test model.frame model.response na.omit na.pass naprint pchisq pt qnorm qt quantile symnum terms update update.formula var
 ##' @return Tables and figures
-##' @author Thomas Gerds
+##' @author Thomas A. Gerds  <tag@@biostat.ku.dk>
 ##' @export
 publish <- function (object, ...) {
   UseMethod("publish")

@@ -129,14 +129,4 @@ NULL
 NULL
 
 
-#' Format output of various routines suitably for reports and publications 
-#'
-#' Collection of user level functions that modify standard R-output 
-#' @docType package
-#' @name Publish
-#' @importFrom survival Surv coxph
-#' @importFrom prodlim Hist getEvent
-#' @importFrom grDevices dev.size 
-#' @importFrom graphics abline par plot polygon rect segments strwidth   
-#' @importFrom stats anova binom.test binomial chisq.test coef confint delete.response fisher.test get_all_vars glm kruskal.test model.frame model.response na.omit na.pass naprint pchisq pt qnorm qt quantile symnum terms update update.formula var
-NULL
+

@@ -23,6 +23,6 @@ design
 Some warnings are currently suppressed.
 }
 \author{
-Thomas Gerds
+Thomas A. Gerds  <tag@biostat.ku.dk>
 }
 
