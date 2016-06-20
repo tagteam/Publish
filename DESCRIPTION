@@ -1,7 +1,6 @@
 Package: Publish
 Type: Package
-Title: Format Output of Various Routines in Suitable Way for Reports and
-    Publication
+Title: Format Output of Various Routines in Suitable Way for Reports and Publication
 Description: Routines that format results of common basic R functions as tables
 and graphics suitable for publications.
 Version: 1.2.1
