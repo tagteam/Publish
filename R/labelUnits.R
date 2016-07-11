@@ -55,6 +55,10 @@ labelUnits <- function(x,...){
         for (f in names(Funits)){
             x$Level[x$Level%in%f] <- Funits[[f]]
         }
+        ## now flatten lists. otherwise
+        ## write.csv will complain 
+        x$Variable <- unlist(x$Variable)
+        x$Level <- unlist(x$Level)
     }
     x
 }
