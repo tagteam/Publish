@@ -104,6 +104,12 @@
 ##'                      freq.format="count(x) (percent(x))")
 ##' summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
 ##'
+##' ## more than two groups
+##' Diabetes$frame=factor(Diabetes$frame,levels=c("small","medium","large","missing"))
+##' Diabetes$frame[is.na(Diabetes$frame)]="missing"
+##' v=univariateTable(frame~gender+BMI+age,data=Diabetes)
+##' v
+##' 
 ##' ## multiple summary formats
 ##' ## suppose we want for some reason mean (range) for age
 ##' ## and median (range) for BMI.
@@ -171,14 +177,19 @@ univariateTable <- function(formula,
         groupvar <- as.character(FRAME$response[,1,drop=TRUE])
         mr <- FRAME$response[,1,drop=TRUE]
         ## deal with missing values in group variable
-        groupvar[is.na(groupvar)] <- "Missing"
-        if (is.factor(mr))
-            if (any(is.na(groupvar)))
+        if (is.factor(mr)){
+            if (any(is.na(groupvar))){
+                groupvar[is.na(groupvar)] <- "Missing"
                 groups <- c(levels(mr),"Missing")
-            else
+            }else{
                 groups <- levels(mr)
-        else
-            groups <- unique(groupvar)
+            }
+        } else {
+            if (any(is.na(groupvar))){
+                groupvar[is.na(groupvar)] <- "Missing"
+                groups <- unique(groupvar)
+            }
+        }
         groupvar <- factor(groupvar,levels=groups)
         n.groups <- table(groupvar)
         n.groups <- c(n.groups,sum(n.groups))
