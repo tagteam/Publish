@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Oct 28 2015 (08:15)
+## last-updated: Aug 23 2016 (11:36) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 271
+##     Update #: 272
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -288,6 +288,7 @@
 ##'                xlab="Hazard ratio",
 ##'                factor.reference.pos=c(1,10,19),
 ##'                points.pch=15,
+##'                points.col=rainbow(27),
 ##'                points.cex=2,
 ##'                arrows.col="darkblue",
 ##'                cex=1.3,

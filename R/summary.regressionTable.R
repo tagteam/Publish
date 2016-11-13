@@ -16,7 +16,7 @@
 ##' pbc$edema <- factor(pbc$edema,levels=c("0","0.5","1"),labels=c("0","0.5","1"))
 ##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
 ##'             data=pbc)
-##' summary(regressionTable(fit))
+##' u=summary(regressionTable(fit))
 ##' summary(regressionTable(fit),handler="prettyNum")
 ##' summary(regressionTable(fit),handler="format")
 ##' summary(regressionTable(fit),handler="sprintf",digits=c(2,2),pValue.stars=TRUE)
@@ -48,11 +48,11 @@ summary.regressionTable <- function(object,
                                     ignore=c("object","print","handler","digits","nsmall"),
                                     defaults=list("ci"=ci.defaults,"pvalue"=pvalue.defaults),
                                     forced=list("ci"=list(lower=Lower,
-                                                    upper=Upper,
-                                                    handler=handler,
-                                                    digits=digits[[1]],
-                                                    nsmall=nsmall[[1]]),
-                                        "pvalue"=list(Pvalue)),
+                                                          upper=Upper,
+                                                          handler=handler,
+                                                          digits=digits[[1]],
+                                                          nsmall=nsmall[[1]]),
+                                                "pvalue"=list(Pvalue)),
                                     verbose=FALSE)
     if (attr(object,"model")%in%c("Cox regression","Poisson regression")){
         attr(Rtab,"model") <- "Cox regression"
@@ -60,23 +60,25 @@ summary.regressionTable <- function(object,
             attr(Rtab,"ProbIndex") <- Rtab[,"ProbIndex"]
             Rtab$ProbIndex <- pubformat(Rtab$ProbIndex,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         } else{
-              attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
-              Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-          }
+            attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
+            Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+        }
     }else{
-         if (attr(object,"model")=="Logistic regression"){
-             attr(Rtab,"model") <- "Logistic regression"
-             attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
-             Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-         } else{
-               ## assume "Linear regression"
-               attr(Rtab,"model") <- "Linear regression"
-               attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
-               Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
-           }
-     }
+        if (attr(object,"model")=="Logistic regression"){
+            attr(Rtab,"model") <- "Logistic regression"
+            attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
+            Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+        } else{
+            ## assume "Linear regression"
+            attr(Rtab,"model") <- "Linear regression"
+            attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
+            Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
+        }
+    }
     Rtab$CI.95 <- do.call("formatCI",smartF$ci)
-    Rtab$"p-value" <- do.call("format.pval",smartF$pvalue)
+    pp <- do.call("format.pval",smartF$pvalue)
+    if (length(gpp <- grepl("<",pp))) pp[!gpp] <- paste0("  ",pp[!gpp])
+    Rtab$"p-value" <- pp
     if (length(smartF$pvalue$stars)>0 && smartF$pvalue$stars==TRUE)
         Rtab$signif <- symnum(Pvalue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
     attr(Rtab,"Lower") <- Lower
@@ -88,7 +90,7 @@ summary.regressionTable <- function(object,
     if (!showMissing)
         Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
     if (print==TRUE) {
-        print(Rtab,...)
+        print(Rtab,right=FALSE,...)
         ## if (smartF$pvalue$stars==TRUE)
         ## cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
     }

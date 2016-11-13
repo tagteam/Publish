@@ -10,6 +10,7 @@
 ##' @param digits Rounding digits for all numbers but the p-values.
 ##' @param print If \code{FALSE} do not print results.
 ##' @param factor.reference See \code{regressionTable}.
+##' @param intercept See \code{regressionTable}.
 ##' @param units See \code{regressionTable}.
 ##' @param ... passed to \code{summary.regressionTable} and also
 ##' to \code{labelUnits}.
@@ -62,6 +63,7 @@ publish.glm <- function(object,
                         digits=c(2,4),
                         print=TRUE,
                         factor.reference="extraline",
+                        intercept=ifelse((is.null(object$family)||object$family$family=="gaussian"),1L,0L),
                         units=NULL,
                         ...){
     if (missing(confint.method)) confint.method="default"
@@ -74,6 +76,7 @@ publish.glm <- function(object,
                           confint.method=confint.method,
                           pvalue.method=pvalue.method,                          
                           factor.reference=factor.reference,
+                          intercept=intercept,
                           units=units)
     srt <- summary.regressionTable(rt,
                                    digits=digits,

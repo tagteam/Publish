@@ -33,6 +33,7 @@
 ##'     variables. If \code{'extraline'} show an additional line for
 ##'     the reference category. If \code{'inline'} display as level
 ##'     vs. reference.
+##' @param intercept Logical. If \code{FALSE} suppress intercept.
 ##' @param units List of units for continuous variables. See examples.
 ##' @param noterms Position of terms that should be ignored. E.g., for
 ##'     a Cox model with a cluster(id) term, there will be no hazard
@@ -85,9 +86,10 @@ regressionTable <- function(object,
                             confint.method=c("default","profile","robust","simultaneous"),
                             pvalue.method=c("default","robust","simultaneous"),
                             factor.reference="extraline",
+                            intercept=0L,
                             units=NULL,
                             noterms=NULL,
-                            probindex=FALSE,
+                            probindex=0L,
                             ...){
     # {{{ model type
     if (is.character(object$family)){
@@ -100,11 +102,9 @@ regressionTable <- function(object,
     coxRegression <- any(match(class(object),c("coxph","cph"),nomatch=0))
     # }}}
     # {{{ intercept
-
     if ("lm" %in% class(object))
         if (names(coef(object))[1]!="(Intercept)")
             stop("This function works only for models that have an Intercept.\nI.e., you should reformulate without the `~-1' term.")
-
     # }}}
     # {{{ parse terms
     if (is.null(object$formula)){
@@ -221,6 +221,11 @@ regressionTable <- function(object,
     ## nmiss <- lapply(allvars,function(v){sum(is.na(v))})
     ## names(nmiss) <- names(allvars)
     ## nmiss <- NULL
+    # }}}
+    # {{{intercept 
+    if (intercept!=0){
+        terms1 <- c("(Intercept)",terms1)
+    }
     # }}}
     # {{{ blocks level 1
     ## reference.value <- ifelse((logisticRegression+coxRegression==0),0,1)

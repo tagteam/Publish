@@ -18,6 +18,7 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
         ## totals
         ## if (is.null(groupvar) || ("percent" %in% stats)){
         tab.v <- table(vvv)
+        total.v <- sum(tab.v)
         s.tab.v <- sum(tab.v)
         if ("colpercent" %in% stats)
             perc.v <- (100*tab.v/s.tab.v)
@@ -26,12 +27,11 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
         ## avoid NA when 0/0
         perc.v[s.tab.v==0] <- 0
         totals[[v]] <- sapply(1:length(perc.v),function(i){
-            values <- list(tab.v[i],perc.v[i])
+            values <- list(tab.v[i],total.v,perc.v[i])
             if ("colpercent" %in% stats)
-                names(values) <- c("count","colpercent")
+                names(values) <- c("count","total","colpercent")
             else
-                names(values) <- c("count","percent")
-            ## print(do.call("sprintf",c(format,values[stats])))
+                names(values) <- c("count","total","percent")
             do.call("sprintf",c(format,values[stats]))
         })
         ## } 

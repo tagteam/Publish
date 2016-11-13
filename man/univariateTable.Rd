@@ -31,7 +31,7 @@ count (percentage).}
 
 \item{column.percent}{Logical, if \code{TRUE} and the default
 freq.format is used then column percentages are given instead of
-row percentages for discrete factors.}
+row percentages for categorical variables (factors).}
 
 \item{digits}{Number of digits}
 
@@ -132,12 +132,19 @@ u <- univariateTable(location~gender+AgeGroups+ height + weight,
                      freq.format="count(x) (percent(x))")
 summary(u,"AgeGroups"="Age (years)","height"="Height (inches)")
 
+## more than two groups
+Diabetes$frame=factor(Diabetes$frame,levels=c("small","medium","large"))
+univariateTable(frame~gender+BMI+age,data=Diabetes)
+
+Diabetes$sex=as.numeric(Diabetes$gender)
+univariateTable(frame~sex+gender+BMI+age,data=Diabetes,freq.format="count(x) (percent(x))")
+univariateTable(frame~sex+gender+BMI+age,data=Diabetes,freq.format="count(x) / total(x) (percent(x))")
 ## multiple summary formats
 ## suppose we want for some reason mean (range) for age
 ## and median (range) for BMI.
 ## method 1:
 univariateTable(frame~Q(age)+BMI,
-                data=na.omit(Diabetes),
+                data=Diabetes,
                 Q.format="mean(x) (range(x))",
                 summary.format="median(x) (range(x))")
 ## method 2:
