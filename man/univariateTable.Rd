@@ -134,8 +134,7 @@ univariateTable(frame~gender+BMI+age,data=Diabetes)
 Diabetes$sex=as.numeric(Diabetes$gender)
 univariateTable(frame~sex+gender+BMI+age,
                 data=Diabetes,freq.format="count(x) (percent(x))")
-univariateTable(frame~sex+gender+BMI+age,
-                data=Diabetes,freq.format="count(x) / total(x) (percent(x))")
+
 ## multiple summary formats
 ## suppose we want for some reason mean (range) for age
 ## and median (range) for BMI.
