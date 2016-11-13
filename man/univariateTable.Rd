@@ -94,9 +94,7 @@ univariateTable(location~age+gender+height+weight,data=Diabetes)
 
 ## export result to csv
 table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),showPvalues=FALSE)
-\dontrun{
-  write.csv(table1,file="~/table1.csv",rownames=FALSE)
-}
+# write.csv(table1,file="~/table1.csv",rownames=FALSE)
 
 ## change labels and values
 utable(location~age+gender+height+weight,data=Diabetes,
@@ -105,9 +103,6 @@ utable(location~age+gender+height+weight,data=Diabetes,
        gender.male="Male",
        height="Body height (inches)",
        weight="Body weight (pounds)")
-
-utable(location~age+gender+height+weight,data=Diabetes,
-       age="Age (years)",gender=c("Female","Male"))
 
 ## Use quantiles and rank tests for some variables and mean and standard deviation for others
 univariateTable(gender~Q(age)+location+Q(BMI)+height+weight,
@@ -137,8 +132,10 @@ Diabetes$frame=factor(Diabetes$frame,levels=c("small","medium","large"))
 univariateTable(frame~gender+BMI+age,data=Diabetes)
 
 Diabetes$sex=as.numeric(Diabetes$gender)
-univariateTable(frame~sex+gender+BMI+age,data=Diabetes,freq.format="count(x) (percent(x))")
-univariateTable(frame~sex+gender+BMI+age,data=Diabetes,freq.format="count(x) / total(x) (percent(x))")
+univariateTable(frame~sex+gender+BMI+age,
+                data=Diabetes,freq.format="count(x) (percent(x))")
+univariateTable(frame~sex+gender+BMI+age,
+                data=Diabetes,freq.format="count(x) / total(x) (percent(x))")
 ## multiple summary formats
 ## suppose we want for some reason mean (range) for age
 ## and median (range) for BMI.

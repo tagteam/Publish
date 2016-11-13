@@ -6,8 +6,8 @@
 \usage{
 regressionTable(object, confint.method = c("default", "profile", "robust",
   "simultaneous"), pvalue.method = c("default", "robust", "simultaneous"),
-  factor.reference = "extraline", units = NULL, noterms = NULL,
-  probindex = FALSE, ...)
+  factor.reference = "extraline", intercept = 0L, units = NULL,
+  noterms = NULL, probindex = 0L, ...)
 }
 \arguments{
 \item{object}{Fitted regression model obtained with \code{lm},
@@ -34,6 +34,8 @@ p-value corresponding to robust standard error as provided by
 variables. If \code{'extraline'} show an additional line for
 the reference category. If \code{'inline'} display as level
 vs. reference.}
+
+\item{intercept}{Logical. If \code{FALSE} suppress intercept.}
 
 \item{units}{List of units for continuous variables. See examples.}
 

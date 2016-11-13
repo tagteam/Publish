@@ -5,7 +5,9 @@
 \title{Tabulize regression coefficients with confidence intervals and p-values.}
 \usage{
 \method{publish}{glm}(object, confint.method, pvalue.method, digits = c(2, 4),
-  print = TRUE, factor.reference = "extraline", units = NULL, ...)
+  print = TRUE, factor.reference = "extraline",
+  intercept = ifelse((is.null(object$family) || object$family$family ==
+  "gaussian"), 1L, 0L), units = NULL, ...)
 }
 \arguments{
 \item{object}{A \code{glm} object.}
@@ -19,6 +21,8 @@
 \item{print}{If \code{FALSE} do not print results.}
 
 \item{factor.reference}{See \code{regressionTable}.}
+
+\item{intercept}{See \code{regressionTable}.}
 
 \item{units}{See \code{regressionTable}.}
 
