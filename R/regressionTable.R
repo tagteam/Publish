@@ -216,7 +216,8 @@ regressionTable <- function(object,
     # }}}
     # {{{ missing values
     ## allvars <- all.vars(delete.response(terms(formula),data=data))
-    allvars <- get_all_vars(delete.response(terms(formula)),data=data)
+    allvars <- try(get_all_vars(delete.response(terms(formula)),data=data),silent=TRUE)
+    if (class(allvars)[1]=="try-error") nmiss <- NULL
     nmiss <- lapply(allvars,function(v)sum(is.na(v)))
     ## nmiss <- lapply(allvars,function(v){sum(is.na(v))})
     ## names(nmiss) <- names(allvars)
