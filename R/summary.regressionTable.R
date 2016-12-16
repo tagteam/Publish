@@ -8,7 +8,11 @@
 ##' @param print If \code{TRUE} print results.
 ##' @param ... Used to control formatting of parameter estimates,
 ##' confidence intervals and p-values. See examples.
-##' @return Formatted regression table with raw values as attributes
+##' @return List with two elements:
+##' \itemize{
+##' \item regressionTable: the formatted regression table (a data.frame)
+##' \item rawTable: table with the unformatted values (a data.frame)
+##' }
 ##' @seealso publish.glm publish.coxph 
 ##' @examples
 ##' library(survival)
@@ -17,6 +21,8 @@
 ##' fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin)+log(protime),
 ##'             data=pbc)
 ##' u=summary(regressionTable(fit))
+##' u$regressionTable
+##' u$rawTable
 ##' summary(regressionTable(fit),handler="prettyNum")
 ##' summary(regressionTable(fit),handler="format")
 ##' summary(regressionTable(fit),handler="sprintf",digits=c(2,2),pValue.stars=TRUE)
@@ -31,11 +37,8 @@ summary.regressionTable <- function(object,
     handler <- pynt$handler
     if (length(digits)==1) digits <- rep(digits,2)
     if (length(pynt$nsmall)>0) nsmall <- pynt$nsmall else nsmall <- pynt$digits
-    Rtab <- do.call("rbind",object)
-    Lower <- Rtab[,"Lower"]
-    Upper <- Rtab[,"Upper"]
-    Pvalue <- Rtab[,"Pvalue"]
-    Rtab <- Rtab[,-match(c("Lower","Upper","Pvalue"),colnames(Rtab)),drop=FALSE]
+    rawtab <- do.call("rbind",object)
+    Rtab <- rawtab[,-match(c("Lower","Upper","Pvalue"),colnames(rawtab)),drop=FALSE]
     pvalue.defaults <- list(digits=digits[[2]],
                             eps=10^{-digits[[2]]},
                             stars=FALSE)
@@ -47,12 +50,12 @@ summary.regressionTable <- function(object,
                                     keys=c("ci","pvalue"),
                                     ignore=c("object","print","handler","digits","nsmall"),
                                     defaults=list("ci"=ci.defaults,"pvalue"=pvalue.defaults),
-                                    forced=list("ci"=list(lower=Lower,
-                                                          upper=Upper,
+                                    forced=list("ci"=list(lower=rawtab[,"Lower"],
+                                                          upper=rawtab[,"Upper"],
                                                           handler=handler,
                                                           digits=digits[[1]],
                                                           nsmall=nsmall[[1]]),
-                                                "pvalue"=list(Pvalue)),
+                                                "pvalue"=list(rawtab[,"Pvalue"])),
                                     verbose=FALSE)
     if (attr(object,"model")%in%c("Cox regression","Poisson regression")){
         attr(Rtab,"model") <- "Cox regression"
@@ -60,18 +63,15 @@ summary.regressionTable <- function(object,
             attr(Rtab,"ProbIndex") <- Rtab[,"ProbIndex"]
             Rtab$ProbIndex <- pubformat(Rtab$ProbIndex,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         } else{
-            attr(Rtab,"HazardRatio") <- Rtab[,"HazardRatio"]
             Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         }
     }else{
         if (attr(object,"model")=="Logistic regression"){
             attr(Rtab,"model") <- "Logistic regression"
-            attr(Rtab,"OddsRatio") <- Rtab[,"OddsRatio"]
             Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         } else{
             ## assume "Linear regression"
             attr(Rtab,"model") <- "Linear regression"
-            attr(Rtab,"Coefficient") <- Rtab[,"Coefficient"]
             Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         }
     }
@@ -80,19 +80,21 @@ summary.regressionTable <- function(object,
     if (length(gpp <- grepl("<",pp))) pp[!gpp] <- paste0("  ",pp[!gpp])
     Rtab$"p-value" <- pp
     if (length(smartF$pvalue$stars)>0 && smartF$pvalue$stars==TRUE)
-        Rtab$signif <- symnum(Pvalue,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
-    attr(Rtab,"Lower") <- Lower
-    attr(Rtab,"Upper") <- Upper
-    attr(Rtab,"Pvalue") <- Pvalue
+        Rtab$signif <- symnum(rawtab[,"Pvalue"],corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
     rownames(Rtab) <- NULL
+    rownames(rawtab) <- NULL
     ##
     if (showMissing=="ifany") showMissing <- !all(Rtab[,"Missing"] %in% c("","0"))
     if (!showMissing)
         Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
-    if (print==TRUE) {
-        print(Rtab,right=FALSE,...)
-        ## if (smartF$pvalue$stars==TRUE)
-        ## cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
-    }
-    invisible(Rtab)
+    ## cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
+    res <- list(regressionTable=Rtab,rawTable=rawtab)
+    class(res) <- c("summary.regressionTable")
+    res
 }
+#' @export 
+print.summary.regressionTable <- function(x,...){
+    print(x$regressionTable)
+    invisible(x$regressionTable)
+}
+    
