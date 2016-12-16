@@ -81,8 +81,8 @@ publish.coxph <- function(object,
                                    ## digits=digits,
                                    print=FALSE,...)
     if (print==TRUE)
-        publish(srt,...)
-    invisible(rt)
+        publish(srt$regressionTable,...)
+    invisible(srt)
 }
 
 #----------------------------------------------------------------------

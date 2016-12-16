@@ -38,7 +38,7 @@ glmSeries <- function(formula,data,vars,...){
         gf <- glm(form.v,data=data,...)
         gf$call$data <- data
         nv <- length(gf$xlevels[[v]])
-        u <- summary(regressionTable(gf),print=FALSE)
+        u <- summary(regressionTable(gf),print=FALSE)$regressionTable
         first <- grep(v,u[,"Variable"])
         if (nv>1)
             sel <- seq(first,first+nv-1,1)

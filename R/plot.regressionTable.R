@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Jun 17 2016 (10:17) 
+## last-updated: Dec 16 2016 (11:40) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 44
+##     Update #: 51
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -15,7 +15,6 @@
 ##
 ### Code:
 ##' Plotting regression coefficients with confidence limits
-##'
 ##'
 ##'
 ##' @title Plotting regression coefficients with confidence limits
@@ -42,15 +41,19 @@
 ##' ## Cox regression
 ##' library(survival)
 ##' data(pbc)
-##' coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(protime)+log(albumin)+edema+sex,data=pbc)
+##' coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(albumin)+edema+sex,data=pbc)
 ##' pubcox <- publish(coxfit)
 ##' plot(pubcox,cex=1.5)
 ##'
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.regressionTable <- function(x,xlim,xlab,...){
-    X <- do.call("rbind",x)
-    model <- attr(x,"model")
+    plot(summary(x),xlim=xlim,xlab=xlab,...)
+}
+##' @export
+plot.summary.regressionTable <- function(x,xlim,xlab,...){
+    X <- x$rawTable
+    model <- x$model
     if (missing(xlab))
         xlab <- switch(model,
                        "Linear regression"="Difference",

@@ -1,7 +1,8 @@
 ##' Preparing regression results for publication
 ##'
 ##' @title Formatting regression tables
-##' @param object object obtained with \code{regressionTable}.
+##' @aliases summary.regressionTable print.summary.regressionTable
+##' @param object object obtained with \code{regressionTable} or \code{summary.regressionTable}.
 ##' @param showMissing Decide if number of missing values are shown.
 ##' Either logical or character. If \code{'ifany'} then number missing values are
 ##' shown if there are some.
@@ -58,20 +59,19 @@ summary.regressionTable <- function(object,
                                                 "pvalue"=list(rawtab[,"Pvalue"])),
                                     verbose=FALSE)
     if (attr(object,"model")%in%c("Cox regression","Poisson regression")){
-        attr(Rtab,"model") <- "Cox regression"
+        model <- "Cox regression"
         if (match("ProbIndex",colnames(Rtab),nomatch=0)){
-            attr(Rtab,"ProbIndex") <- Rtab[,"ProbIndex"]
             Rtab$ProbIndex <- pubformat(Rtab$ProbIndex,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         } else{
             Rtab$HazardRatio <- pubformat(Rtab$HazardRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         }
     }else{
         if (attr(object,"model")=="Logistic regression"){
-            attr(Rtab,"model") <- "Logistic regression"
+            model <- "Logistic regression"
             Rtab$OddsRatio <- pubformat(Rtab$OddsRatio,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         } else{
             ## assume "Linear regression"
-            attr(Rtab,"model") <- "Linear regression"
+            model <- "Linear regression"
             Rtab$Coefficient <- pubformat(Rtab$Coefficient,handler=handler,digits=digits[[1]],nsmall=nsmall[[1]])
         }
     }
@@ -88,7 +88,7 @@ summary.regressionTable <- function(object,
     if (!showMissing)
         Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
     ## cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
-    res <- list(regressionTable=Rtab,rawTable=rawtab)
+    res <- list(regressionTable=Rtab,rawTable=rawtab,model=model)
     class(res) <- c("summary.regressionTable")
     res
 }

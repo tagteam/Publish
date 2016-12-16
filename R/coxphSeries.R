@@ -37,7 +37,7 @@ coxphSeries <- function(formula,data,vars,...){
     form.v <- update.formula(formula,paste(".~.+",v))
     cf <- survival::coxph(form.v,data=data,...)
     cf$call$data <- data
-    u <- summary(regressionTable(cf),print=FALSE)
+    u <- summary(regressionTable(cf),print=FALSE)$regressionTable
     u <- u[grep(v,u$Variable),]
   })
   u <- sapply(clist,NCOL)
