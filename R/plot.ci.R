@@ -66,10 +66,10 @@
 ##' x=ci.mean(bp.2s~frame,data=Diabetes)
 ##' \dontrun{
 ##' plot(x, leftmargin=0, rightmargin=0)
-##' 
+##' plotConfidence(x, leftmargin=0, rightmargin=0)
 ##' 
 ##' data(CiTable)
-##' with(CiTable,Publish::plot.ci(x=list(HazardRatio),
+##' with(CiTable,plotConfidence(x=list(HazardRatio),
 ##'                                lower=lower,
 ##'                                upper=upper,
 ##'                                labels=CiTable[,2:6],

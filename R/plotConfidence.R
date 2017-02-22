@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Aug 23 2016 (11:36) 
+## last-updated: Feb 18 2017 (16:21) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 272
+##     Update #: 280
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -622,8 +622,10 @@ plotConfidence <- function(x,
     # {{{ point estimates and confidence
     do.call("points",smartA$points)
     ## treat arrows that go beyond the x-limits
-    tooHigh <- upper[!is.na(upper)]>xlim[2]
-    tooLow <- lower[!is.na(lower)]<xlim[1]
+    tooHigh <- smartA$arrows$x1>xlim[2]
+    tooHigh[is.na(tooHigh)] <- FALSE
+    tooLow <- smartA$arrows$x0<xlim[1]
+    tooLow[is.na(tooLow)] <- FALSE
     if (any(c(tooHigh,tooLow))){
         if (length(smartA$arrows$angle)<NR)
             smartA$arrows$angle <- rep(smartA$arrows$angle,length.out=NR)
@@ -631,8 +633,8 @@ plotConfidence <- function(x,
             smartA$arrows$length <- rep(smartA$arrows$length,length.out=NR)
         if (length(smartA$arrows$code)<NR)
             smartA$arrows$code <- rep(smartA$arrows$code,length.out=NR)
-        smartA$arrows$x0[tooLow] <- xlim[1]
-        smartA$arrows$x1[tooHigh] <- xlim[2]
+        smartA$arrows$x0 <- pmax(xlim[1],smartA$arrows$x0)
+        smartA$arrows$x1 <- pmin(xlim[2],smartA$arrows$x1)
         smartA$arrows$code[tooLow & tooHigh] <- 3
         smartA$arrows$code[tooLow & !tooHigh] <- 1
         smartA$arrows$code[!tooLow & tooHigh] <- 2

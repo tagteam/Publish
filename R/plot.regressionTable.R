@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Dec 16 2016 (11:40) 
+## last-updated: Feb 18 2017 (15:29) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 51
+##     Update #: 52
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -21,7 +21,7 @@
 ##' @param x regression table obtained with regressionTable
 ##' @param xlim Limits for x-axis
 ##' @param xlab Label for x-axis
-##' @param ... passed to plot.ci
+##' @param ... passed to plotConfidence
 ##' @return NULL
 ##' @seealso regressionTable
 ##' @examples
