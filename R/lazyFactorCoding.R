@@ -19,7 +19,7 @@
 lazyFactorCoding <- function(data,maxlevels=10){
     if (!is.character(data))
         data <- as.character(substitute(data))
-    d <- get(data)
+    d <- get(data, envir=parent.frame())
     isdt <- match("data.table",class(d),nomatch=FALSE)
     out <- lapply(names(d),function(x){
         dx <- d[[x]]
