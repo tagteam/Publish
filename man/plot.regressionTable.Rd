@@ -13,7 +13,7 @@
 
 \item{xlab}{Label for x-axis}
 
-\item{...}{passed to plot.ci}
+\item{...}{passed to plotConfidence}
 }
 \description{
 Plotting regression coefficients with confidence limits
