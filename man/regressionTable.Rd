@@ -105,6 +105,23 @@ regressionTable(c2)
 c3 <- coxph(Surv(time,status!=0)~edema*log(bili)+age+protime+sex+edema+edema:sex,data=pbc)
 regressionTable(c3)
 
+
+## gls regression
+library(nlme)
+library(lava)
+m <- lvm(Y ~ X1 + gender + group + Interaction)
+distribution(m, ~gender) <- binomial.lvm()
+distribution(m, ~group) <- binomial.lvm(size = 2)
+constrain(m, Interaction ~ gender + group) <- function(x){x[,1]*x[,2]}
+d <- sim(m, 1e2)
+d$gender <- factor(d$gender, labels = letters[1:2])
+d$group <- factor(d$group)
+
+e.gls <- gls(Y ~ X1 + gender*group, data = d,
+             weights = varIdent(form = ~1|group))
+regressionTable(e.gls)
+summary(regressionTable(e.gls))
+
 }
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
