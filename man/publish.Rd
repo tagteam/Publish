@@ -25,4 +25,7 @@ Some warnings are currently suppressed.
 \author{
 Thomas A. Gerds  <tag@biostat.ku.dk>
 }
+\seealso{
+publish.CauseSpecificCox publish.ci publish.coxph publish.glm publish.riskRegression publish.survdiff
+}
 

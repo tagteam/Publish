@@ -71,6 +71,12 @@
 ##'              weights = varIdent(form = ~1|group))
 ##' publish(e.gls)
 ##' 
+##' ## lme
+##' fm1 <- lme(distance ~ age*Sex, 
+##'             random = ~1|Subject,
+##'             data = Orthodont) 
+##' res <- publish(fm1)
+##' 
 ##' @export
 publish.glm <- function(object,
                         confint.method,

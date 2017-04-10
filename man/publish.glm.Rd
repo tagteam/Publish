@@ -95,6 +95,12 @@ e.gls <- gls(Y ~ X1 + gender*group, data = d,
              weights = varIdent(form = ~1|group))
 publish(e.gls)
 
+## lme
+fm1 <- lme(distance ~ age*Sex, 
+            random = ~1|Subject,
+            data = Orthodont) 
+res <- publish(fm1)
+
 }
 \author{
 Thomas Alexander Gerds <tag@biostat.ku.dk>
