@@ -14,6 +14,7 @@
 ##' @title Regression table
 ##' @param object Fitted regression model obtained with \code{lm},
 ##'     \code{glm} or \code{coxph}.
+##' @param param.method Method to obtain model coefficients.
 ##' @param confint.method Method to obtain confidence
 ##'     intervals. Default is \code{'default'} which leads to Wald
 ##'     type intervals using the model based estimate of standard
@@ -260,6 +261,7 @@ regressionTable <- function(object,
     }
                                         # }}}
                                         # {{{ blocks level 1
+    
     ## reference.value <- ifelse((logisticRegression+coxRegression==0),0,1)
     reference.value <- 0
     blocks1 <- lapply(terms1,function(vn){
@@ -347,6 +349,7 @@ regressionTable <- function(object,
         
         block <- try(data.frame(lava::estimate(object,
                                                f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
+                                               coef = coef,
                                                robust=confint.method=="robust")$coefmat), silent = TRUE)
             if("try-error" %in% class(block) == FALSE){
               colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
@@ -406,7 +409,7 @@ regressionTable <- function(object,
 }
 
 confint.lme <- function(object, parm, level = 0.95, ...){
-  res <- intervals(object, level = level, ...)
+  res <- nlme::intervals(object, level = level, ...)
   out <- cbind(res$fixed[,"lower"],res$fixed[,"upper"])
   colnames(out) <- c("2.5 %","97.5 %")
   return(out)

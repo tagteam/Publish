@@ -4,14 +4,16 @@
 \alias{regressionTable}
 \title{Regression table}
 \usage{
-regressionTable(object, confint.method = c("default", "profile", "robust",
-  "simultaneous"), pvalue.method = c("default", "robust", "simultaneous"),
-  factor.reference = "extraline", intercept = 0L, units = NULL,
-  noterms = NULL, probindex = 0L, ...)
+regressionTable(object, param.method = "coef", confint.method = c("default",
+  "profile", "robust", "simultaneous"), pvalue.method = c("default", "robust",
+  "simultaneous"), factor.reference = "extraline", intercept = 0L,
+  units = NULL, noterms = NULL, probindex = 0L, ...)
 }
 \arguments{
 \item{object}{Fitted regression model obtained with \code{lm},
 \code{glm} or \code{coxph}.}
+
+\item{param.method}{Method to obtain model coefficients.}
 
 \item{confint.method}{Method to obtain confidence
 intervals. Default is \code{'default'} which leads to Wald

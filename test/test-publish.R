@@ -50,3 +50,22 @@ testthat("publish matches gls", {
     expect_equal(Mpublish[Mpublish$Coefficient!=0,"Pvalue"],
                  unname(Sgls[c("X1","genderb","group1","group2"),"p-value"]))
 })
+
+context("publish: lme regression")
+
+data("Orthodont")
+testthat("publish matches lme", {
+  fm1 <- lme(distance ~ age*Sex, 
+           random = ~1|Subject,
+           data = Orthodont) 
+  res <- publish(fm1)
+
+  # main effects
+  expect_equal(as.double(res$rawTable[c(1:2,4),"Coefficient"]),
+               as.double(fixef(fm1)[1:3]))
+  expect_equal(as.double(res$rawTable[c(1:2,4),"Pvalue"]),
+               as.double(summary(fm1)$tTable[1:3,5]))
+  # interaction
+  expect_equal(as.double(res$rawTable$Coefficient[6]),
+               as.double(sum(fixef(fm1)[c(2,4)])))
+})
