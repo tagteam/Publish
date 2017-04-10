@@ -103,6 +103,8 @@ publish.glm <- function(object,
 ##' @export
 publish.lm <- publish.glm
 ##' @export
-publish.gls <- publish.glm 
+publish.gls <- publish.glm
+##' @export
+publish.lme <- publish.glm
 ##' @export
 publish.geeglm <- publish.glm

@@ -100,6 +100,7 @@
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 regressionTable <- function(object,
+                            param.method="coef",
                             confint.method=c("default","profile","robust","simultaneous"),
                             pvalue.method=c("default","robust","simultaneous"),
                             factor.reference="extraline",
@@ -109,6 +110,12 @@ regressionTable <- function(object,
                             probindex=0L,
                             ...){
                                         # {{{ model type
+    if("lme" %in% class(object)){
+      param.method <- "fixef"
+      if(confint.method[1] == "default"){
+      confint.method <- "profile"
+      }
+    }  
     if (is.character(object$family)){
         logisticRegression <- (object$family=="binomial")
         poissonRegression <- (object$family=="poisson")
@@ -158,7 +165,7 @@ regressionTable <- function(object,
     terms1 <- termlabels[termorder==1]
                                         # }}}
                                         # {{{ types of variables/terms
-    coef <- coef(object)
+    coef <- do.call(param.method, args = list(object))
     termnames <- names(coef)
     if("xlevels" %in% names(object)){
         factorlevels <- object$xlevels
@@ -197,7 +204,7 @@ regressionTable <- function(object,
     ## print(unlist(terms2))
     ## contrasts <- unlist(terms2)
                                         # }}}
-                                        # {{{ confidence intervals
+    
     confint.method <- match.arg(confint.method,
                                 choices=c("default","profile","robust","simultaneous"),
                                 several.ok=FALSE)
@@ -218,7 +225,8 @@ regressionTable <- function(object,
                  },
                  stop(paste("Sorry, don't know this confidence interval method:",confint.method)))
                                         # }}}
-                                        # {{{ p-values
+   
+                                         # {{{ p-values
     pvalue.method <- match.arg(pvalue.method,
                                choices=c("default","robust","simultaneous"),
                                several.ok=FALSE)
@@ -236,6 +244,7 @@ regressionTable <- function(object,
                    },stop(paste("Sorry, don't know this pvalue method:",pvalue.method)))
     ## omnibus <- drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
                                         # }}}
+    
                                         # {{{ missing values
     ## allvars <- all.vars(delete.response(terms(formula),data=data))
     allvars <- try(get_all_vars(delete.response(terms(formula)),data=data),silent=TRUE)
@@ -254,7 +263,7 @@ regressionTable <- function(object,
     ## reference.value <- ifelse((logisticRegression+coxRegression==0),0,1)
     reference.value <- 0
     blocks1 <- lapply(terms1,function(vn){
-        isfactor <- match(vn,factornames,nomatch=0)
+      isfactor <- match(vn,factornames,nomatch=0)
         isordered <- match(vn,orderednames,nomatch=0)
         ## the regexp is supposed to catch the coefficients
         ## in which term vn is involved
@@ -309,6 +318,15 @@ regressionTable <- function(object,
             }
         }
         if (is.null(Missing)) Missing <- 0
+        
+        lis <- list(Variable=Variable,
+                    Units=Units,
+                    Missing=as.character(Missing),
+                    Coefficient=coef.vn,
+                    Lower=ci.vn[,1],
+                    Upper=ci.vn[,2],
+                    Pvalue=p.vn,stringsAsFactors=FALSE)
+       
         block <- data.frame(Variable=Variable,
                             Units=Units,
                             Missing=as.character(Missing),
@@ -323,16 +341,21 @@ regressionTable <- function(object,
                                         # }}}
                                         # {{{ blocks level 2
     if (length(terms2)>0){
-        blocks2 <- lapply(terms2,function(t2){
-            block <- data.frame(lava::estimate(object,
+      blocks2 <- lapply(terms2,function(t2){
+        vars <- attr(t2,"variables")
+        miss2 <- sum(unlist(nmiss[vars]))
+        
+        block <- try(data.frame(lava::estimate(object,
                                                f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
-                                               robust=confint.method=="robust")$coefmat)
-            colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
-            vars <- attr(t2,"variables")
-            miss2 <- sum(unlist(nmiss[vars]))
-            block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
-            rownames(block) <- NULL
-            block
+                                               robust=confint.method=="robust")$coefmat), silent = TRUE)
+            if("try-error" %in% class(block) == FALSE){
+              colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
+              block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
+            }else{
+              block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,Coefficient=NA, Lower = NA, Upper = NA, Pvalue = NA)
+            }
+        rownames(block) <- NULL
+        block
         })
         names(blocks2) <- names(terms2)
     }
@@ -380,4 +403,11 @@ regressionTable <- function(object,
     class(out) <- "regressionTable"
     out
     # }}}
+}
+
+confint.lme <- function(object, parm, level = 0.95, ...){
+  res <- intervals(object, level = level, ...)
+  out <- cbind(res$fixed[,"lower"],res$fixed[,"upper"])
+  colnames(out) <- c("2.5 %","97.5 %")
+  return(out)
 }
