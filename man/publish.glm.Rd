@@ -80,6 +80,27 @@ rtf <- regressionTable(fit,factor.reference = "inline")
 summary(rtf)
 publish(fit)
 
+## gls regression
+library(nlme)
+library(lava)
+m <- lvm(Y ~ X1 + gender + group + Interaction)
+distribution(m, ~gender) <- binomial.lvm()
+distribution(m, ~group) <- binomial.lvm(size = 2)
+constrain(m, Interaction ~ gender + group) <- function(x){x[,1]*x[,2]}
+d <- sim(m, 1e2)
+d$gender <- factor(d$gender, labels = letters[1:2])
+d$group <- factor(d$group)
+
+e.gls <- gls(Y ~ X1 + gender*group, data = d,
+             weights = varIdent(form = ~1|group))
+publish(e.gls)
+
+## lme
+fm1 <- lme(distance ~ age*Sex, 
+            random = ~1|Subject,
+            data = Orthodont) 
+res <- publish(fm1)
+
 }
 \author{
 Thomas Alexander Gerds <tag@biostat.ku.dk>
