@@ -36,7 +36,7 @@ d$gender <- factor(d$gender, labels = letters[1:2])
 d$group <- factor(d$group)
 
 ## model
-testthat("publish matches gls", {
+test_that("publish matches gls", {
     e.gls <- gls(Y ~ X1 + gender*group, data = d,
                  weights = varIdent(form = ~1|group))
     res <- regressionTable(e.gls)
@@ -54,7 +54,7 @@ testthat("publish matches gls", {
 context("publish: lme regression")
 
 data("Orthodont")
-testthat("publish matches lme", {
+test_that("publish matches lme", {
   fm1 <- lme(distance ~ age*Sex, 
            random = ~1|Subject,
            data = Orthodont) 
