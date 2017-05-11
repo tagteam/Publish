@@ -3,9 +3,9 @@
 ## author: Brice Ozenne
 ## created: apr  6 2017 (10:04) 
 ## Version: 
-## last-updated: apr  6 2017 (10:12) 
-##           By: Brice Ozenne
-##     Update #: 2
+## last-updated: Apr 11 2017 (08:17) 
+##           By: Thomas Alexander Gerds
+##     Update #: 4
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -36,7 +36,7 @@ d$gender <- factor(d$gender, labels = letters[1:2])
 d$group <- factor(d$group)
 
 ## model
-testthat("publish matches gls", {
+test_that("publish matches gls", {
     e.gls <- gls(Y ~ X1 + gender*group, data = d,
                  weights = varIdent(form = ~1|group))
     res <- regressionTable(e.gls)
@@ -44,7 +44,6 @@ testthat("publish matches gls", {
                       res$gender,
                       res$group)
     Sgls <- summary(e.gls)$tTable
-
     expect_equal(Mpublish[Mpublish$Coefficient!=0,"Coefficient"],
                  unname(Sgls[c("X1","genderb","group1","group2"),"Value"]))
     expect_equal(Mpublish[Mpublish$Coefficient!=0,"Pvalue"],
@@ -54,12 +53,11 @@ testthat("publish matches gls", {
 context("publish: lme regression")
 
 data("Orthodont")
-testthat("publish matches lme", {
+test_that("publish matches lme", {
   fm1 <- lme(distance ~ age*Sex, 
            random = ~1|Subject,
            data = Orthodont) 
   res <- publish(fm1)
-
   # main effects
   expect_equal(as.double(res$rawTable[c(1:2,4),"Coefficient"]),
                as.double(fixef(fm1)[1:3]))

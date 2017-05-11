@@ -212,13 +212,16 @@ univariateTable <- function(formula,
     factor.matrix <- NULL
     auto.type <- sapply(1:NCOL(automatrix),function(i){
         x <- automatrix[,i]
-        #  type 0=character
+        #  type 0=other coerced to numeric
         #       1=factor
         #       2=numeric
+        #       3=character
         ## set some useful default
-        type.i <- is.factor(x)+2*is.numeric(x)+3*is.logical(x)
+        type.i <- is.factor(x)+2*is.numeric(x)+3*is.logical(x)+4*is.character(x)
         # treat character and logical as factors
-        if (type.i %in% c(0,3)) type.i <- 1
+        if (type.i %in% c(3,4)) type.i <- 1
+        # treat other variables as numeric (e.g. difftime)
+        if (type.i==0) type.i <- 2
         # force variables with less than 3 distinct values to be categorical (factors) 
         if (length(unique(x))<3) type.i <- 1
         type.i})
@@ -315,6 +318,7 @@ univariateTable <- function(formula,
     if (!is.null(groups) && (compareGroups!=FALSE)){
         if (!is.null(continuous.matrix)){
             p.cont <- sapply(names(continuous.matrix),function(v){
+                set(data,j=v,value=as.numeric(data[[v]]))
                 switch(tolower(as.character(compareGroups[[1]])),
                        "false"={NULL},
                        "logistic"={
