@@ -56,6 +56,7 @@
 ##' summary(rtf)
 ##' publish(fit)
 ##'
+##' \dontrun{
 ##' ## gls regression
 ##' library(nlme)
 ##' library(lava)
@@ -70,13 +71,14 @@
 ##' e.gls <- gls(Y ~ X1 + gender*group, data = d,
 ##'              weights = varIdent(form = ~1|group))
 ##' publish(e.gls)
+##' }
 ##' 
 ##' ## lme
+##' library(nlme)
 ##' fm1 <- lme(distance ~ age*Sex, 
 ##'             random = ~1|Subject,
 ##'             data = Orthodont) 
 ##' res <- publish(fm1)
-##' 
 ##' @export
 publish.glm <- function(object,
                         confint.method,

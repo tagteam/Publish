@@ -4,7 +4,7 @@
 \alias{print.univariateTable}
 \title{Printing univariate tables}
 \usage{
-print.univariateTable(x, ...)
+\method{print}{univariateTable}(x, ...)
 }
 \arguments{
 \item{x}{An object obtained with \code{univariateTable}}

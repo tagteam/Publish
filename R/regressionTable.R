@@ -83,6 +83,7 @@
 ##'
 ##'
 ##' ## gls regression
+##' \dontrun{
 ##' library(nlme)
 ##' library(lava)
 ##' m <- lvm(Y ~ X1 + gender + group + Interaction)
@@ -97,7 +98,7 @@
 ##'              weights = varIdent(form = ~1|group))
 ##' regressionTable(e.gls)
 ##' summary(regressionTable(e.gls))
-##' 
+##' }
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 regressionTable <- function(object,
@@ -227,12 +228,13 @@ regressionTable <- function(object,
                  stop(paste("Sorry, don't know this confidence interval method:",confint.method)))
                                         # }}}
    
-                                         # {{{ p-values
+    # {{{ p-values
     pvalue.method <- match.arg(pvalue.method,
                                choices=c("default","robust","simultaneous"),
                                several.ok=FALSE)
     pval <- switch(pvalue.method,
-                   "default"={sumcoef <- coef(summary(object))
+                   "default"={
+                       sumcoef <- coef(summary(object))
                        sumcoef[,NCOL(sumcoef),drop=TRUE]},
                    ## "lrt"={
                    ## drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
@@ -244,7 +246,7 @@ regressionTable <- function(object,
                        summary(multcomp::glht(object))[,c("Pr(>|z|"),drop=TRUE]
                    },stop(paste("Sorry, don't know this pvalue method:",pvalue.method)))
     ## omnibus <- drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
-                                        # }}}
+    # }}}
     
                                         # {{{ missing values
     ## allvars <- all.vars(delete.response(terms(formula),data=data))
