@@ -52,4 +52,3 @@ publish(fit1,factor.reference="inline",units=list("age"="years"))
 \author{
 Thomas Alexander Gerds <tab@biostat.ku.dk>
 }
-

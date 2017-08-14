@@ -43,10 +43,9 @@ pbc$sex <- factor(pbc$sex,levels=c("m","f"),labels=c("m","f"))
 followupTable(Hist(time,status)~age+edema+sex,data=pbc,followup.time=1000)
 
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 univariateTable
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

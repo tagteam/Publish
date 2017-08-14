@@ -109,7 +109,6 @@ regressionTable(c3)
 
 
 ## gls regression
-\dontrun{
 library(nlme)
 library(lava)
 m <- lvm(Y ~ X1 + gender + group + Interaction)
@@ -125,8 +124,6 @@ e.gls <- gls(Y ~ X1 + gender*group, data = d,
 regressionTable(e.gls)
 summary(regressionTable(e.gls))
 }
-}
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
 }
-

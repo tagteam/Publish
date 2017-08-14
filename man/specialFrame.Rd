@@ -99,10 +99,9 @@ e3 <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
                    unspecialsDesign=FALSE)
 e3$design
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 model.frame model.design Hist
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

@@ -55,7 +55,7 @@
 ##' summary(regressionTable(f2))
 ##' f3 <- glm(bp.1s~age+gender*frame+chol,data=Diabetes)
 ##' regressionTable(f3)
-##'
+##' 
 ##' # logistic regression
 ##' Diabetes$hyp1 <- factor(1*(Diabetes$bp.1s>140))
 ##' l1 <- glm(hyp1~age+gender+frame+chol,data=Diabetes,family="binomial")
@@ -83,7 +83,6 @@
 ##'
 ##'
 ##' ## gls regression
-##' \dontrun{
 ##' library(nlme)
 ##' library(lava)
 ##' m <- lvm(Y ~ X1 + gender + group + Interaction)
@@ -98,7 +97,6 @@
 ##'              weights = varIdent(form = ~1|group))
 ##' regressionTable(e.gls)
 ##' summary(regressionTable(e.gls))
-##' }
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 regressionTable <- function(object,
@@ -111,12 +109,12 @@ regressionTable <- function(object,
                             noterms=NULL,
                             probindex=0L,
                             ...){
-                                        # {{{ model type
+    # {{{ model type
     if("lme" %in% class(object)){
-      param.method <- "fixef"
-      if(confint.method[1] == "default"){
-      confint.method <- "profile"
-      }
+        param.method <- "fixef"
+        if(confint.method[1] == "default"){
+            confint.method <- "profile"
+        }
     }  
     if (is.character(object$family)){
         logisticRegression <- (object$family=="binomial")
@@ -126,14 +124,13 @@ regressionTable <- function(object,
         poissonRegression <- (!is.null(object$family$family) && object$family$family=="poisson")
     }
     coxRegression <- any(match(class(object),c("coxph","cph"),nomatch=0))
-                                        # }}}
-                                        # {{{ intercept
+    # }}}
+    # {{{ intercept
     if (any(c("lm","gls") %in% class(object)))
         if (names(coef(object))[1]!="(Intercept)")
             stop("This function works only for models that have an Intercept.\nI.e., you should reformulate without the `~-1' term.")
-                                        # }}}
-                                        # {{{ parse terms
-
+    # }}}
+    # {{{ parse terms
     formula <- try(formula(object), silent = TRUE)
     if("formula" %in% class(formula) == FALSE){
         if (!is.null(object$formula)){
@@ -165,8 +162,12 @@ regressionTable <- function(object,
         termorder <- termorder[-noterms]
     }
     terms1 <- termlabels[termorder==1]
-                                        # }}}
-                                        # {{{ types of variables/terms
+    ## remove strata terms
+    if (class(object)=="coxph" && length(strata.pos <- grep("^strata\\(",terms1))>0){
+        terms1 <- terms1[-strata.pos]
+    }
+    # }}}
+    # {{{ types of variables/terms
     coef <- do.call(param.method, args = list(object))
     termnames <- names(coef)
     if("xlevels" %in% names(object)){
@@ -189,24 +190,22 @@ regressionTable <- function(object,
     }
     factornames <- names(factorlevels)
     ## for some reason ordinal variables get strange labels
-    isordered <- grep("\\.L$",termnames,value=TRUE)
+    isordered <- sapply(factornames,function(x){length(grep(paste0(x,".L"),termnames,fixed=TRUE,value=FALSE))>0})
     if (length(isordered)>0){
-        orderednames <- unlist(strsplit(isordered,"\\.L$"))
+        orderednames <- factornames[isordered]
     }else{
         orderednames <- ""
     }
-                                        # }}}
-                                        # {{{ interactions
+    # }}}
+    # {{{ interactions
     terms2 <- parseInteractionTerms(terms,factorlevels)
     vars2 <- unique(unlist(lapply(terms2,function(x)attr(x,"variables"))))
     if (length(isordered)>0 && length(terms2)>0 &&
         any(hit <- match(vars2,sapply(isordered,function(x)substr(x,0,nchar(x)-2)),nomatch=0)))
         stop(paste0("Cannot (not yet) handle interaction terms which involve ordered factors.\nOffending term(s): ",
                     sapply(isordered,function(x)substr(x,0,nchar(x)-2))[hit]))
-    ## print(unlist(terms2))
-    ## contrasts <- unlist(terms2)
-                                        # }}}
-    
+    # }}}
+    # {{{ confidence intervals
     confint.method <- match.arg(confint.method,
                                 choices=c("default","profile","robust","simultaneous"),
                                 several.ok=FALSE)
@@ -226,8 +225,7 @@ regressionTable <- function(object,
                      confint(multcomp::glht(object))$confint[,c("lwr","upr"),drop=FALSE]
                  },
                  stop(paste("Sorry, don't know this confidence interval method:",confint.method)))
-                                        # }}}
-   
+    # }}}
     # {{{ p-values
     pvalue.method <- match.arg(pvalue.method,
                                choices=c("default","robust","simultaneous"),
@@ -247,49 +245,61 @@ regressionTable <- function(object,
                    },stop(paste("Sorry, don't know this pvalue method:",pvalue.method)))
     ## omnibus <- drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
     # }}}
-    
-                                        # {{{ missing values
+    # {{{ missing values
     ## allvars <- all.vars(delete.response(terms(formula),data=data))
     allvars <- try(get_all_vars(delete.response(terms(formula)),data=data),silent=TRUE)
     if (class(allvars)[1]=="try-error") nmiss <- NULL
     nmiss <- lapply(allvars,function(v)sum(is.na(v)))
-    ## nmiss <- lapply(allvars,function(v){sum(is.na(v))})
-    ## names(nmiss) <- names(allvars)
-    ## nmiss <- NULL
-                                        # }}}
-                                        # {{{intercept 
+    # }}}
+    # {{{intercept 
     if (intercept!=0){
         terms1 <- c("(Intercept)",terms1)
     }
-                                        # }}}
-                                        # {{{ blocks level 1
-    
+    # }}}
+    # {{{ blocks level 1
     ## reference.value <- ifelse((logisticRegression+coxRegression==0),0,1)
     reference.value <- 0
     blocks1 <- lapply(terms1,function(vn){
-      isfactor <- match(vn,factornames,nomatch=0)
+        isfactor <- match(vn,factornames,nomatch=0)
         isordered <- match(vn,orderednames,nomatch=0)
-        ## the regexp is supposed to catch the coefficients
-        ## in which term vn is involved
+        ## catch the coefficients corresponding to term vn
+        candidates <- grep(vn,termnames,fixed=TRUE,value=TRUE)
         if (isfactor){
+            vn.levels <- factorlevels[[isfactor]][-1]
             if (isordered){
-                vn.regexp <- paste("^",vn,".[LCQ]$","|","",vn,"\\^[0-9]+$",sep="")
+                suffix <- c(".L",".Q",".C",paste0("^",4:30))[1:length(vn.levels)]
+                vn.regexp <- paste0(vn,suffix)
+                parms <- termnames[match(vn.regexp,termnames,nomatch=0)]
+                if(length(parms)!=length(vn.levels)) 
+                    stop(paste0("Cannot identify terms corresponding to variable ",vn,"."))
             }else{
-                levs.regexp <- paste("(",paste(factorlevels[[isfactor]],collapse="|"),")",sep="")
-                vn.regexp <- paste("^",vn,levs.regexp,"$","|","I\\(",vn,".*",levs.regexp,"|",vn,"\\)",".*",levs.regexp,sep="")
+                vn.regexp <- paste0(vn,vn.levels,sep="")
+                parms <- termnames[match(vn.regexp,termnames,nomatch=0)]
+                if (length(parms)!=length(vn.levels)){
+                    vn.regexp <- paste0(vn,vn.levels,sep=":")
+                    parms <- termnames[match(vn.regexp,termnames,nomatch=0)]
+                }
+                if (length(parms)!=length(vn.levels)){
+                    vn.regexp <- paste0(vn,vn.levels,sep=".")
+                    parms <- termnames[match(vn.regexp,termnames,nomatch=0)]
+                }
+                if (length(parms)!=length(vn.levels))
+                    stop(paste0("Cannot identify terms corresponding to variable ",vn,"."))
+                ## vn.regexp <- paste("^",vn,levs.regexp,"$","|","I\\(",vn,".*",levs.regexp,"|",vn,"\\)",".*",levs.regexp,sep="")
             }
         } else{
+            ## continuous variables may be enclosed by \log or \sqrt or similar
             ## protect special characters
             vn.protect <- sub("(","\\(",vn,fixed=TRUE)
             vn.protect <- sub(")","\\)",vn.protect,fixed=TRUE)
             vn.regexp <- paste("^",vn.protect,"$",sep="")
+            parms <- grep(vn.regexp,termnames,fixed=FALSE)
         }
-        parms <- grep(vn.regexp,termnames)
         coef.vn <- coef[parms]
         ci.vn <- ci[parms,,drop=FALSE]
         p.vn <- pval[parms]
         Missing <- NULL
-                                        # {{{ factor variables
+        # {{{ factor variables
         ## varname <- all.vars(formula(paste("~",vn)),data=data)
         ## varname <- names(get_all_vars(formula(paste("~",vn)),data=data))
         varname <- vn
@@ -310,8 +320,8 @@ regressionTable <- function(object,
                 p.vn <- c(1,p.vn)
             }
         } else{
-                                        # }}}
-                                        # {{{ numeric variables
+            # }}}
+            # {{{ numeric variables
             Variable <- vn
             if (!is.null(units[[varname]]))
                 Units <- units[[varname]]
@@ -330,7 +340,6 @@ regressionTable <- function(object,
                     Lower=ci.vn[,1],
                     Upper=ci.vn[,2],
                     Pvalue=p.vn,stringsAsFactors=FALSE)
-       
         block <- data.frame(Variable=Variable,
                             Units=Units,
                             Missing=as.character(Missing),
@@ -341,31 +350,31 @@ regressionTable <- function(object,
         rownames(block) <- NULL
         block
     })
-                                        # }}}
-                                        # }}}
-                                        # {{{ blocks level 2
+    # }}}
+    # }}}
+    # {{{ blocks level 2
     if (length(terms2)>0){
-      blocks2 <- lapply(terms2,function(t2){
-        vars <- attr(t2,"variables")
-        miss2 <- sum(unlist(nmiss[vars]))
+        blocks2 <- lapply(terms2,function(t2){
+            vars <- attr(t2,"variables")
+            miss2 <- sum(unlist(nmiss[vars]))
         
         block <- try(data.frame(lava::estimate(object,
                                                f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
                                                coef = coef,
                                                robust=confint.method=="robust")$coefmat), silent = TRUE)
-            if("try-error" %in% class(block) == FALSE){
-              colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
-              block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
-            }else{
-              block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,Coefficient=NA, Lower = NA, Upper = NA, Pvalue = NA)
-            }
+        if("try-error" %in% class(block) == FALSE){
+            colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
+            block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
+        }else{
+            block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,Coefficient=NA, Lower = NA, Upper = NA, Pvalue = NA)
+        }
         rownames(block) <- NULL
         block
-        })
-        names(blocks2) <- names(terms2)
+      })
+      names(blocks2) <- names(terms2)
     }
-                                        # }}}
-                                        # {{{ formatting
+    # }}}
+    # {{{ formatting
     names(blocks1) <- terms1
     out <- blocks1
     if (length(terms2)>0) out <- c(out,blocks2)

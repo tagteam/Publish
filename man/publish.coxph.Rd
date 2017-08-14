@@ -76,4 +76,3 @@ publish(fit4)
 \author{
 Thomas Alexander Gerds
 }
-

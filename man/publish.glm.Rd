@@ -80,7 +80,6 @@ rtf <- regressionTable(fit,factor.reference = "inline")
 summary(rtf)
 publish(fit)
 
-\dontrun{
 ## gls regression
 library(nlme)
 library(lava)
@@ -95,7 +94,6 @@ d$group <- factor(d$group)
 e.gls <- gls(Y ~ X1 + gender*group, data = d,
              weights = varIdent(form = ~1|group))
 publish(e.gls)
-}
 
 ## lme
 library(nlme)
@@ -107,4 +105,3 @@ res <- publish(fm1)
 \author{
 Thomas Alexander Gerds <tag@biostat.ku.dk>
 }
-

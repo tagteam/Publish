@@ -25,4 +25,3 @@ data(SpaceT)
 Altman, Practical statistics for medical research, Page 223, Ex. 9.1.
 Bungo et.al., 1985
 }
-

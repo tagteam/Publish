@@ -153,10 +153,9 @@ u2 <- summary(univariateTable(frame~BMI,
 publish(rbind(u1,u2),digits=2)
 
 }
-\author{
-Thomas A. Gerds
-}
 \seealso{
 summary.univariateTable, publish.univariateTable
 }
-
+\author{
+Thomas A. Gerds
+}

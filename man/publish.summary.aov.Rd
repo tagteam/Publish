@@ -30,4 +30,3 @@ f <- glm(bp.1s~age+chol+gender+location,data=Diabetes)
 publish(summary(aov(f)),digits=c(1,2))
 
 }
-

@@ -44,4 +44,3 @@ For all variables the numbers of missing values are added.
 \author{
 Thomas Alexander Gerds <tag@biostat.ku.dk>
 }
-

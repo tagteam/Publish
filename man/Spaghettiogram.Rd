@@ -62,4 +62,3 @@ data(SpaceT)
 Spaghettiogram(HR~Status+id(ID),
                data=SpaceT)
 }
-

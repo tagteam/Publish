@@ -35,4 +35,3 @@ publish(fit)
 Kober et al 1995 Am. J. Cardiol 76,1-5
 }
 \keyword{datasets}
-

@@ -77,10 +77,9 @@ cbind(format=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="
       sprintf=formatCI(lower=l,upper=u,format="[l;u)",digits=2,nsmall=2,handler="sprintf"))
 
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 plot.ci ci.mean
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

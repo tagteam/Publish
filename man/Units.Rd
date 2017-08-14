@@ -30,4 +30,3 @@ Units(Diabetes)
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
 }
-

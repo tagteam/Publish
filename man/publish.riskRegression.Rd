@@ -34,10 +34,9 @@ f <- ARR(Hist(time,event)~X1+X2,data=d,cause=1)
 publish(f)
 publish(f,digits=c(1,3))
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 ARR LRR
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

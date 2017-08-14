@@ -52,4 +52,3 @@ Willems JP, Saunders JT, DE Hunt, JB Schorling: Prevalence of coronary heart dis
 Schorling JB, Roach J, Siegel M, Baturka N, Hunt DE, Guterbock TM, Stewart HL: A trial of church-based smoking cessation interventions for rural African Americans. Preventive Medicine 26:92-101; 1997.
 }
 \keyword{datasets}
-

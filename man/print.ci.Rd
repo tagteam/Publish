@@ -36,10 +36,9 @@ ci.mean(Y~X,data=d)
 x <- ci.mean(Y~X,data=d)
 print(x,format="(l,u)")
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 ci plot.ci formatCI summary.ci
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

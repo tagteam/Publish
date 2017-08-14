@@ -75,10 +75,9 @@ lava::estimate(fit,function(p)lapply(unlist(it),eval,envir=sys.parent(-1)))
 
 
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 lava::estimate
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

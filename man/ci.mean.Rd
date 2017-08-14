@@ -20,4 +20,3 @@ Compute mean values with confidence intervals
 \details{
 Normal approximation
 }
-

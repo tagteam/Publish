@@ -64,7 +64,12 @@ This is the heart of the Publish package
 
 x <- matrix(1:12,ncol=3)
 publish(x)
-publish(x,interLines=list("3"="intermediate text"))
+
+# rounding the numeric part of data mixtures 
+y <- cbind(matrix(letters[1:12],ncol=3),x,matrix(rnorm(12),ncol=3))
+publish(y,digits=1)
+
+publish(x,interLines=list("1"="text between line 1 and line 2",
+                          "3"="text between line 3 and line 4"))
 
 }
-

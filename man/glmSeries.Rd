@@ -46,4 +46,3 @@ controlled.odds
 \author{
 Thomas Alexander Gerds
 }
-

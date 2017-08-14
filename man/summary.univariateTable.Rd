@@ -73,4 +73,3 @@ summary(u2,suppressFactorReference=c("gender"))
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
 }
-

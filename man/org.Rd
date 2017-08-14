@@ -20,4 +20,3 @@ Wrapper for \code{publish(...,org=TRUE)}
 \author{
 Thomas Alexander Gerds
 }
-

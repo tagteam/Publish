@@ -31,4 +31,3 @@ table2x2(matrix(c(71,18,38,8),ncol=2),stats=c("rr","fisher"))
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
 }
-

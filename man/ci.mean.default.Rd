@@ -32,4 +32,3 @@ Normal approximation
 \author{
 Thomas Gerds
 }
-

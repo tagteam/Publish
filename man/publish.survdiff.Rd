@@ -29,4 +29,3 @@ publish(sd,digits=c(3,2))
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
 }
-

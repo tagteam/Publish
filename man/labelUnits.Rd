@@ -37,10 +37,9 @@ utable(gender~AgeGroups+chol+waist,data=Diabetes,
 utable(gender~AgeGroups+chol+waist,data=Diabetes,
       "chol"="Cholesterol (mg/dL)","AgeGroups.<40"="younger than 40")
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 univariateTable
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

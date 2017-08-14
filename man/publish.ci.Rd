@@ -36,10 +36,9 @@ data(Diabetes)
 publish(ci.mean(chol~location+gender,data=Diabetes),org=TRUE)
 
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 summary.ci
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

@@ -33,4 +33,3 @@ lazyFactorCoding(Diabetes)
 \author{
 Thomas Alexander Gerds
 }
-

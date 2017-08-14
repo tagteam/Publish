@@ -56,7 +56,6 @@
 ##' summary(rtf)
 ##' publish(fit)
 ##'
-##' \dontrun{
 ##' ## gls regression
 ##' library(nlme)
 ##' library(lava)
@@ -71,7 +70,6 @@
 ##' e.gls <- gls(Y ~ X1 + gender*group, data = d,
 ##'              weights = varIdent(form = ~1|group))
 ##' publish(e.gls)
-##' }
 ##' 
 ##' ## lme
 ##' library(nlme)
@@ -104,6 +102,7 @@ publish.glm <- function(object,
     srt <- summary.regressionTable(rt,
                                    digits=digits,
                                    print=FALSE,...)
+    XXsrt <- do.call(labelUnits,c(list(x=srt),list(...),srt$Variable))
     if (print==TRUE)
         publish(srt$regressionTable,...)
     invisible(srt)

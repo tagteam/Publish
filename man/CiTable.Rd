@@ -27,4 +27,3 @@ plotConfidence(x=CiTable[,6:8], labels=CiTable[,1:5])
 
 }
 \keyword{datasets}
-

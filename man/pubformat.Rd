@@ -32,10 +32,9 @@ pubformat(c(0.000143,12.8,1),handler="format")
 pubformat(c(0.000143,12.8,1),handler="format",trim=TRUE)
 pubformat(c(0.000143,12.8,1),handler="prettyNum")
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 \code{sprintf}, \code{format}, \code{prettyNum}
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

@@ -379,4 +379,3 @@ plotConfidence(x=CiTable[,6:8],
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
 }
-

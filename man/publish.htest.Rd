@@ -27,4 +27,3 @@ publish(with(Diabetes,wilcox.test(bp.2s,bp.1s,paired=TRUE)))
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>
 }
-

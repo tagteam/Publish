@@ -20,10 +20,9 @@ Print function for univariate tables
 \details{
 This function is simply calling \code{summary.univariateTable}
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 \code{univariateTable}
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

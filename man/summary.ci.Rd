@@ -48,10 +48,9 @@ x <- summary(ci.mean(Y~X,data=d),format="(u,l)",digits=1,se=TRUE)
 x <- summary(ci.mean(Y~X,data=d),format="(u,l)",digits=1,handler="format")
 x <- summary(ci.mean(Y~X,data=d),format="(u,l)",digits=1,handler="prettyNum")
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 ci plot.ci format.ci
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

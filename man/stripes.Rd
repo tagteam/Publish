@@ -59,4 +59,3 @@ stripes(col=c("yellow","green"),gridcol="red",horizontal=seq(0,1,.1))
 Thomas Alexander Gerds <tag@biostat.ku.dk>
 }
 \keyword{survival}
-

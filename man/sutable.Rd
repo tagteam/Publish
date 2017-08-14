@@ -21,10 +21,9 @@ First apply univariateTable then call summary.
 data(Diabetes)
 sutable(gender~age+location+Q(BMI)+height+weight,data=Diabetes,BMI="Body mass index (kg/m^2)")
 }
-\author{
-Thomas A. Gerds <tag@biostat.ku.dk>
-}
 \seealso{
 summary.univariateTable univariateTable
 }
-
+\author{
+Thomas A. Gerds <tag@biostat.ku.dk>
+}

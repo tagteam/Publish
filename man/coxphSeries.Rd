@@ -50,4 +50,3 @@ controlled.hr
 \author{
 Thomas Alexander Gerds
 }
-
