@@ -199,6 +199,9 @@ regressionTable <- function(object,
     # }}}
     # {{{ interactions
     terms2 <- parseInteractionTerms(terms,factorlevels)
+    ## remove these variabeles from terms1 because main effects have no interpretation
+    ## when there interactions
+    terms1 <- setdiff(terms1,unlist(lapply(terms2,attr,"variables")))
     vars2 <- unique(unlist(lapply(terms2,function(x)attr(x,"variables"))))
     if (length(isordered)>0 && length(terms2)>0 &&
         any(hit <- match(vars2,sapply(isordered,function(x)substr(x,0,nchar(x)-2)),nomatch=0)))
