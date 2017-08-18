@@ -7,9 +7,12 @@
 ##' @param object A \code{glm} object.
 ##' @param confint.method See \code{regressionTable}.
 ##' @param pvalue.method See \code{regressionTable}.
-##' @param digits Rounding digits for all numbers but the p-values.
+##' @param digits A vector of two integer values. These determine how to round
+##'               numbers (first value) and p-values (second value). E.g., c(1,3) would
+##'               mean 1 digit for all numbers and 3 digits for p-values.
+##'               The actual rounding is done by \code{summary.regressionTable}.
 ##' @param print If \code{FALSE} do not print results.
-##' @param factor.reference See \code{regressionTable}.
+##' @param factor.reference Style for showing results for categorical. See \code{regressionTable}.
 ##' @param intercept See \code{regressionTable}.
 ##' @param units See \code{regressionTable}.
 ##' @param ... passed to \code{summary.regressionTable} and also

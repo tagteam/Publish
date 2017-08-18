@@ -83,10 +83,14 @@ summary.regressionTable <- function(object,
         Rtab$signif <- symnum(rawtab[,"Pvalue"],corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
     rownames(Rtab) <- NULL
     rownames(rawtab) <- NULL
-    ##
-    if (showMissing=="ifany") showMissing <- !all(Rtab[,"Missing"] %in% c("","0"))
-    if (!showMissing)
-        Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
+    ## e.g., MIresults do not have a column Missing but use Imputed 
+    if (match("Missing",colnames(Rtab),nomatch=0)>0){
+        if (showMissing=="ifany") {
+            showMissing <- !all(Rtab[,"Missing"] %in% c("","0"))
+        }
+        if (!showMissing)
+            Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
+    }
     ## cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
     res <- list(regressionTable=Rtab,rawTable=rawtab,model=model)
     class(res) <- c("summary.regressionTable")

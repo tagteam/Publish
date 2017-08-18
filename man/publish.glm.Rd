@@ -16,11 +16,14 @@
 
 \item{pvalue.method}{See \code{regressionTable}.}
 
-\item{digits}{Rounding digits for all numbers but the p-values.}
+\item{digits}{A vector of two integer values. These determine how to round
+numbers (first value) and p-values (second value). E.g., c(1,3) would
+mean 1 digit for all numbers and 3 digits for p-values.
+The actual rounding is done by \code{summary.regressionTable}.}
 
 \item{print}{If \code{FALSE} do not print results.}
 
-\item{factor.reference}{See \code{regressionTable}.}
+\item{factor.reference}{Style for showing results for categorical. See \code{regressionTable}.}
 
 \item{intercept}{See \code{regressionTable}.}
 

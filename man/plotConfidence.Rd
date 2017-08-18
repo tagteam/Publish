@@ -347,7 +347,7 @@ plotConfidence(x=CiTable[,6:8],
 
 ## Finally, vertical blocks can be delimited with background color
 ## NOTE: this may slow things down and potentially create
-##       large figures
+##       large figures (many bytes)
 col1 <- rep(c(prodlim::dimColor("green",density=22),
               prodlim::dimColor("green")),length.out=9)
 col2 <- rep(c(prodlim::dimColor("orange",density=22),

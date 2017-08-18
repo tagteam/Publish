@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Feb 18 2017 (16:21) 
+## last-updated: Aug 17 2017 (15:21) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 280
+##     Update #: 286
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -312,7 +312,7 @@
 ##'
 ##' ## Finally, vertical blocks can be delimited with background color
 ##' ## NOTE: this may slow things down and potentially create
-##' ##       large figures
+##' ##       large figures (many bytes)
 ##' col1 <- rep(c(prodlim::dimColor("green",density=22),
 ##'               prodlim::dimColor("green")),length.out=9)
 ##' col2 <- rep(c(prodlim::dimColor("orange",density=22),
@@ -647,6 +647,7 @@ plotConfidence <- function(x,
             aargs$y0 <- smartA$arrows$y0[r]
             aargs$y1 <- smartA$arrows$y1[r]
             aargs$code <- smartA$arrows$code[r]
+            aargs$col <- smartA$arrows$col[r]
             aargs$length <- smartA$arrows$length[r]
             aargs$angle <- smartA$arrows$angle[r]
             suppressWarnings(do.call("arrows",aargs))

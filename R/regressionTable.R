@@ -163,7 +163,7 @@ regressionTable <- function(object,
     }
     terms1 <- termlabels[termorder==1]
     ## remove strata terms
-    if (class(object)=="coxph" && length(strata.pos <- grep("^strata\\(",terms1))>0){
+    if (any(class(object) %in% c("coxph")) && length(strata.pos <- grep("^strata\\(",terms1))>0){
         terms1 <- terms1[-strata.pos]
     }
     # }}}
@@ -215,44 +215,57 @@ regressionTable <- function(object,
     if (confint.method=="robust") {
         lava.mat <- lava::estimate(object,robust=TRUE)$coefmat
     }
-    ci <- switch(confint.method,
-                 "default"={stats::confint.default(object)},
-                 "profile"={
-                     ## FIXME: what happens if profile method does not exist for this object?
-                     suppressMessages(confint(object))},
-                 "robust"={
-                     pvalue.method <- "robust"
-                     lava.mat[,c("2.5%","97.5%"),drop=FALSE]},
-                 "simultaneous"={
-                     pvalue.method <- "simultaneous"
-                     confint(multcomp::glht(object))$confint[,c("lwr","upr"),drop=FALSE]
-                 },
-                 stop(paste("Sorry, don't know this confidence interval method:",confint.method)))
+    if (is.function(confint.method)){
+        ci <- do.call(confint.method,list(object))
+    }else{
+        ci <- switch(confint.method,
+                     "default"={stats::confint.default(object)},
+                     "profile"={
+                         ## FIXME: what happens if profile method does not exist for this object?
+                         suppressMessages(confint(object))},
+                     "robust"={
+                         pvalue.method <- "robust"
+                         lava.mat[,c("2.5%","97.5%"),drop=FALSE]},
+                     "simultaneous"={
+                         pvalue.method <- "simultaneous"
+                         confint(multcomp::glht(object))$confint[,c("lwr","upr"),drop=FALSE]
+                     },
+                     stop(paste("Sorry, don't know this confidence interval method:",confint.method)))
+    }
     # }}}
     # {{{ p-values
-    pvalue.method <- match.arg(pvalue.method,
-                               choices=c("default","robust","simultaneous"),
-                               several.ok=FALSE)
-    pval <- switch(pvalue.method,
-                   "default"={
-                       sumcoef <- coef(summary(object))
-                       sumcoef[,NCOL(sumcoef),drop=TRUE]},
-                   ## "lrt"={
-                   ## drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
-                   ## },
-                   "robust"={
-                       lava.mat[,c("P-value"),drop=TRUE]
-                   },
-                   "simultaneous"={
-                       summary(multcomp::glht(object))[,c("Pr(>|z|"),drop=TRUE]
-                   },stop(paste("Sorry, don't know this pvalue method:",pvalue.method)))
+    if (is.function(pvalue.method)){
+        pval <- do.call(pvalue.method,list(object))
+    }else{
+        pvalue.method <- match.arg(pvalue.method,
+                                   choices=c("default","robust","simultaneous"),
+                                   several.ok=FALSE)
+        pval <- switch(pvalue.method,
+                       "default"={
+                           sumcoef <- coef(summary(object))
+                           sumcoef[,NCOL(sumcoef),drop=TRUE]},
+                       ## "lrt"={
+                       ## drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
+                       ## },
+                       "robust"={
+                           lava.mat[,c("P-value"),drop=TRUE]
+                       },
+                       "simultaneous"={
+                           summary(multcomp::glht(object))[,c("Pr(>|z|"),drop=TRUE]
+                       },stop(paste("Sorry, don't know this pvalue method:",pvalue.method)))
+    }
     ## omnibus <- drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
     # }}}
     # {{{ missing values
     ## allvars <- all.vars(delete.response(terms(formula),data=data))
     allvars <- try(get_all_vars(delete.response(terms(formula)),data=data),silent=TRUE)
-    if (class(allvars)[1]=="try-error") nmiss <- NULL
-    nmiss <- lapply(allvars,function(v)sum(is.na(v)))
+    if (class(allvars)[1]=="try-error") {
+        nmiss <- NULL
+        miss.info <- TRUE
+    }else{
+        nmiss <- lapply(allvars,function(v)sum(is.na(v)))
+        miss.info <- FALSE
+    }
     # }}}
     # {{{intercept 
     if (intercept!=0){
@@ -307,8 +320,11 @@ regressionTable <- function(object,
         ## varname <- names(get_all_vars(formula(paste("~",vn)),data=data))
         varname <- vn
         ## found <- match(v,names(nmiss),nomatch=0)
-        nmissvar <- nmiss[[varname]]
-        if (is.null(nmissvar)) nmissvar <- 0
+        if (!miss.info){
+            nmissvar <- nmiss[[varname]]
+        }else{
+            nmissvar <- NA
+        }
         if (isfactor){
             if (factor.reference=="inline"){
                 Variable <- c(vn,rep("",NROW(coef.vn)-1))
@@ -330,19 +346,13 @@ regressionTable <- function(object,
                 Units <- units[[varname]]
             else
                 Units <- ""
-            if (!is.null(nmiss)){
+            if (!miss.info) {
                 Missing <- nmiss[[varname]]
+            }else{ 
+                Missing <- NA
             }
         }
-        if (is.null(Missing)) Missing <- 0
-        
-        lis <- list(Variable=Variable,
-                    Units=Units,
-                    Missing=as.character(Missing),
-                    Coefficient=coef.vn,
-                    Lower=ci.vn[,1],
-                    Upper=ci.vn[,2],
-                    Pvalue=p.vn,stringsAsFactors=FALSE)
+        ## lis <- list(Variable=Variable,Units=Units,Missing=as.character(Missing),Coefficient=coef.vn,Lower=ci.vn[,1],Upper=ci.vn[,2],Pvalue=p.vn,stringsAsFactors=FALSE)
         block <- data.frame(Variable=Variable,
                             Units=Units,
                             Missing=as.character(Missing),
@@ -350,6 +360,7 @@ regressionTable <- function(object,
                             Lower=ci.vn[,1],
                             Upper=ci.vn[,2],
                             Pvalue=p.vn,stringsAsFactors=FALSE)
+        if (any(class(object)%in%"MIresult")) colnames(block)[3] <- paste0("Imputed (",object$nimp,")")
         rownames(block) <- NULL
         block
     })
@@ -359,22 +370,32 @@ regressionTable <- function(object,
     if (length(terms2)>0){
         blocks2 <- lapply(terms2,function(t2){
             vars <- attr(t2,"variables")
-            miss2 <- sum(unlist(nmiss[vars]))
-        
-        block <- try(data.frame(lava::estimate(object,
-                                               f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
-                                               coef = coef,
-                                               robust=confint.method=="robust")$coefmat), silent = TRUE)
-        if("try-error" %in% class(block) == FALSE){
-            colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
-            block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,block[,-2])
-        }else{
-            block <- data.frame(Variable=attr(t2,"names"),Units="",Missing=miss2,Coefficient=NA, Lower = NA, Upper = NA, Pvalue = NA)
-        }
-        rownames(block) <- NULL
-        block
-      })
-      names(blocks2) <- names(terms2)
+            if (!miss.info){
+                miss2 <- sum(unlist(nmiss[vars]))
+            }else{miss2 <- NA}
+            block <- try(data.frame(lava::estimate(object,
+                                                   f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
+                                                   coef = coef,
+                                                   robust=confint.method=="robust")$coefmat), silent = TRUE)
+            if("try-error" %in% class(block) == FALSE){
+                colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
+                block <- data.frame(Variable=attr(t2,"names"),
+                                    Units="",
+                                    Missing=miss2,
+                                    block[,-2])
+            }else{
+                block <- data.frame(Variable=attr(t2,"names"),
+                                    Units="",
+                                    Missing=miss2,
+                                    Coefficient=NA,
+                                    Lower = NA,
+                                    Upper = NA,
+                                    Pvalue = NA)
+            }
+            rownames(block) <- NULL
+            block
+        })
+        names(blocks2) <- names(terms2)
     }
     # }}}
     # {{{ formatting

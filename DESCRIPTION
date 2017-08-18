@@ -3,7 +3,7 @@ Type: Package
 Title: Format Output of Various Routines in Suitable Way for Reports and Publication
 Description: Routines that format results of common basic R functions as tables
              and graphics suitable for publications.
-Version: 2017.08.14
+Version: 2017.08.18
 Author: Thomas Gerds
 Maintainer: Thomas A. Gerds <tag@biostat.ku.dk>
 Depends:
@@ -17,8 +17,9 @@ Suggests:
     lme4 (>= 1.1),
     mets (>= 1.1.1),
     pec (>= 2.4.4),
-    riskRegression (>= 1.0.8),
+    riskRegression (>= 1.4.3),
     testthat,
+    smcfcs (>= 1.3.0),
     nlme (>= 3.1-131)
 License: GPL (>= 2)
 RoxygenNote: 6.0.1
