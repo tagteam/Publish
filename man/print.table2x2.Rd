@@ -4,7 +4,7 @@
 \alias{print.table2x2}
 \title{print results of 2x2 contingency table analysis}
 \usage{
-print.table2x2(x, digits = 1, ...)
+\method{print}{table2x2}(x, digits = 1, ...)
 }
 \arguments{
 \item{x}{object obtained with table2x2}

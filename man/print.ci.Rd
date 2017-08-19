@@ -4,7 +4,7 @@
 \alias{print.ci}
 \title{Print confidence intervals}
 \usage{
-print.ci(x, se = FALSE, print = TRUE, ...)
+\method{print}{ci}(x, se = FALSE, print = TRUE, ...)
 }
 \arguments{
 \item{x}{Object containing point estimates and the corresponding

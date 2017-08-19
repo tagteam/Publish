@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 17 2017 (09:52)
 ## Version:
-## Last-Updated: Aug 18 2017 (11:54) 
+## Last-Updated: Aug 19 2017 (08:04) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 28
+##     Update #: 34
 #----------------------------------------------------------------------
 ### Code:
 #' Regression tables after multiple imputations
@@ -31,7 +31,7 @@
 #' @param ... passed to summary.regressionTable, labelUnits and publish.default.
 #' @examples
 #'
-#' ## continuous outcome
+#' ## continuous outcome: linear regression
 #' # lava some data with missing values
 #' library(riskRegression)
 #' set.seed(7)
@@ -46,13 +46,13 @@
 #' library(smcfcs)
 #' library(mitools)
 #' set.seed(17)
-#' fb= smcfcs(db,smtype="lm",
+#' f= smcfcs(d,smtype="lm",
 #'            smformula=X8~X4+X3+X6+X7,
 #'            method=c("","","logreg","norm",""),m=3)
-#' ccfit=glm(X8~X4+X3+X6+X7,family="binomial",data=db)
+#' ccfit=lm(X8~X4+X3+X6+X7,data=d)
 #' mifit=MIcombine(with(imputationList(f$impDatasets),
-#'                 glm(X8~X4+X3+X6+X7,family="binomial")))
-#' publish(mifit,fit=ccfit)
+#'                 lm(X8~X4+X3+X6+X7)))
+#' publish(mifit,fit=ccfit,data=d)
 #' publish(ccfit)
 #' 
 #' ## binary outcome
@@ -125,9 +125,9 @@
 #'            method=c("","","","logreg","norm",""),m=3)
 #' ## cause 2 
 #' ccfit2=coxph(Surv(time,event==2)~X4+X3+X6+X7,data=dcr)
-#' mifit2=MIcombine(with(imputationList(fb$impDatasets),
+#' mifit2=MIcombine(with(imputationList(fcr$impDatasets),
 #'                 coxph(Surv(time,event==2)~X4+X3+X6+X7)))
-#' publish(mifit,fit=ccfit2,data=dcr)
+#' publish(mifit2,fit=ccfit2,data=dcr)
 #' publish(ccfit2)
 #' 
 #' 
@@ -139,14 +139,14 @@ publish.MIresult <- function(object,
                              digits=c(2,4),
                              print=TRUE,
                              factor.reference="extraline",
-                             intercept=0,
+                             intercept,
                              units=NULL,
                              fit,
                              data,
                              ...){
     pvalMIresult <- function(object){
-        se <- sqrt(diag(vcov(object)))
-        2*pnorm(-abs(object$coef/se))
+        se <- sqrt(diag(stats::vcov(object)))
+        2*stats::pnorm(-abs(object$coef/se))
     }
     if (missing(fit)) stop("Need the model fitted in the complete cases.")
     object$xlevels <- fit$xlevels
@@ -165,6 +165,10 @@ publish.MIresult <- function(object,
         object$family <- fit$family
     if (!missing(confint.method) && confint.method!="default") stop("Can only do simple Wald confidence intervals based on MIresults.")
     if (!missing(pvalue.method)) stop("Can only do simple Wald test p-values based on MIresults.")
+    if (missing(intercept)){
+        intercept <- 1*(class(fit) == "lm" ||
+                        (class(fit)=="glm" && stats::family(fit)!="binomial"))
+    }
     rt <- regressionTable(object,
                           confint.method="default",
                           pvalue.method=pvalMIresult,                          

@@ -6,7 +6,7 @@
 \usage{
 \method{publish}{MIresult}(object, confint.method, pvalue.method,
   digits = c(2, 4), print = TRUE, factor.reference = "extraline",
-  intercept = 0, units = NULL, fit, data, ...)
+  intercept, units = NULL, fit, data, ...)
 }
 \arguments{
 \item{object}{Object obtained with mitools::MIcombine based on smcfcs::smcfcs multiple imputation analysis}
@@ -45,7 +45,7 @@ Show results of smcfcs based multiple imputations of missing covariates in publi
 }
 \examples{
 
-## continuous outcome
+## continuous outcome: linear regression
 # lava some data with missing values
 library(riskRegression)
 set.seed(7)
@@ -60,13 +60,13 @@ sapply(d,function(x)sum(is.na(x)))
 library(smcfcs)
 library(mitools)
 set.seed(17)
-fb= smcfcs(db,smtype="lm",
+f= smcfcs(d,smtype="lm",
            smformula=X8~X4+X3+X6+X7,
            method=c("","","logreg","norm",""),m=3)
-ccfit=glm(X8~X4+X3+X6+X7,family="binomial",data=db)
+ccfit=lm(X8~X4+X3+X6+X7,data=d)
 mifit=MIcombine(with(imputationList(f$impDatasets),
-                glm(X8~X4+X3+X6+X7,family="binomial")))
-publish(mifit,fit=ccfit)
+                lm(X8~X4+X3+X6+X7)))
+publish(mifit,fit=ccfit,data=d)
 publish(ccfit)
 
 ## binary outcome
@@ -139,9 +139,9 @@ fcr= smcfcs(dcr,smtype="compet",
            method=c("","","","logreg","norm",""),m=3)
 ## cause 2 
 ccfit2=coxph(Surv(time,event==2)~X4+X3+X6+X7,data=dcr)
-mifit2=MIcombine(with(imputationList(fb$impDatasets),
+mifit2=MIcombine(with(imputationList(fcr$impDatasets),
                 coxph(Surv(time,event==2)~X4+X3+X6+X7)))
-publish(mifit,fit=ccfit2,data=dcr)
+publish(mifit2,fit=ccfit2,data=dcr)
 publish(ccfit2)
 
 

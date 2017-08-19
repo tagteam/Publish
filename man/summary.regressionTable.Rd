@@ -5,7 +5,8 @@
 \alias{print.summary.regressionTable}
 \title{Formatting regression tables}
 \usage{
-summary.regressionTable(object, showMissing = "ifany", print = TRUE, ...)
+\method{summary}{regressionTable}(object, showMissing = "ifany",
+  print = TRUE, ...)
 }
 \arguments{
 \item{object}{object obtained with \code{regressionTable} or \code{summary.regressionTable}.}
