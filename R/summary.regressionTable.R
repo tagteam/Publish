@@ -86,10 +86,12 @@ summary.regressionTable <- function(object,
     ## e.g., MIresults do not have a column Missing but use Imputed 
     if (match("Missing",colnames(Rtab),nomatch=0)>0){
         if (showMissing=="ifany") {
-            showMissing <- !all(Rtab[,"Missing"] %in% c("","0"))
+            showMissing <- any(!is.na(Rtab[,"Missing"]) | !(Rtab[,"Missing"] %in% c("","0")))
         }
-        if (!showMissing)
+        if (!showMissing){
             Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
+            rawtab <- rawtab[,-match("Missing",colnames(Rtab))]
+        }
     }
     ## cat("\nSignif. codes:  0 '***'0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n")
     res <- list(regressionTable=Rtab,rawTable=rawtab,model=model)

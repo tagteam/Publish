@@ -256,17 +256,6 @@ regressionTable <- function(object,
     }
     ## omnibus <- drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
     # }}}
-    # {{{ missing values
-    ## allvars <- all.vars(delete.response(terms(formula),data=data))
-    allvars <- try(get_all_vars(delete.response(terms(formula)),data=data),silent=TRUE)
-    if (class(allvars)[1]=="try-error") {
-        nmiss <- NULL
-        miss.info <- TRUE
-    }else{
-        nmiss <- lapply(allvars,function(v)sum(is.na(v)))
-        miss.info <- FALSE
-    }
-    # }}}
     # {{{intercept 
     if (intercept!=0){
         terms1 <- c("(Intercept)",terms1)
@@ -280,6 +269,15 @@ regressionTable <- function(object,
         isordered <- match(vn,orderednames,nomatch=0)
         ## catch the coefficients corresponding to term vn
         candidates <- grep(vn,termnames,fixed=TRUE,value=TRUE)
+        # {{{ missing values
+        ## number of missing values
+        misscall <- paste0("sum(is.na(",vn,"))")
+        if (vn=="Intercept"||vn=="(Intercept)")
+            Missing <- ""
+        else
+            Missing <- try(eval(parse(text=misscall),data))
+        if (class(Missing)[1]=="try-error") Missing <- NA
+        # }}}
         if (isfactor){
             vn.levels <- factorlevels[[isfactor]][-1]
             if (isordered){
@@ -314,26 +312,19 @@ regressionTable <- function(object,
         coef.vn <- coef[parms]
         ci.vn <- ci[parms,,drop=FALSE]
         p.vn <- pval[parms]
-        Missing <- NULL
         # {{{ factor variables
         ## varname <- all.vars(formula(paste("~",vn)),data=data)
         ## varname <- names(get_all_vars(formula(paste("~",vn)),data=data))
         varname <- vn
-        ## found <- match(v,names(nmiss),nomatch=0)
-        if (!miss.info){
-            nmissvar <- nmiss[[varname]]
-        }else{
-            nmissvar <- NA
-        }
         if (isfactor){
             if (factor.reference=="inline"){
                 Variable <- c(vn,rep("",NROW(coef.vn)-1))
                 Units <- paste(factorlevels[[isfactor]][-1], "vs", factorlevels[[isfactor]][1])
-                Missing <- c(nmissvar,rep("",length(coef.vn)-1))
+                Missing <- c(Missing,rep("",length(coef.vn)-1))
             } else {
                 Variable <- c(vn,rep("",length(coef.vn)))
                 Units <- factorlevels[[isfactor]]
-                Missing <- c(nmissvar,rep("",length(coef.vn)))
+                Missing <- c(Missing,rep("",length(coef.vn)))
                 coef.vn <- c(reference.value,coef.vn)
                 ci.vn <- rbind(c(reference.value,reference.value),ci.vn)
                 p.vn <- c(1,p.vn)
@@ -346,11 +337,6 @@ regressionTable <- function(object,
                 Units <- units[[varname]]
             else
                 Units <- ""
-            if (!miss.info) {
-                Missing <- nmiss[[varname]]
-            }else{ 
-                Missing <- NA
-            }
         }
         ## lis <- list(Variable=Variable,Units=Units,Missing=as.character(Missing),Coefficient=coef.vn,Lower=ci.vn[,1],Upper=ci.vn[,2],Pvalue=p.vn,stringsAsFactors=FALSE)
         block <- data.frame(Variable=Variable,
@@ -370,9 +356,12 @@ regressionTable <- function(object,
     if (length(terms2)>0){
         blocks2 <- lapply(terms2,function(t2){
             vars <- attr(t2,"variables")
-            if (!miss.info){
-                miss2 <- sum(unlist(nmiss[vars]))
-            }else{miss2 <- NA}
+            # {{{ missing values
+            ## number of missing values
+            misscall <- paste0(paste0("sum(is.na(",vars,"))"),collapse="+")
+            Missing <- try(eval(parse(text=misscall),data))
+            if (class(Missing)[1]=="try-error") Missing <- NA
+            # }}}
             block <- try(data.frame(lava::estimate(object,
                                                    f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
                                                    coef = coef,
@@ -381,12 +370,12 @@ regressionTable <- function(object,
                 colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
                 block <- data.frame(Variable=attr(t2,"names"),
                                     Units="",
-                                    Missing=miss2,
+                                    Missing=Missing,
                                     block[,-2])
             }else{
                 block <- data.frame(Variable=attr(t2,"names"),
                                     Units="",
-                                    Missing=miss2,
+                                    Missing=Missing,
                                     Coefficient=NA,
                                     Lower = NA,
                                     Upper = NA,

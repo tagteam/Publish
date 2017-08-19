@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 17 2017 (09:52)
 ## Version:
-## Last-Updated: Aug 18 2017 (11:35) 
+## Last-Updated: Aug 18 2017 (11:54) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 27
+##     Update #: 28
 #----------------------------------------------------------------------
 ### Code:
 #' Regression tables after multiple imputations
@@ -28,7 +28,7 @@
 #'     xlevels, formula and terms. For usage see examples.  is used to
 #'     fit
 #' @param data Original data set which includes the missing values
-#' @param ...
+#' @param ... passed to summary.regressionTable, labelUnits and publish.default.
 #' @examples
 #'
 #' ## continuous outcome

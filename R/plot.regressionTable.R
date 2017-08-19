@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Feb 18 2017 (15:29) 
+## last-updated: Aug 18 2017 (15:59) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 52
+##     Update #: 54
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -41,7 +41,7 @@
 ##' ## Cox regression
 ##' library(survival)
 ##' data(pbc)
-##' coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(albumin)+edema+sex,data=pbc)
+##' coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(albumin)+factor(edema)+sex,data=pbc)
 ##' pubcox <- publish(coxfit)
 ##' plot(pubcox,cex=1.5)
 ##'

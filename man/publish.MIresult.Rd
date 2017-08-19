@@ -34,6 +34,8 @@ xlevels, formula and terms. For usage see examples.  is used to
 fit}
 
 \item{data}{Original data set which includes the missing values}
+
+\item{...}{passed to summary.regressionTable, labelUnits and publish.default.}
 }
 \description{
 Regression tables after multiple imputations

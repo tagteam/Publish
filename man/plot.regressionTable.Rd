@@ -35,7 +35,7 @@ plot(rtab,xlim=c(0.85,1.15),cex=1.8,xaxis.cex=1.5)
 ## Cox regression
 library(survival)
 data(pbc)
-coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(albumin)+edema+sex,data=pbc)
+coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(albumin)+factor(edema)+sex,data=pbc)
 pubcox <- publish(coxfit)
 plot(pubcox,cex=1.5)
 

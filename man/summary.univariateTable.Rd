@@ -4,9 +4,9 @@
 \alias{summary.univariateTable}
 \title{Preparing univariate tables for publication}
 \usage{
-\method{summary}{univariateTable}(object, missing = c("ifany", "always",
-  "never"), n = "inNames", suppressFactorReference = FALSE,
-  pvalue.stars = FALSE, pvalue.digits = 4, showPvalues, showTotals, ...)
+summary.univariateTable(object, missing = c("ifany", "always", "never"),
+  n = "inNames", suppressFactorReference = FALSE, pvalue.stars = FALSE,
+  pvalue.digits = 4, showPvalues, showTotals, ...)
 }
 \arguments{
 \item{object}{\code{univariateTable} object as obtained with
