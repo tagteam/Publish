@@ -421,6 +421,7 @@ regressionTable <- function(object,
     attr(out,"terms1") <- terms1
     attr(out,"terms2") <- terms2
     attr(out,"factornames") <- factornames
+    attr(out,"factor.reference") <- factor.reference
     attr(out,"orderednames") <- orderednames
     attr(out,"model") <- switch(as.character(logisticRegression+2*coxRegression+3*poissonRegression),
                                 "1"="Logistic regression",

@@ -5,11 +5,11 @@
 ##' other tables of univariate statistics.
 ##'
 ##' The result of the function is an object (list) which containe the various data
-##' generated.  For most use the "summary" function should be applied which generates
+##' generated. In most applications the \code{summary} function should be applied which generates
 ##' a data.frame with a (nearly) publication ready table. Standard manipulation can be
 ##' used to modify, add or remove columns/rows and for users not accustomed to R the table
-##' generated can easily be exported to excell for further adjustment with
-##' write.csv(table.generated,file="....").
+##' generated can be exported to a text file which can be read by other software, e.g., via
+##' write.csv(table,file="path/to/results/table.csv")
 ##'
 ##' Continuous variables are summarized by means and standard deviations.
 ##' Deviations from the above defaults are obtained when the
@@ -184,8 +184,8 @@ univariateTable <- function(formula,
         } else {
             if (any(is.na(groupvar))){
                 groupvar[is.na(groupvar)] <- "Missing"
-                groups <- unique(groupvar)
             }
+            groups <- unique(groupvar)
         }
         groupvar <- factor(groupvar,levels=groups)
         n.groups <- table(groupvar)
@@ -318,7 +318,7 @@ univariateTable <- function(formula,
     if (!is.null(groups) && (compareGroups!=FALSE)){
         if (!is.null(continuous.matrix)){
             p.cont <- sapply(names(continuous.matrix),function(v){
-                set(data,j=v,value=as.numeric(data[[v]]))
+                data.table::set(data,j=v,value=as.numeric(data[[v]]))
                 switch(tolower(as.character(compareGroups[[1]])),
                        "false"={NULL},
                        "logistic"={
