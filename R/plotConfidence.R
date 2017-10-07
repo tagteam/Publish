@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Aug 17 2017 (15:21) 
+## last-updated: Oct  7 2017 (08:10) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 286
+##     Update #: 294
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -172,7 +172,7 @@
 ##' ## block 3: graphical presentation of the confidence intervals
 ##' ##
 ##' ## NOTE: block 3 appears always, the user decides if also
-##' ##       blocks 1, 2 shouldappear
+##' ##       blocks 1, 2 should appear
 ##' ##
 ##' ## The blocks are arranged with the function layout
 ##' ## and the default order is 1,3,2 such that the graphical
@@ -633,6 +633,8 @@ plotConfidence <- function(x,
             smartA$arrows$length <- rep(smartA$arrows$length,length.out=NR)
         if (length(smartA$arrows$code)<NR)
             smartA$arrows$code <- rep(smartA$arrows$code,length.out=NR)
+        if (length(smartA$arrows$col)<NR)
+            smartA$arrows$col <- rep(smartA$arrows$col,length.out=NR)
         smartA$arrows$x0 <- pmax(xlim[1],smartA$arrows$x0)
         smartA$arrows$x1 <- pmin(xlim[2],smartA$arrows$x1)
         smartA$arrows$code[tooLow & tooHigh] <- 3

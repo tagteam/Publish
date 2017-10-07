@@ -207,7 +207,7 @@ plotConfidence(x=CiTable[,6:8], labels=CiTable[,1:5])
 ## block 3: graphical presentation of the confidence intervals
 ##
 ## NOTE: block 3 appears always, the user decides if also
-##       blocks 1, 2 shouldappear
+##       blocks 1, 2 should appear
 ##
 ## The blocks are arranged with the function layout
 ## and the default order is 1,3,2 such that the graphical
