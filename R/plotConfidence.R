@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Oct  7 2017 (08:10) 
+## last-updated: Oct 17 2017 (13:33) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 294
+##     Update #: 297
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -195,6 +195,7 @@
 ##'                values=FALSE,
 ##'                order=c(1,2))
 ##'
+##' 
 ##'
 ##' ## The relative size of the blocks needs to be controlled manually
 ##' ## by using the argument xratio. If there are only two blocks
@@ -226,6 +227,7 @@
 ##'                xaxis.lwd=0.8,
 ##'                xaxis.cex=0.8)
 ##'
+##' 
 ##' ## Another good news is that all figures can be controlled separately
 ##'
 ##' ## The size of the graphic device can be controlled in the usual way, e.g.:
@@ -244,6 +246,12 @@
 ##'                xaxis.at=c(0.8,1,1.3),
 ##'                labels=CiTable[,1:5],xlim=c(0.8,1.3))
 ##'
+##' ## log-scale
+##' plotConfidence(x=CiTable[,6:8],
+##'                xlab="Hazard ratio",
+##'                xlab.line=1.8,
+##'                xaxis.at=c(0.8,1,1.3),
+##'                labels=CiTable[,1:5],xlim=c(0.8,1.3),plot.log="x")
 ##' ## More pronounced arrows
 ##' ## Coloured xlab expression
 ##' plotConfidence(x=CiTable[,6:8],
