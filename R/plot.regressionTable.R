@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Aug 18 2017 (15:59) 
+## last-updated: Oct 22 2017 (16:43) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 54
+##     Update #: 55
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -48,7 +48,7 @@
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plot.regressionTable <- function(x,xlim,xlab,...){
-    plot(summary(x),xlim=xlim,xlab=xlab,...)
+    plot(summary(x,print=FALSE),xlim=xlim,xlab=xlab,...)
 }
 ##' @export
 plot.summary.regressionTable <- function(x,xlim,xlab,...){

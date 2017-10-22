@@ -4,9 +4,6 @@
 ##' @title Preparing univariate tables for publication
 ##' @param object \code{univariateTable} object as obtained with
 ##' function \code{univariateTable}.
-##' @param missing Decides if number of missing values are shown in table.
-##' Defaults to \code{"ifany"}, and can also be set to \code{"always"} or \code{"never"}.
-##' 
 ##' @param n If not missing, show the number of subjects in each
 ##' column. If equal to \code{"inNames"}, show the numbers in
 ##' parentheses in the column names.  If missing the value
@@ -19,6 +16,8 @@
 ##' @param pvalue.stars If TRUE use \code{symnum} to parse p-values
 ##' otherwise use \code{format.pval}.
 ##' @param pvalue.digits Passed to \code{format.pval}.
+##' @param show.missing Decides if number of missing values are shown in table.
+##' Defaults to \code{"ifany"}, and can also be set to \code{"always"} or \code{"never"}.
 ##' @param show.pvalues Logical. If set to \code{FALSE} the column
 ##' \code{p-values} is removed. If missing the value
 ##' \code{object$compare.groups[[1]]==TRUE} is used.
@@ -49,11 +48,11 @@
 ##' 
 ##' 
 summary.univariateTable <- function(object,
-                                    missing=c("ifany","always","never"),
                                     n="inNames",
                                     drop.reference=FALSE,
                                     pvalue.stars=FALSE,
                                     pvalue.digits=4,
+                                    show.missing=c("ifany","always","never"),
                                     show.pvalues,
                                     show.totals,
                                     ...){
@@ -64,7 +63,11 @@ summary.univariateTable <- function(object,
     if (missing(show.pvalues))
         show.pvalues <- object$compare.groups[[1]]==TRUE
     # {{{missing and n
-    missing <- match.arg(missing,c("ifany","always","never"),several.ok=FALSE)
+    if (!missing(show.missing))
+        if (is.logical(show.missing) || is.numeric(show.missing))
+            if (show.missing==1L) show.missing <- "always"
+            else show.missing <- "never"
+    show.missing <- match.arg(show.missing,c("ifany","always","never"),several.ok=FALSE)
     # }}}
     # {{{ pvalues
     if (show.pvalues && !is.null(object$p.values)){
@@ -97,7 +100,7 @@ summary.univariateTable <- function(object,
             if (show.totals)
                 sum <- data.frame(Total=object$summary.totals[[s]],stringsAsFactors = FALSE)
         }
-        if ((missing!="never") && (missing=="always" || any(object$missing$totals[[s]]>0))){
+        if ((show.missing!="never") && (show.missing=="always" || any(object$missing$totals[[s]]>0))){
             if (!show.totals){
                 if (is.null(object$groups)){
                     miss <- object$missing$totals[[s]]

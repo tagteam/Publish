@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Oct 22 2017 (13:01) 
+## last-updated: Oct 22 2017 (16:43) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 299
+##     Update #: 311
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -386,6 +386,7 @@ plotConfidence <- function(x,
 
     if (!is.list(x)) x <- list(x=x)
     m <- x[[1]]
+
     names(x) <- tolower(names(x))
     if (missing(lower)) {
         lower <- x$lower
@@ -420,6 +421,7 @@ plotConfidence <- function(x,
         if (is.null(labels)) do.labels <- FALSE
     }
     # }}}
+
     # {{{ preprocessing of values and confidence intervals
     if (!missing(values) && (is.logical(values) && values[[1]]==FALSE))
         do.values <- FALSE
@@ -596,7 +598,6 @@ plotConfidence <- function(x,
             preplabels <- c(preplabels,list(width=labelswidth,ylim=ylim))
         do.call("plotLabels",preplabels)
     }
-
     # }}}
     # {{{ values
     if (do.values){
@@ -630,6 +631,8 @@ plotConfidence <- function(x,
     # {{{ point estimates and confidence
     do.call("points",smartA$points)
     ## treat arrows that go beyond the x-limits
+    if (smartA$arrows$x0>xlim[2]||smartA$arrows$x1<xlim[1])
+        warning("One or several confidence intervals are completely outside xlim. You should adjust xlim.")
     tooHigh <- smartA$arrows$x1>xlim[2]
     tooHigh[is.na(tooHigh)] <- FALSE
     tooLow <- smartA$arrows$x0<xlim[1]
@@ -663,8 +666,8 @@ plotConfidence <- function(x,
             suppressWarnings(do.call("arrows",aargs))
         }
     } else{
-          suppressWarnings(do.call("arrows",smartA$arrows))
-      }
+        suppressWarnings(do.call("arrows",smartA$arrows))
+    }
     # }}}
     invisible(dimensions)
 }

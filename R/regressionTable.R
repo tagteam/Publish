@@ -429,10 +429,13 @@ regressionTable <- function(object,
                                 "2"="Cox regression",
                                 "3"="Poisson regression",
                                 "Linear regression")
+    out <- out[]
     class(out) <- "regressionTable"
     out
     # }}}
 }
+
+
 
 confint.lme <- function(object, parm, level = 0.95, ...){
   res <- nlme::intervals(object, level = level, ...)

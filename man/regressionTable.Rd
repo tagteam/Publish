@@ -80,6 +80,7 @@ summary(regressionTable(f2))
 #Add reference values
 summary(regressionTable(f2))
 f3 <- glm(bp.1s~age+gender*frame+chol,data=Diabetes)
+publish(f3)
 regressionTable(f3)
 
 # logistic regression

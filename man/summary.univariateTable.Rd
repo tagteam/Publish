@@ -4,16 +4,14 @@
 \alias{summary.univariateTable}
 \title{Preparing univariate tables for publication}
 \usage{
-\method{summary}{univariateTable}(object, missing = c("ifany", "always",
-  "never"), n = "inNames", drop.reference = FALSE, pvalue.stars = FALSE,
-  pvalue.digits = 4, show.pvalues, show.totals, ...)
+\method{summary}{univariateTable}(object, n = "inNames",
+  drop.reference = FALSE, pvalue.stars = FALSE, pvalue.digits = 4,
+  show.missing = c("ifany", "always", "never"), show.pvalues, show.totals,
+  ...)
 }
 \arguments{
 \item{object}{\code{univariateTable} object as obtained with
 function \code{univariateTable}.}
-
-\item{missing}{Decides if number of missing values are shown in table.
-Defaults to \code{"ifany"}, and can also be set to \code{"always"} or \code{"never"}.}
 
 \item{n}{If not missing, show the number of subjects in each
 column. If equal to \code{"inNames"}, show the numbers in
@@ -30,6 +28,9 @@ that are included in the vector.}
 otherwise use \code{format.pval}.}
 
 \item{pvalue.digits}{Passed to \code{format.pval}.}
+
+\item{show.missing}{Decides if number of missing values are shown in table.
+Defaults to \code{"ifany"}, and can also be set to \code{"always"} or \code{"never"}.}
 
 \item{show.pvalues}{Logical. If set to \code{FALSE} the column
 \code{p-values} is removed. If missing the value

@@ -1,6 +1,6 @@
 print.regressionTable <- function(x,...){
-    Rtab <- summary(x,...)
+    Rtab <- summary(x,print=FALSE,...)
     ## rownames(Rtab) <- NULL
-    ## print(Rtab,...)
+    print.listof(Rtab,...)
     Rtab
 }
