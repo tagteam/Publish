@@ -7,23 +7,23 @@
 ##' @param formula Formula whose left hand side specifies the event
 ##' history, i.e., either via Surv() or Hist().
 ##' @param data Data frame in which the formula is interpreted
-##' @param unspecialsDesign Passed as is to
+##' @param unspecials.design Passed as is to
 ##' \code{\link{model.design}}.
 ##' @param specials Character vector of special function names.
 ##' Usually the body of the special functions is function(x)x but
 ##' e.g., \code{\link{strata}} from the survival package does treat
 ##' the values
-##' @param specialsFactor Passed as is to \code{\link{model.design}}.
-##' @param specialsDesign Passed as is to \code{\link{model.design}}
-##' @param stripSpecials Passed as \code{specials} to
+##' @param specials.factor Passed as is to \code{\link{model.design}}.
+##' @param specials.design Passed as is to \code{\link{model.design}}
+##' @param strip.specials Passed as \code{specials} to
 ##' \code{\link{strip.terms}}
-##' @param stripArguments Passed as \code{arguments} to
+##' @param  strip.arguments Passed as \code{arguments} to
 ##' \code{\link{strip.terms}}
-##' @param stripAlias Passed as \code{alias.names} to
+##' @param  strip.alias Passed as \code{alias.names} to
 ##' \code{\link{strip.terms}}
-##' @param stripUnspecials Passed as \code{unspecials} to
+##' @param  strip.unspecials Passed as \code{unspecials} to
 ##' \code{\link{strip.terms}}
-##' @param dropIntercept Passed as is to \code{\link{model.design}}
+##' @param drop.intercept Passed as is to \code{\link{model.design}}
 ##' @param response If FALSE do not get response data.
 ##' @param na.action Decide what to do with missing values. 
 ##' @return A list which contains
@@ -61,28 +61,28 @@
 ##' e2 <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
 ##'                    data=d,
 ##'                    specials=c("prop","cluster"),
-##'                    specialsDesign=TRUE)
+##'                    specials.design=TRUE)
 ##' e2$prop
 ##' ## and the non-special covariates can be returned as a data.frame
 ##' e3 <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
 ##'                    data=d,
 ##'                    specials=c("prop","cluster"),
-##'                    specialsDesign=TRUE,
-##'                    unspecialsDesign=FALSE)
+##'                    specials.design=TRUE,
+##'                    unspecials.design=FALSE)
 ##' e3$design
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 specialFrame <- function(formula,
                          data,
-                         unspecialsDesign=TRUE,
+                         unspecials.design=TRUE,
                          specials,
-                         specialsFactor=TRUE,
-                         specialsDesign=FALSE,
-                         stripSpecials=TRUE,
-                         stripArguments=NULL,
-                         stripAlias=NULL,
-                         stripUnspecials=NULL,
-                         dropIntercept=TRUE,
+                         specials.factor=TRUE,
+                         specials.design=FALSE,
+                         strip.specials=TRUE,
+                          strip.arguments=NULL,
+                          strip.alias=NULL,
+                          strip.unspecials=NULL,
+                         drop.intercept=TRUE,
                          response=TRUE,
                          na.action=options()$na.action){
     # {{{ get all variables and remove missing values
@@ -94,15 +94,15 @@ specialFrame <- function(formula,
     # }}}
     # {{{call model.frame
     ## data argument is used to resolve '.' see help(terms.formula)
-    if (!is.null(stripSpecials)){
+    if (!is.null(strip.specials)){
         ## eval without the data to avoid evaluating special specials
-        # Terms <- terms(x=formula, specials=unique(c(specials,unlist(stripAlias))))
+        # Terms <- terms(x=formula, specials=unique(c(specials,unlist( strip.alias))))
         Terms <- terms(x=formula, specials=specials)
         Terms <- prodlim::strip.terms(Terms,
-                                      specials=stripSpecials,
-                                      arguments=stripArguments,
-                                      alias.names=stripAlias,
-                                      unspecials=stripUnspecials)
+                                      specials=strip.specials,
+                                      arguments= strip.arguments,
+                                      alias.names= strip.alias,
+                                      unspecials= strip.unspecials)
     }else{
         ## data argument is used to resolve '.' see help(terms.formula)
         Terms <- terms(x=formula, specials=specials, data = data)
@@ -121,10 +121,10 @@ specialFrame <- function(formula,
     design <- prodlim::model.design(Terms,
                                     data=mm,
                                     maxOrder=1,
-                                    dropIntercept=dropIntercept,
-                                    unspecialsDesign=unspecialsDesign,
-                                    specialsFactor=specialsFactor,
-                                    specialsDesign=specialsDesign)
+                                    drop.intercept=drop.intercept,
+                                    unspecials.design=unspecials.design,
+                                    specials.factor=specials.factor,
+                                    specials.design=specials.design)
     # }}}
     out <- c(list(response=response),
              design[sapply(design,length)>0])

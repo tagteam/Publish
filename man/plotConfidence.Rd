@@ -9,7 +9,7 @@ plotConfidence(x, lower, upper, pch = 16, cex = 1, lwd = 1, col = 4,
   leftmargin = 0.025, rightmargin = 0.025, stripes, factor.reference.pos,
   factor.reference.label = "Reference", factor.reference.pch = 8,
   refline = 1, xratio, y.offset = 0, y.title.offset = 1.3, digits = 2,
-  format, extremeArrowsLength = 0.05, extremeArrowsAngle = 30,
+  format, extremearrows.length = 0.05, extremearrows.angle = 30,
   add = FALSE, layout = TRUE, xaxis = TRUE, ...)
 }
 \arguments{
@@ -119,10 +119,10 @@ the titles of the labels and values.}
 intervals. Defaults to '(u;l)' if there are negative lower or
 upper values and to '(u-l)' otherwise.}
 
-\item{extremeArrowsLength}{Length of the arrows in case of
+\item{extremearrows.length}{Length of the arrows in case of
 confidence intervals that stretch beyond xlim.}
 
-\item{extremeArrowsAngle}{Angle of the arrows in case of
+\item{extremearrows.angle}{Angle of the arrows in case of
 confidence intervals that stretch beyond xlim.}
 
 \item{add}{Logical. If \code{TRUE} do not draw labels or values
@@ -293,8 +293,8 @@ plotConfidence(x=CiTable[,6:8],
                xlab=expression(HR[1](s)),
                xlab.line=1.8,
                xlab.col="darkred",
-               extremeArrowsAngle=50,
-               extremeArrowsLength=0.1,
+               extremearrows.angle=50,
+               extremearrows.length=0.1,
                labels=CiTable[,1:5],xlim=c(0.8,1.3))
 
 ## Controlling the labels and their titles

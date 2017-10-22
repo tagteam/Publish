@@ -34,12 +34,12 @@
 ##' freq.format is used then column percentages are given instead of
 ##' row percentages for categorical variables (factors).
 ##' @param digits Number of digits
-##' @param shortGroupNames If \code{TRUE} group names are abbreviated.
-##' @param compareGroups Method used to compare groups. If
+##' @param short.groupnames If \code{TRUE} group names are abbreviated.
+##' @param compare.groups Method used to compare groups. If
 ##' \code{"logistic"} and there are exactly two groups logistic
 ##' regression is used instead of t-tests and Wilcoxon rank tests to
 ##' compare numeric variables across groups.
-##' @param showTotals If \code{TRUE} show a column with totals.
+##' @param show.totals If \code{TRUE} show a column with totals.
 ##' @param n If \code{TRUE} show the number of subjects as a separate
 ##' row.  If equal to \code{"inNames"}, show the numbers in
 ##' parentheses in the column names. If \code{FALSE} do not show
@@ -65,7 +65,7 @@
 ##' univariateTable(location~age+gender+height+weight,data=Diabetes)
 ##'
 ##' ## export result to csv
-##' table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),showPvalues=FALSE)
+##' table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),show.pvalues=FALSE)
 ##' # write.csv(table1,file="~/table1.csv",rownames=FALSE)
 ##'
 ##' ## change labels and values
@@ -132,9 +132,9 @@ univariateTable <- function(formula,
                             freq.format="count(x) (percent(x))",
                             column.percent=TRUE,
                             digits=c(1,1,3),
-                            shortGroupNames,
-                            compareGroups=TRUE,
-                            showTotals=TRUE,
+                            short.groupnames,
+                            compare.groups=TRUE,
+                            show.totals=TRUE,
                             n="inNames",
                             outcome=NULL,
                             na.rm=FALSE,
@@ -149,13 +149,13 @@ univariateTable <- function(formula,
     options(na.action="na.pass")
     FRAME <- specialFrame(formula,
                           data,
-                          specialsDesign=FALSE,
-                          unspecialsDesign=FALSE,
+                          specials.design=FALSE,
+                          unspecials.design=FALSE,
                           specials=c("F","S","Q","strata","Strata","factor","Factor","Cont","nonpar"),
-                          specialsFactor = FALSE,
-                          stripSpecials=c("F","S","Q"),
-                          stripArguments=list("S"="format"),
-                          stripAlias=list("F"=c("strata","factor","Strata","Factor"),"S"="Cont","Q"="nonpar"),
+                          specials.factor = FALSE,
+                          strip.specials=c("F","S","Q"),
+                           strip.arguments=list("S"="format"),
+                           strip.alias=list("F"=c("strata","factor","Strata","Factor"),"S"="Cont","Q"="nonpar"),
                           na.action="na.pass")
     options(na.action=oldnaaction)
     # }}}
@@ -190,16 +190,16 @@ univariateTable <- function(formula,
         groupvar <- factor(groupvar,levels=groups)
         n.groups <- table(groupvar)
         n.groups <- c(n.groups,sum(n.groups))
-        if (compareGroups=="logistic" & (length(groups)!=2))
-            stop("compareGroups can only be equal to 'logistic' when there are exactly two groups. You have ",length(groups)," groups")
+        if (compare.groups=="logistic" & (length(groups)!=2))
+            stop("compare.groups can only be equal to 'logistic' when there are exactly two groups. You have ",length(groups)," groups")
         ## if (length(groups)>30) stop("More than 30 groups")
-        if (missing(shortGroupNames)){
+        if (missing(short.groupnames)){
             if(all(nchar(groups)<2) || all(groups %in% c(TRUE,FALSE)))
-                shortGroupNames <- FALSE
+                short.groupnames <- FALSE
             else
-                shortGroupNames <- TRUE
+                short.groupnames <- TRUE
         }
-        if (shortGroupNames==TRUE)
+        if (short.groupnames==TRUE)
             grouplabels <- groups
         else
             grouplabels <- paste(groupname,"=",groups)
@@ -315,11 +315,11 @@ univariateTable <- function(formula,
     p.cont <- NULL
     p.Q <- NULL
     p.freq <- NULL
-    if (!is.null(groups) && (compareGroups!=FALSE)){
+    if (!is.null(groups) && (compare.groups!=FALSE)){
         if (!is.null(continuous.matrix)){
             p.cont <- sapply(names(continuous.matrix),function(v){
                 data.table::set(data,j=v,value=as.numeric(data[[v]]))
-                switch(tolower(as.character(compareGroups[[1]])),
+                switch(tolower(as.character(compare.groups[[1]])),
                        "false"={NULL},
                        "logistic"={
                            ## logistic regression
@@ -342,7 +342,7 @@ univariateTable <- function(formula,
         }
         if (!is.null(Q.matrix)){
             p.Q <- sapply(names(Q.matrix),function(v){
-                switch(tolower(as.character(compareGroups[[1]])),
+                switch(tolower(as.character(compare.groups[[1]])),
                        "false"={NULL},
                        "logistic"={
                            ## logistic regression
@@ -370,7 +370,7 @@ univariateTable <- function(formula,
         }
         if (!is.null(factor.matrix)){
             p.freq <- sapply(names(factor.matrix),function(v){
-                switch(tolower(as.character(compareGroups[[1]])),
+                switch(tolower(as.character(compare.groups[[1]])),
                        "false"={NULL},
                        "logistic"={
                            ## logistic regression
@@ -429,9 +429,9 @@ univariateTable <- function(formula,
                 Q.format=Q.format,
                 summary.format=summary.format,
                 freq.format=freq.format,
-                compareGroups=compareGroups,
+                compare.groups=compare.groups,
                 ## dots are passed to labelUnits without suitability checks
-                showTotals=showTotals,
+                show.totals=show.totals,
                 n=n,
                 labels=list(...))
     class(out) <- "univariateTable"

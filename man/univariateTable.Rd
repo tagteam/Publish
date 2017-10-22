@@ -8,8 +8,8 @@
 univariateTable(formula, data = parent.frame(),
   summary.format = "mean(x) (sd(x))", Q.format = "median(x) [iqr(x)]",
   freq.format = "count(x) (percent(x))", column.percent = TRUE,
-  digits = c(1, 1, 3), shortGroupNames, compareGroups = TRUE,
-  showTotals = TRUE, n = "inNames", outcome = NULL, na.rm = FALSE, ...)
+  digits = c(1, 1, 3), short.groupnames, compare.groups = TRUE,
+  show.totals = TRUE, n = "inNames", outcome = NULL, na.rm = FALSE, ...)
 }
 \arguments{
 \item{formula}{Formula specifying the grouping variable (strata)
@@ -35,14 +35,14 @@ row percentages for categorical variables (factors).}
 
 \item{digits}{Number of digits}
 
-\item{shortGroupNames}{If \code{TRUE} group names are abbreviated.}
+\item{short.groupnames}{If \code{TRUE} group names are abbreviated.}
 
-\item{compareGroups}{Method used to compare groups. If
+\item{compare.groups}{Method used to compare groups. If
 \code{"logistic"} and there are exactly two groups logistic
 regression is used instead of t-tests and Wilcoxon rank tests to
 compare numeric variables across groups.}
 
-\item{showTotals}{If \code{TRUE} show a column with totals.}
+\item{show.totals}{If \code{TRUE} show a column with totals.}
 
 \item{n}{If \code{TRUE} show the number of subjects as a separate
 row.  If equal to \code{"inNames"}, show the numbers in
@@ -93,7 +93,7 @@ utable(~age+gender+ height+weight,data=Diabetes)
 univariateTable(location~age+gender+height+weight,data=Diabetes)
 
 ## export result to csv
-table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),showPvalues=FALSE)
+table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),show.pvalues=FALSE)
 # write.csv(table1,file="~/table1.csv",rownames=FALSE)
 
 ## change labels and values

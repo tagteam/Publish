@@ -5,13 +5,13 @@
 \alias{print.summary.regressionTable}
 \title{Formatting regression tables}
 \usage{
-\method{summary}{regressionTable}(object, showMissing = "ifany",
+\method{summary}{regressionTable}(object, show.missing = "ifany",
   print = TRUE, ...)
 }
 \arguments{
 \item{object}{object obtained with \code{regressionTable} or \code{summary.regressionTable}.}
 
-\item{showMissing}{Decide if number of missing values are shown.
+\item{show.missing}{Decide if number of missing values are shown.
 Either logical or character. If \code{'ifany'} then number missing values are
 shown if there are some.}
 

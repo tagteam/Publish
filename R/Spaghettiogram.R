@@ -3,6 +3,7 @@
 ##'
 ##' 
 ##' @title Spaghettiogram
+##' @aliases spaghettiogram
 ##' @param formula A formula which specifies the variables for the
 ##' spaghettiograms. If Y ~ X + id(Z) then for each value of Z the
 ##' spaghettiogram is the graph (X,Y) in the subset defined by the
@@ -37,7 +38,7 @@
 ##' Spaghettiogram(HR~Status+id(ID),
 ##'                data=SpaceT)
 ##' @export
-Spaghettiogram <- function(formula,
+spaghettiogram <- function(formula,
                            data,
                            xlim,
                            ylim,
@@ -57,16 +58,16 @@ Spaghettiogram <- function(formula,
     cl <- match.call(expand.dots=TRUE)
     sf <- specialFrame(formula,
                        data,
-                       unspecialsDesign=FALSE,
+                       unspecials.design=FALSE,
                        specials=c("id"),
-                       stripSpecials=c("id"),
-                       specialsFactor=TRUE,
-                       specialsDesign=FALSE,
-                       dropIntercept=TRUE)
+                       strip.specials=c("id"),
+                       specials.factor=TRUE,
+                       specials.design=FALSE,
+                       drop.intercept=TRUE)
     ## sf <- specialFrame(cl,
     ## special="id",
-    ## specialsFactor=TRUE,
-    ## dropIntercept=TRUE)
+    ## specials.factor=TRUE,
+    ## drop.intercept=TRUE)
     ## if (NCOL(X)!=1||NCOL(Y)!=1||NCOL(Y)!=1) stop("Can only handle one x-variable, one y-variable and one z-variable, formula must have the form: y~ x + id(z) where\ny is a measurement\nx tells when the measurement was taken\nand z identifies repeated measurements of the same subject. ")
     X <- sf$design[[1]]
     Y <- sf$response[[1]]
@@ -178,5 +179,7 @@ Spaghettiogram <- function(formula,
     # }}}
     invisible(object)
 }
+##' @export
+Spaghettiogram <- spaghettiogram
 
 

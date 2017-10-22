@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Oct 17 2017 (13:33) 
+## last-updated: Oct 22 2017 (13:01) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 297
+##     Update #: 299
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -124,9 +124,9 @@
 ##' @param format Format for constructing values of confidence
 ##' intervals. Defaults to '(u;l)' if there are negative lower or
 ##' upper values and to '(u-l)' otherwise.
-##' @param extremeArrowsLength Length of the arrows in case of
+##' @param extremearrows.length Length of the arrows in case of
 ##' confidence intervals that stretch beyond xlim.
-##' @param extremeArrowsAngle Angle of the arrows in case of
+##' @param extremearrows.angle Angle of the arrows in case of
 ##' confidence intervals that stretch beyond xlim.
 ##' @param add Logical. If \code{TRUE} do not draw labels or values
 ##' and add confidence intervals to existing plot.
@@ -258,8 +258,8 @@
 ##'                xlab=expression(HR[1](s)),
 ##'                xlab.line=1.8,
 ##'                xlab.col="darkred",
-##'                extremeArrowsAngle=50,
-##'                extremeArrowsLength=0.1,
+##'                extremearrows.angle=50,
+##'                extremearrows.length=0.1,
 ##'                labels=CiTable[,1:5],xlim=c(0.8,1.3))
 ##'
 ##' ## Controlling the labels and their titles
@@ -376,8 +376,8 @@ plotConfidence <- function(x,
                            y.title.offset=1.3,
                            digits=2,
                            format,
-                           extremeArrowsLength=0.05,
-                           extremeArrowsAngle=30,
+                           extremearrows.length=0.05,
+                           extremearrows.angle=30,
                            add=FALSE,
                            layout=TRUE,
                            xaxis=TRUE,
@@ -483,7 +483,7 @@ plotConfidence <- function(x,
     title.values.DefaultArgs <- list(x=0,y=NR+1*y.title.offset+ y.offset[length(y.offset)],labels=title.values,cex=NULL,xpd=NA,font=2,pos=NULL)
     smartA <- prodlim::SmartControl(call=  list(...),
                                     keys=c("plot","points","arrows","refline","labels","values","title.labels","title.values","xaxis","stripes","xlab"),
-                                    ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","factor.reference.pos","factor.reference.label","extremeArrowsAngle","extremeArrowsLength"),
+                                    ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","factor.reference.pos","factor.reference.label","extremearrows.angle","extremearrows.length"),
                                     defaults=list("plot"=plot.DefaultArgs,"points"=points.DefaultArgs,"refline"=refline.DefaultArgs,"labels"=labels.DefaultArgs,"title.labels"=title.labels.DefaultArgs,"stripes"=stripes.DefaultArgs,"values"=values.DefaultArgs,"title.values"=title.values.DefaultArgs,"arrows"=arrows.DefaultArgs,"xaxis"=xaxis.DefaultArgs,"xlab"=xlab.DefaultArgs),
                                     forced=list("plot"=list(axes=FALSE,xlab=""),"xaxis"=list(side=1)),
                                     verbose=TRUE)
@@ -648,8 +648,8 @@ plotConfidence <- function(x,
         smartA$arrows$code[tooLow & tooHigh] <- 3
         smartA$arrows$code[tooLow & !tooHigh] <- 1
         smartA$arrows$code[!tooLow & tooHigh] <- 2
-        smartA$arrows$angle[tooLow | tooHigh] <- extremeArrowsAngle
-        smartA$arrows$length[tooLow | tooHigh] <- extremeArrowsLength
+        smartA$arrows$angle[tooLow | tooHigh] <- extremearrows.angle
+        smartA$arrows$length[tooLow | tooHigh] <- extremearrows.length
         aargs <- smartA$arrows
         for (r in 1:NR){
             aargs$x0 <- smartA$arrows$x0[r]

@@ -3,7 +3,7 @@
 ##' @title Formatting regression tables
 ##' @aliases summary.regressionTable print.summary.regressionTable
 ##' @param object object obtained with \code{regressionTable} or \code{summary.regressionTable}.
-##' @param showMissing Decide if number of missing values are shown.
+##' @param show.missing Decide if number of missing values are shown.
 ##' Either logical or character. If \code{'ifany'} then number missing values are
 ##' shown if there are some.
 ##' @param print If \code{TRUE} print results.
@@ -30,7 +30,7 @@
 #' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 summary.regressionTable <- function(object,
-                                    showMissing="ifany",
+                                    show.missing="ifany",
                                     print=TRUE,
                                     ...){
     pynt <- getPyntDefaults(list(...),names=list("digits"=c(2,3),"handler"="sprintf",nsmall=NULL))
@@ -85,10 +85,10 @@ summary.regressionTable <- function(object,
     rownames(rawtab) <- NULL
     ## e.g., MIresults do not have a column Missing but use Imputed 
     if (match("Missing",colnames(Rtab),nomatch=0)>0){
-        if (showMissing=="ifany") {
-            showMissing <- any(!(Rtab[,"Missing"][!is.na(Rtab[,"Missing"])] %in% c("","0")))
+        if (show.missing=="ifany") {
+            show.missing <- any(!(Rtab[,"Missing"][!is.na(Rtab[,"Missing"])] %in% c("","0")))
         }
-        if (!showMissing){
+        if (!show.missing){
             Rtab <- Rtab[,-match("Missing",colnames(Rtab))]
             rawtab <- rawtab[,-match("Missing",colnames(rawtab))]
         }

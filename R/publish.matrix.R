@@ -14,7 +14,7 @@
 ##' @param style Table style for export to \code{"latex"},
 ##' \code{"org"}, \code{"markdown"}, \code{"wiki"},
 ##' \code{"none"}. Overwritten by argments below.
-##' @param interLines A named list which contains strings to be placed
+##' @param inter.lines A named list which contains strings to be placed
 ##' between the rows of the table. An element with name \code{"0"} is
 ##' used to place a line before the first column, elements with name
 ##' \code{"r"} are placed between line r and r+1.
@@ -23,9 +23,9 @@
 ##' @param org If \code{TRUE} use emacs orgmode table format
 ##' @param markdown If \code{TRUE} use markdown table format
 ##' @param tabular For style \code{latex} only: if \code{TRUE} enclose the table in begin/end tabular environement.
-##' @param latexTableFormat For style \code{latex} only: format of the tabular environement.
-##' @param latexHline For style \code{latex} only: if \code{TRUE} add hline statements add the end of each line.
-##' @param latexNoDollar For style \code{latex} only: if \code{TRUE} do not enclose numbers in dollars.
+##' @param latex.table.format For style \code{latex} only: format of the tabular environement.
+##' @param latex.hline For style \code{latex} only: if \code{TRUE} add hline statements add the end of each line.
+##' @param latex.nodollar For style \code{latex} only: if \code{TRUE} do not enclose numbers in dollars.
 ##' @param ... Used to transport arguments. Currently supports \code{wiki.class}.
 ##' @examples
 ##'
@@ -36,7 +36,7 @@
 ##' y <- cbind(matrix(letters[1:12],ncol=3),x,matrix(rnorm(12),ncol=3))
 ##' publish(y,digits=1)
 ##' 
-##' publish(x,interLines=list("1"="text between line 1 and line 2",
+##' publish(x,inter.lines=list("1"="text between line 1 and line 2",
 ##'                           "3"="text between line 3 and line 4"))
 ##' 
 ##' @export
@@ -50,18 +50,18 @@ publish.matrix <- function(object,
                            endhead,
                            endrow,
                            style,
-                           interLines,
+                           inter.lines,
                            latex=FALSE,
                            wiki=FALSE,
                            org=FALSE,
                            markdown=FALSE,
                            tabular=TRUE,
-                           latexTableFormat=NA,
-                           latexHline=1,
-                           latexNoDollar=FALSE,
+                           latex.table.format=NA,
+                           latex.hline=1,
+                           latex.nodollar=FALSE,
                            ...){
-    if (missing(interLines))
-        interLines <- NULL
+    if (missing(inter.lines))
+        inter.lines <- NULL
     rrr <- rownames(object)
     # {{{ force vectors into matrix form
     if (is.null(dim(object))){
@@ -95,7 +95,7 @@ publish.matrix <- function(object,
                starthead <- ""
                collapse.head <- "&"
                if (missing(endhead)){
-                   if (is.na(latexHline))
+                   if (is.na(latex.hline))
                        endhead <- "\\\\\n"
                    else
                        endhead <- "\\\\\\hline\n"
@@ -200,10 +200,10 @@ publish.matrix <- function(object,
     # }}}
     # {{{ header
     if (latex && tabular==TRUE) {
-        if (is.na(latexTableFormat))
+        if (is.na(latex.table.format))
             cat("\\begin{tabular}{",c("l|",rep("c",NCOL(object)-1)),"}","\n")
         else
-            cat("\\begin{tabular}{",latexTableFormat,"}","\n")
+            cat("\\begin{tabular}{",latex.table.format,"}","\n")
     }
     if (wiki){
         cat("{|","class=\"",control$wiki$class,"\"\n")
@@ -212,8 +212,8 @@ publish.matrix <- function(object,
     }
     # }}}
     # {{{ insert colunm names
-    if (!is.null(interLines[[as.character(0)]]))
-        cat(interLines[[as.character(0)]],"\n")
+    if (!is.null(inter.lines[[as.character(0)]]))
+        cat(inter.lines[[as.character(0)]],"\n")
     if (!is.null(ccc) && colnames==TRUE){
         cat(starthead,paste(ccc,collapse=collapse.head),endhead)
         if (org==TRUE){
@@ -242,7 +242,7 @@ publish.matrix <- function(object,
     # }}}
     # {{{ Cat by row
     if (is.null(dim(object))){
-        if (latex && latexNoDollar==FALSE){
+        if (latex && latex.nodollar==FALSE){
             object[grep("<|>|[0-9.]+",object)] <- paste("$",object[grep("<|>|[0-9.]+",object)],"$")
         }
         cat(startrow,paste(object,collapse=collapse.row),endrow)
@@ -252,13 +252,13 @@ publish.matrix <- function(object,
             ## apply(object,1,function(object){
             row.x <- object[r,,drop=TRUE]
             ## extra lines
-            if (!is.null(interLines[[as.character(r)]]))
-                cat(interLines[[as.character(r)]],"\n")
+            if (!is.null(inter.lines[[as.character(r)]]))
+                cat(inter.lines[[as.character(r)]],"\n")
             ## protect numbers
-            if (latex && latexNoDollar==FALSE){#      if (latex)
+            if (latex && latex.nodollar==FALSE){#      if (latex)
                 row.x[grep("<|>|[0-9.]+",row.x)]=paste("$",row.x[grep("<|>|[0-9.]+",row.x)],"$")
             }
-            if (latex && latexHline && object[[1]]!="") cat("\\hline\n")
+            if (latex && latex.hline && object[[1]]!="") cat("\\hline\n")
             cat(startrow,paste(row.x,collapse=collapse.row),endrow)
         }
     }

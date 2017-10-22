@@ -8,7 +8,7 @@
 ##' for the really efficiently working people e.g. in emacs.
 ##' @title Efficient coding of factor levels
 ##' @param data Data frame in which to search for categorical variables.
-##' @param maxlevels Treat non-factor variables only if the number of unique values less than maxlevels. Defaults to 10.
+##' @param max.levels Treat non-factor variables only if the number of unique values less than max.levels. Defaults to 10.
 ##' @return R-code one line for each variable.
 ##' @author Thomas Alexander Gerds
 ##' @examples
@@ -16,14 +16,14 @@
 ##' lazyFactorCoding(Diabetes)
 ##'
 ##' @export
-lazyFactorCoding <- function(data,maxlevels=10){
+lazyFactorCoding <- function(data,max.levels=10){
     if (!is.character(data))
         data <- as.character(substitute(data))
     d <- get(data, envir=parent.frame())
     isdt <- match("data.table",class(d),nomatch=FALSE)
     out <- lapply(names(d),function(x){
         dx <- d[[x]]
-        if ((is.factor(dx) && length(unique(dx))<maxlevels) || (length(unique(dx))<maxlevels)){
+        if ((is.factor(dx) && length(unique(dx))<max.levels) || (length(unique(dx))<max.levels)){
             levs.x <- if (is.factor(unique(dx))) levels(dx) else sort(unique(dx))
             labels.x <- paste("\"",paste(levs.x,collapse="\",\"",sep=""),"\"",sep="")
             if (isdt){

@@ -5,7 +5,7 @@
 ##' @param x not used (for compatibility with format)
 ##' @param lower Numeric vector of lower limits
 ##' @param upper Numeric vector of upper limits
-##' @param showX Logical. If \code{TRUE} show value of x in front of confidence interval.
+##' @param show.x Logical. If \code{TRUE} show value of x in front of confidence interval.
 ##' @param handler Function to format numeric values. Default is
 ##'     \code{sprintf}, also supported are \code{format} and
 ##'     \code{prettyNum}
@@ -36,7 +36,7 @@
 ##' # change format
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="(l, u)")
 ##' # show x
-##' formatCI(x=x$mean,lower=x$lower,upper=x$upper,format="(l, u)",showX=TRUE)
+##' formatCI(x=x$mean,lower=x$lower,upper=x$upper,format="(l, u)",show.x=TRUE)
 ##'
 ##' # if the first lower limit is shorter than the second (missing negative sign),
 ##' # then, option trim will make a difference:
@@ -55,7 +55,7 @@
 formatCI <- function(x,
                      lower,
                      upper,
-                     showX=FALSE,
+                     show.x=FALSE,
                      handler="sprintf",
                      format="[l;u]",
                      degenerated="asis",
@@ -76,7 +76,7 @@ formatCI <- function(x,
             ci <- do.call("sprintf",list(fmt=format,lower[i],upper[i]))
         ci
     })
-    if (showX)
+    if (show.x)
         out <- paste(pubformat(x,digits=digits,handler=handler,nsmall=nsmall),out)
     out
 }

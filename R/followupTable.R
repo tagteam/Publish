@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Nov 28 2015 (08:23) 
 ## Version: 
-## last-updated: Jun 17 2016 (10:43) 
+## last-updated: Oct 22 2017 (12:55) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 49
+##     Update #: 50
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -17,7 +17,7 @@
 ##' Summarize baseline variables in groups defined by outcome
 ##' at a given followup time point
 ##'
-##' If \code{compareGroups!=FALSE}, p-values are obtained from stopped Cox regression, i.e., all events are censored at follow-up time.
+##' If \code{compare.groups!=FALSE}, p-values are obtained from stopped Cox regression, i.e., all events are censored at follow-up time.
 ##' A univariate Cox regression model is fitted to assess the effect of each variable on the right hand side of the formula on the event hazard and shown is the p-value of \code{anova(fit)}, see \code{\link{anova.coxph}}.
 ##  With competing risks the same is done for the hazard of being event-free (combined end-point analysis).
 ##' @title Summary tables for a given followup time point.
@@ -29,9 +29,9 @@
 ##' \code{formula} can be interpreted.
 ##' @param followup.time Time point at which to evaluate outcome
 ##' status.
-##' @param compareGroups Method for comparing groups. 
+##' @param compare.groups Method for comparing groups. 
 ##' @param ... Passed to \code{utable}. All arguments of \code{utable}
-##' can be controlled in this way except for \code{compareGroups}
+##' can be controlled in this way except for \code{compare.groups}
 ##' which is set to \code{"Cox"}. See details.
 ##' @return
 ##' Summary table.
@@ -45,7 +45,7 @@
 ##' 
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-followupTable <- function(formula,data,followup.time,compareGroups,...){
+followupTable <- function(formula,data,followup.time,compare.groups,...){
     event.history <- prodlim::EventHistory.frame(update(formula,".~1"),
                                                  data=data,
                                                  check.formula=TRUE,
@@ -86,28 +86,28 @@ followupTable <- function(formula,data,followup.time,compareGroups,...){
     uformula <- update(formula,"fstatus~.")
     ## groupname <- "status"
     data$fstatus <- status
-    if (missing(compareGroups)){
+    if (missing(compare.groups)){
         dots <- match.call(expand.dots=TRUE)
-        compareGroups <- dots$compareGroups
-        if (length(compareGroups)==0)
-            compareGroups <- "Cox"
+        compare.groups <- dots$compare.groups
+        if (length(compare.groups)==0)
+            compare.groups <- "Cox"
         else
-            compareGroups <- NULL
+            compare.groups <- NULL
     }
-    if (length(compareGroups)>0 && compareGroups!=FALSE){
+    if (length(compare.groups)>0 && compare.groups!=FALSE){
         outcome <- unclass(prodlim::stopTime(event.history,stop.time=followup.time))
         ## for now: effect on event-free survival 
         if (model=="competing.risks"){
             outcome[,"status"] <- outcome[,"status"]!=0
         }
     } else{
-        compareGroups <- FALSE
+        compare.groups <- FALSE
         outcome <- NULL
     }
     utable(formula=uformula,
            data=data,
            outcome=outcome,
-           compareGroups=compareGroups,
+           compare.groups=compare.groups,
            ...)
 }
 

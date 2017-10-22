@@ -6,7 +6,7 @@
 \usage{
 \method{summary}{univariateTable}(object, missing = c("ifany", "always",
   "never"), n = "inNames", suppressFactorReference = FALSE,
-  pvalue.stars = FALSE, pvalue.digits = 4, showPvalues, showTotals, ...)
+  pvalue.stars = FALSE, pvalue.digits = 4, show.pvalues, show.totals, ...)
 }
 \arguments{
 \item{object}{\code{univariateTable} object as obtained with
@@ -31,13 +31,13 @@ otherwise use \code{format.pval}.}
 
 \item{pvalue.digits}{Passed to \code{format.pval}.}
 
-\item{showPvalues}{Logical. If set to \code{FALSE} the column
+\item{show.pvalues}{Logical. If set to \code{FALSE} the column
 \code{p-values} is removed. If missing the value
-\code{object$compareGroups[[1]]==TRUE} is used.}
+\code{object$compare.groups[[1]]==TRUE} is used.}
 
-\item{showTotals}{Logical. If set to \code{FALSE} the column
+\item{show.totals}{Logical. If set to \code{FALSE} the column
 \code{Totals} is removed. If missing the value
-\code{object$showTotals} is used.}
+\code{object$show.totals} is used.}
 
 \item{...}{passed on to \code{labelUnits}. This overwrites labels
 stored in \code{object$labels}}

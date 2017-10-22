@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Dec 10 2015 (10:06) 
 ## Version: 
-## last-updated: Dec 10 2015 (10:23) 
+## last-updated: Oct 22 2017 (12:55) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 7
+##     Update #: 8
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -45,10 +45,5 @@ publish.riskReclassification <- function(x,percent=TRUE,digits=ifelse(percent,1,
     publish(rlist[[length(rlist)]],quote=FALSE,...)
     ## print.listof(rlist[length(rlist)],quote=FALSE)
 }
-#----------------------------------------------------------------------
-### print.reclassification.R ends here
-
-
-
 #----------------------------------------------------------------------
 ### publish.riskReclassification.R ends here

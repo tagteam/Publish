@@ -4,7 +4,7 @@
 \alias{followupTable}
 \title{Summary tables for a given followup time point.}
 \usage{
-followupTable(formula, data, followup.time, compareGroups, ...)
+followupTable(formula, data, followup.time, compare.groups, ...)
 }
 \arguments{
 \item{formula}{Formula A formula whose left hand side is a
@@ -18,10 +18,10 @@ followupTable(formula, data, followup.time, compareGroups, ...)
 \item{followup.time}{Time point at which to evaluate outcome
 status.}
 
-\item{compareGroups}{Method for comparing groups.}
+\item{compare.groups}{Method for comparing groups.}
 
 \item{...}{Passed to \code{utable}. All arguments of \code{utable}
-can be controlled in this way except for \code{compareGroups}
+can be controlled in this way except for \code{compare.groups}
 which is set to \code{"Cox"}. See details.}
 }
 \value{
@@ -32,7 +32,7 @@ Summarize baseline variables in groups defined by outcome
 at a given followup time point
 }
 \details{
-If \code{compareGroups!=FALSE}, p-values are obtained from stopped Cox regression, i.e., all events are censored at follow-up time.
+If \code{compare.groups!=FALSE}, p-values are obtained from stopped Cox regression, i.e., all events are censored at follow-up time.
 A univariate Cox regression model is fitted to assess the effect of each variable on the right hand side of the formula on the event hazard and shown is the p-value of \code{anova(fit)}, see \code{\link{anova.coxph}}.
 }
 \examples{

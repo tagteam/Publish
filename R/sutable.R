@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Nov 28 2015 (08:40) 
 ## Version: 
-## last-updated: Dec  1 2015 (09:50) 
+## last-updated: Oct 22 2017 (12:57) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 5
+##     Update #: 7
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -30,7 +30,7 @@
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 sutable <- function(...){
     args <- list(...)
-    unames <- c("formula","data","summary.format","Q.format","freq.format","column.percent","digits","strataIsOutcome","shortGroupNames","na.rm")
+    unames <- c("formula","data","summary.format","Q.format","freq.format","column.percent","digits","strataIsOutcome","short.groupnames","na.rm")
     ## no name arguments go into utable
     uargs <- args[names(args)==""]
     args <- args[names(args)!=""]

@@ -4,10 +4,10 @@
 \alias{specialFrame}
 \title{Special frame}
 \usage{
-specialFrame(formula, data, unspecialsDesign = TRUE, specials,
-  specialsFactor = TRUE, specialsDesign = FALSE, stripSpecials = TRUE,
-  stripArguments = NULL, stripAlias = NULL, stripUnspecials = NULL,
-  dropIntercept = TRUE, response = TRUE, na.action = options()$na.action)
+specialFrame(formula, data, unspecials.design = TRUE, specials,
+  specials.factor = TRUE, specials.design = FALSE, strip.specials = TRUE,
+   strip.arguments = NULL,  strip.alias = NULL,  strip.unspecials = NULL,
+  drop.intercept = TRUE, response = TRUE, na.action = options()$na.action)
 }
 \arguments{
 \item{formula}{Formula whose left hand side specifies the event
@@ -15,7 +15,7 @@ history, i.e., either via Surv() or Hist().}
 
 \item{data}{Data frame in which the formula is interpreted}
 
-\item{unspecialsDesign}{Passed as is to
+\item{unspecials.design}{Passed as is to
 \code{\link{model.design}}.}
 
 \item{specials}{Character vector of special function names.
@@ -23,23 +23,23 @@ Usually the body of the special functions is function(x)x but
 e.g., \code{\link{strata}} from the survival package does treat
 the values}
 
-\item{specialsFactor}{Passed as is to \code{\link{model.design}}.}
+\item{specials.factor}{Passed as is to \code{\link{model.design}}.}
 
-\item{specialsDesign}{Passed as is to \code{\link{model.design}}}
+\item{specials.design}{Passed as is to \code{\link{model.design}}}
 
-\item{stripSpecials}{Passed as \code{specials} to
+\item{strip.specials}{Passed as \code{specials} to
 \code{\link{strip.terms}}}
 
-\item{stripArguments}{Passed as \code{arguments} to
+\item{ strip.arguments}{Passed as \code{arguments} to
 \code{\link{strip.terms}}}
 
-\item{stripAlias}{Passed as \code{alias.names} to
+\item{ strip.alias}{Passed as \code{alias.names} to
 \code{\link{strip.terms}}}
 
-\item{stripUnspecials}{Passed as \code{unspecials} to
+\item{ strip.unspecials}{Passed as \code{unspecials} to
 \code{\link{strip.terms}}}
 
-\item{dropIntercept}{Passed as is to \code{\link{model.design}}}
+\item{drop.intercept}{Passed as is to \code{\link{model.design}}}
 
 \item{response}{If FALSE do not get response data.}
 
@@ -89,14 +89,14 @@ e$prop
 e2 <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
                    data=d,
                    specials=c("prop","cluster"),
-                   specialsDesign=TRUE)
+                   specials.design=TRUE)
 e2$prop
 ## and the non-special covariates can be returned as a data.frame
 e3 <- specialFrame(y~prop(X1)+X2+cluster(X3)+X4,
                    data=d,
                    specials=c("prop","cluster"),
-                   specialsDesign=TRUE,
-                   unspecialsDesign=FALSE)
+                   specials.design=TRUE,
+                   unspecials.design=FALSE)
 e3$design
 }
 \seealso{

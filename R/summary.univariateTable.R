@@ -11,7 +11,7 @@
 ##' column. If equal to \code{"inNames"}, show the numbers in
 ##' parentheses in the column names.  If missing the value
 ##' \code{object$n} is used.
-##' @param suppressFactorReference Logical or character (vector). Decide if line with reference
+##' @param drop.reference Logical or character (vector). Decide if line with reference
 ##' level should be suppressed for factors. If \code{TRUE} or \code{"all"}
 ##' suppress for all categorical factors. If \code{'binary'} suppress only for binary variables.
 ##' Can be character vector in which case reference lines are suppressed for variables
@@ -19,12 +19,12 @@
 ##' @param pvalue.stars If TRUE use \code{symnum} to parse p-values
 ##' otherwise use \code{format.pval}.
 ##' @param pvalue.digits Passed to \code{format.pval}.
-##' @param showPvalues Logical. If set to \code{FALSE} the column
+##' @param show.pvalues Logical. If set to \code{FALSE} the column
 ##' \code{p-values} is removed. If missing the value
-##' \code{object$compareGroups[[1]]==TRUE} is used.
-##' @param showTotals Logical. If set to \code{FALSE} the column
+##' \code{object$compare.groups[[1]]==TRUE} is used.
+##' @param show.totals Logical. If set to \code{FALSE} the column
 ##' \code{Totals} is removed. If missing the value
-##' \code{object$showTotals} is used.
+##' \code{object$show.totals} is used.
 ##' @param ... passed on to \code{labelUnits}. This overwrites labels
 ##' stored in \code{object$labels}
 ##' @export
@@ -41,33 +41,33 @@
 ##' u2 <- univariateTable(location~age+gender+height+weight,
 ##'                 data=Diabetes)
 ##' summary(u2)
-##' summary(u2,suppressFactorReference=TRUE)
+##' summary(u2,drop.reference=TRUE)
 ##' ## same but more flexible
-##' summary(u2,suppressFactorReference=c("binary"))
+##' summary(u2,drop.reference=c("binary"))
 ##' ## same but even more flexible
-##' summary(u2,suppressFactorReference=c("gender"))
+##' summary(u2,drop.reference=c("gender"))
 ##' 
 ##' 
 summary.univariateTable <- function(object,
                                     missing=c("ifany","always","never"),
                                     n="inNames",
-                                    suppressFactorReference=FALSE,
+                                    drop.reference=FALSE,
                                     pvalue.stars=FALSE,
                                     pvalue.digits=4,
-                                    showPvalues,
-                                    showTotals,
+                                    show.pvalues,
+                                    show.totals,
                                     ...){
-    if (missing(showTotals))
-        showTotals <- object$showTotals
+    if (missing(show.totals))
+        show.totals <- object$show.totals
     if (missing(n))
         n <- object$n
-    if (missing(showPvalues))
-        showPvalues <- object$compareGroups[[1]]==TRUE
+    if (missing(show.pvalues))
+        show.pvalues <- object$compare.groups[[1]]==TRUE
     # {{{missing and n
     missing <- match.arg(missing,c("ifany","always","never"),several.ok=FALSE)
     # }}}
     # {{{ pvalues
-    if (showPvalues && !is.null(object$p.values)){
+    if (show.pvalues && !is.null(object$p.values)){
         if (pvalue.stars==TRUE)
             px <- symnum(object$p.values,corr = FALSE,na = FALSE,cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),symbols = c("***", "**", "*", ".", " "))
         else
@@ -90,15 +90,15 @@ summary.univariateTable <- function(object,
     for (s in names(ordered.summary)){
         if (!is.null(object$groups)){
             sum <- as.matrix(ordered.summary[[s]])
-            if (showTotals)
+            if (show.totals)
                 sum <- cbind(sum,Total=object$summary.totals[[s]])
         }
         else{
-            if (showTotals)
+            if (show.totals)
                 sum <- data.frame(Total=object$summary.totals[[s]],stringsAsFactors = FALSE)
         }
         if ((missing!="never") && (missing=="always" || any(object$missing$totals[[s]]>0))){
-            if (!showTotals){
+            if (!show.totals){
                 if (is.null(object$groups)){
                     miss <- object$missing$totals[[s]]
                 }
@@ -111,10 +111,10 @@ summary.univariateTable <- function(object,
         sum <- rbind(sum,miss)
         if (object$vartype[[s]]=="factor"){
             lev <- object$xlevels[[s]]
-            if ((is.logical(suppressFactorReference) && suppressFactorReference[1]==TRUE)
-                || (is.character(suppressFactorReference) && (s %in% suppressFactorReference))
-                || (is.character(suppressFactorReference) && suppressFactorReference[1]=="binary" && length(lev)==2)
-                || (is.character(suppressFactorReference) && suppressFactorReference[1]=="all")){
+            if ((is.logical(drop.reference) && drop.reference[1]==TRUE)
+                || (is.character(drop.reference) && (s %in% drop.reference))
+                || (is.character(drop.reference) && drop.reference[1]=="binary" && length(lev)==2)
+                || (is.character(drop.reference) && drop.reference[1]=="all")){
                 ## remove redundant line for reference level
                 lev <- lev[1]
                 sum <- sum[-1,,drop=FALSE]
@@ -126,7 +126,7 @@ summary.univariateTable <- function(object,
                 lev <- gsub("\\(x\\)","",object$summary.format)
         }
         if (!is.null(miss)) lev <- c(lev,"missing")
-        if (showPvalues && !is.null(object$p.values)){
+        if (show.pvalues && !is.null(object$p.values)){
             p <- px[[s]]
             if (NROW(sum)>2 && NROW(p)==(NROW(sum)-1)){
                 sum <- cbind(sum,rbind(rep("",NROW(sum)-1),p=px[[s]]))
@@ -168,13 +168,13 @@ summary.univariateTable <- function(object,
         pname <- NULL
     }
     else{
-        if ((showPvalues==TRUE) && !is.null(object$p.values)){
-            if (tolower(as.character(object$compareGroups)) %in% c("cox","logistic"))
-                pname <- paste("p-value ","(",object$compareGroups,")",sep="")
+        if ((show.pvalues==TRUE) && !is.null(object$p.values)){
+            if (tolower(as.character(object$compare.groups)) %in% c("cox","logistic"))
+                pname <- paste("p-value ","(",object$compare.groups,")",sep="")
             else
                 pname <- "p-value"
         }else pname <- NULL
-        if (showTotals[[1]]==TRUE){
+        if (show.totals[[1]]==TRUE){
             if (length(n)>0 && (n=="inNames"))
                 totalName <- paste("Total"," (n=",object$n.groups[length(object$n.groups)],")",sep="")
             else
