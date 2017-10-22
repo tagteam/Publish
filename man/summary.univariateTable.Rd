@@ -5,8 +5,8 @@
 \title{Preparing univariate tables for publication}
 \usage{
 \method{summary}{univariateTable}(object, missing = c("ifany", "always",
-  "never"), n = "inNames", suppressFactorReference = FALSE,
-  pvalue.stars = FALSE, pvalue.digits = 4, show.pvalues, show.totals, ...)
+  "never"), n = "inNames", drop.reference = FALSE, pvalue.stars = FALSE,
+  pvalue.digits = 4, show.pvalues, show.totals, ...)
 }
 \arguments{
 \item{object}{\code{univariateTable} object as obtained with
@@ -20,7 +20,7 @@ column. If equal to \code{"inNames"}, show the numbers in
 parentheses in the column names.  If missing the value
 \code{object$n} is used.}
 
-\item{suppressFactorReference}{Logical or character (vector). Decide if line with reference
+\item{drop.reference}{Logical or character (vector). Decide if line with reference
 level should be suppressed for factors. If \code{TRUE} or \code{"all"}
 suppress for all categorical factors. If \code{'binary'} suppress only for binary variables.
 Can be character vector in which case reference lines are suppressed for variables
@@ -62,11 +62,11 @@ summary(u,pvalue.digits=2,"age"="Age (years)","height"="Body height (cm)")
 u2 <- univariateTable(location~age+gender+height+weight,
                 data=Diabetes)
 summary(u2)
-summary(u2,suppressFactorReference=TRUE)
+summary(u2,drop.reference=TRUE)
 ## same but more flexible
-summary(u2,suppressFactorReference=c("binary"))
+summary(u2,drop.reference=c("binary"))
 ## same but even more flexible
-summary(u2,suppressFactorReference=c("gender"))
+summary(u2,drop.reference=c("gender"))
 
 
 }

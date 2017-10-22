@@ -6,9 +6,9 @@
 \usage{
 \method{publish}{matrix}(object, title, colnames = TRUE, rownames = TRUE,
   col1name = "", digits = 4, sep = " ", endhead, endrow, style,
-  interLines, latex = FALSE, wiki = FALSE, org = FALSE,
-  markdown = FALSE, tabular = TRUE, latexTableFormat = NA,
-  latexHline = 1, latexNoDollar = FALSE, ...)
+  inter.lines, latex = FALSE, wiki = FALSE, org = FALSE,
+  markdown = FALSE, tabular = TRUE, latex.table.format = NA,
+  latex.hline = 1, latex.nodollar = FALSE, ...)
 }
 \arguments{
 \item{object}{Matrix to be published}
@@ -34,7 +34,7 @@
 \code{"org"}, \code{"markdown"}, \code{"wiki"},
 \code{"none"}. Overwritten by argments below.}
 
-\item{interLines}{A named list which contains strings to be placed
+\item{inter.lines}{A named list which contains strings to be placed
 between the rows of the table. An element with name \code{"0"} is
 used to place a line before the first column, elements with name
 \code{"r"} are placed between line r and r+1.}
@@ -49,11 +49,11 @@ used to place a line before the first column, elements with name
 
 \item{tabular}{For style \code{latex} only: if \code{TRUE} enclose the table in begin/end tabular environement.}
 
-\item{latexTableFormat}{For style \code{latex} only: format of the tabular environement.}
+\item{latex.table.format}{For style \code{latex} only: format of the tabular environement.}
 
-\item{latexHline}{For style \code{latex} only: if \code{TRUE} add hline statements add the end of each line.}
+\item{latex.hline}{For style \code{latex} only: if \code{TRUE} add hline statements add the end of each line.}
 
-\item{latexNoDollar}{For style \code{latex} only: if \code{TRUE} do not enclose numbers in dollars.}
+\item{latex.nodollar}{For style \code{latex} only: if \code{TRUE} do not enclose numbers in dollars.}
 
 \item{...}{Used to transport arguments. Currently supports \code{wiki.class}.}
 }
@@ -69,7 +69,7 @@ publish(x)
 y <- cbind(matrix(letters[1:12],ncol=3),x,matrix(rnorm(12),ncol=3))
 publish(y,digits=1)
 
-publish(x,interLines=list("1"="text between line 1 and line 2",
+publish(x,inter.lines=list("1"="text between line 1 and line 2",
                           "3"="text between line 3 and line 4"))
 
 }

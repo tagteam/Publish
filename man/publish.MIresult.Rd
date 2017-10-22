@@ -86,7 +86,7 @@ library(mitools)
 set.seed(17)
 fb= smcfcs(db,smtype="logistic",
            smformula=Y~X4+X3+X6+X7,
-           method=c("","","logreg","norm",""),m=3)
+           method=c("","","logreg","norm",""),m=2)
 ccfit=glm(Y~X4+X3+X6+X7,family="binomial",data=db)
 mifit=MIcombine(with(imputationList(fb$impDatasets),
                 glm(Y~X4+X3+X6+X7,family="binomial")))
@@ -110,13 +110,12 @@ sapply(ds,function(x)sum(is.na(x)))
 set.seed(17)
 fs= smcfcs(ds,smtype="coxph",
            smformula="Surv(time,event)~X4+X3+X6+X7",
-           method=c("","","","logreg","norm",""),m=3)
+           method=c("","","","logreg","norm",""),m=2)
 ccfit=coxph(Surv(time,event)~X4+X3+X6+X7,data=ds)
 mifit=MIcombine(with(imputationList(fs$impDatasets),
                 coxph(Surv(time,event)~X4+X3+X6+X7)))
 publish(mifit,fit=ccfit,data=ds)
 publish(ccfit)
-
 
 ## competing risks: Cause-specific Cox regression 
 library(survival)
@@ -136,7 +135,7 @@ set.seed(17)
 fcr= smcfcs(dcr,smtype="compet",
            smformula=c("Surv(time,event==1)~X4+X3+X6+X7",
                        "Surv(time,event==2)~X4+X3+X6+X7"),
-           method=c("","","","logreg","norm",""),m=3)
+           method=c("","","","logreg","norm",""),m=2)
 ## cause 2 
 ccfit2=coxph(Surv(time,event==2)~X4+X3+X6+X7,data=dcr)
 mifit2=MIcombine(with(imputationList(fcr$impDatasets),

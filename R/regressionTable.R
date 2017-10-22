@@ -54,6 +54,7 @@
 ##' #Add reference values
 ##' summary(regressionTable(f2))
 ##' f3 <- glm(bp.1s~age+gender*frame+chol,data=Diabetes)
+##' publish(f3)
 ##' regressionTable(f3)
 ##' 
 ##' # logistic regression
@@ -362,7 +363,6 @@ regressionTable <- function(object,
             Missing <- try(eval(parse(text=misscall),data))
             if (class(Missing)[1]=="try-error") Missing <- NA
             # }}}
-            browser()
             block <- try(data.frame(lava::estimate(object,
                                                    f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
                                                    coef = coef,

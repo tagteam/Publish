@@ -93,7 +93,8 @@ utable(~age+gender+ height+weight,data=Diabetes)
 univariateTable(location~age+gender+height+weight,data=Diabetes)
 
 ## export result to csv
-table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),show.pvalues=FALSE)
+table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),
+show.pvalues=FALSE)
 # write.csv(table1,file="~/table1.csv",rownames=FALSE)
 
 ## change labels and values

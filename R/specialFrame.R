@@ -121,10 +121,10 @@ specialFrame <- function(formula,
     design <- prodlim::model.design(Terms,
                                     data=mm,
                                     maxOrder=1,
-                                    drop.intercept=drop.intercept,
-                                    unspecials.design=unspecials.design,
-                                    specials.factor=specials.factor,
-                                    specials.design=specials.design)
+                                    dropIntercept=drop.intercept,
+                                    unspecialsDesign=unspecials.design,
+                                    specialsFactor=specials.factor,
+                                    specialsDesign=specials.design)
     # }}}
     out <- c(list(response=response),
              design[sapply(design,length)>0])

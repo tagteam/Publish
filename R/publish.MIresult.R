@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 17 2017 (09:52)
 ## Version:
-## Last-Updated: Sep 15 2017 (13:24) 
+## Last-Updated: Oct 22 2017 (13:13) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 35
+##     Update #: 37
 #----------------------------------------------------------------------
 ### Code:
 #' Regression tables after multiple imputations
@@ -72,7 +72,7 @@
 #' set.seed(17)
 #' fb= smcfcs(db,smtype="logistic",
 #'            smformula=Y~X4+X3+X6+X7,
-#'            method=c("","","logreg","norm",""),m=3)
+#'            method=c("","","logreg","norm",""),m=2)
 #' ccfit=glm(Y~X4+X3+X6+X7,family="binomial",data=db)
 #' mifit=MIcombine(with(imputationList(fb$impDatasets),
 #'                 glm(Y~X4+X3+X6+X7,family="binomial")))
@@ -96,13 +96,12 @@
 #' set.seed(17)
 #' fs= smcfcs(ds,smtype="coxph",
 #'            smformula="Surv(time,event)~X4+X3+X6+X7",
-#'            method=c("","","","logreg","norm",""),m=3)
+#'            method=c("","","","logreg","norm",""),m=2)
 #' ccfit=coxph(Surv(time,event)~X4+X3+X6+X7,data=ds)
 #' mifit=MIcombine(with(imputationList(fs$impDatasets),
 #'                 coxph(Surv(time,event)~X4+X3+X6+X7)))
 #' publish(mifit,fit=ccfit,data=ds)
 #' publish(ccfit)
-#' 
 #'
 #' ## competing risks: Cause-specific Cox regression 
 #' library(survival)
@@ -122,7 +121,7 @@
 #' fcr= smcfcs(dcr,smtype="compet",
 #'            smformula=c("Surv(time,event==1)~X4+X3+X6+X7",
 #'                        "Surv(time,event==2)~X4+X3+X6+X7"),
-#'            method=c("","","","logreg","norm",""),m=3)
+#'            method=c("","","","logreg","norm",""),m=2)
 #' ## cause 2 
 #' ccfit2=coxph(Surv(time,event==2)~X4+X3+X6+X7,data=dcr)
 #' mifit2=MIcombine(with(imputationList(fcr$impDatasets),

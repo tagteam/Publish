@@ -6,7 +6,7 @@
 \usage{
 specialFrame(formula, data, unspecials.design = TRUE, specials,
   specials.factor = TRUE, specials.design = FALSE, strip.specials = TRUE,
-   strip.arguments = NULL,  strip.alias = NULL,  strip.unspecials = NULL,
+  strip.arguments = NULL, strip.alias = NULL, strip.unspecials = NULL,
   drop.intercept = TRUE, response = TRUE, na.action = options()$na.action)
 }
 \arguments{
@@ -30,13 +30,13 @@ the values}
 \item{strip.specials}{Passed as \code{specials} to
 \code{\link{strip.terms}}}
 
-\item{ strip.arguments}{Passed as \code{arguments} to
+\item{strip.arguments}{Passed as \code{arguments} to
 \code{\link{strip.terms}}}
 
-\item{ strip.alias}{Passed as \code{alias.names} to
+\item{strip.alias}{Passed as \code{alias.names} to
 \code{\link{strip.terms}}}
 
-\item{ strip.unspecials}{Passed as \code{unspecials} to
+\item{strip.unspecials}{Passed as \code{unspecials} to
 \code{\link{strip.terms}}}
 
 \item{drop.intercept}{Passed as is to \code{\link{model.design}}}

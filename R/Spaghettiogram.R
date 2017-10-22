@@ -3,7 +3,7 @@
 ##'
 ##' 
 ##' @title Spaghettiogram
-##' @aliases spaghettiogram
+##' @aliases spaghettiogram Spaghettiogram
 ##' @param formula A formula which specifies the variables for the
 ##' spaghettiograms. If Y ~ X + id(Z) then for each value of Z the
 ##' spaghettiogram is the graph (X,Y) in the subset defined by the

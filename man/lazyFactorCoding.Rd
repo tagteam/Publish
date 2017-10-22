@@ -4,12 +4,12 @@
 \alias{lazyFactorCoding}
 \title{Efficient coding of factor levels}
 \usage{
-lazyFactorCoding(data, maxlevels = 10)
+lazyFactorCoding(data, max.levels = 10)
 }
 \arguments{
 \item{data}{Data frame in which to search for categorical variables.}
 
-\item{maxlevels}{Treat non-factor variables only if the number of unique values less than maxlevels. Defaults to 10.}
+\item{max.levels}{Treat non-factor variables only if the number of unique values less than max.levels. Defaults to 10.}
 }
 \value{
 R-code one line for each variable.
