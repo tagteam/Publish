@@ -45,6 +45,7 @@ Show results of smcfcs based multiple imputations of missing covariates in publi
 }
 \examples{
 
+\dontrun{
 ## continuous outcome: linear regression
 # lava some data with missing values
 library(riskRegression)
@@ -57,6 +58,7 @@ d=d[,.(X8,X4,X3,X6,X7)]
 sapply(d,function(x)sum(is.na(x)))
 
 # multiple imputation (should set m to a large value)
+
 library(smcfcs)
 library(mitools)
 set.seed(17)
@@ -142,7 +144,7 @@ mifit2=MIcombine(with(imputationList(fcr$impDatasets),
                 coxph(Surv(time,event==2)~X4+X3+X6+X7)))
 publish(mifit2,fit=ccfit2,data=dcr)
 publish(ccfit2)
-
+} 
 
 }
 \author{

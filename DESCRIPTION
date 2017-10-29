@@ -4,8 +4,13 @@ Title: Format Output of Various Routines in a Suitable Way for Reports and Publi
 Description: A bunch of convenience functions that transform the results of some basic statistical analyses
        into table format nearly ready for publication. This includes descriptive tables, tables of
        logistic regression and Cox regression results as well as forest plots. 
-Version: 2017.10.22
-Author: Thomas A. Gerds, Christian Torp-Pedersen
+Version: 2017.10.24
+Authors@R: c(person("Thomas A.", "Gerds", role = c("aut", "cre"),
+                    email = "tag@biostat.ku.dk"),
+             person("Christian", "Torp-Pedersen", role = "ctb"),
+             person("Klaus", "K Holst", role = "ctb"),
+             person("Brice", "Ozenne", role = "aut",
+                    email = "broz@sund.ku.dk"))
 Maintainer: Thomas A. Gerds <tag@biostat.ku.dk>
 Depends:
     prodlim (>= 1.5.4)

@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 17 2017 (09:52)
 ## Version:
-## Last-Updated: Oct 22 2017 (13:13) 
+## Last-Updated: Oct 23 2017 (13:35) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 37
+##     Update #: 38
 #----------------------------------------------------------------------
 ### Code:
 #' Regression tables after multiple imputations
@@ -31,6 +31,7 @@
 #' @param ... passed to summary.regressionTable, labelUnits and publish.default.
 #' @examples
 #'
+#' \dontrun{
 #' ## continuous outcome: linear regression
 #' # lava some data with missing values
 #' library(riskRegression)
@@ -43,6 +44,7 @@
 #' sapply(d,function(x)sum(is.na(x)))
 #'
 #' # multiple imputation (should set m to a large value)
+#' 
 #' library(smcfcs)
 #' library(mitools)
 #' set.seed(17)
@@ -128,7 +130,7 @@
 #'                 coxph(Surv(time,event==2)~X4+X3+X6+X7)))
 #' publish(mifit2,fit=ccfit2,data=dcr)
 #' publish(ccfit2)
-#' 
+#'} 
 #' 
 #' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 #' @export
