@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 17 2017 (09:52)
 ## Version:
-## Last-Updated: Oct 23 2017 (13:35) 
+## Last-Updated: Oct 31 2017 (15:52) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 38
+##     Update #: 39
 #----------------------------------------------------------------------
 ### Code:
 #' Regression tables after multiple imputations

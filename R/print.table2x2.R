@@ -49,7 +49,7 @@ print.table2x2 <- function(x,digits=1,...){
                   "\nUpper 95%-confidence limit: = RD + 1.96 * SE.RD = ",
                   format(rd.upper,digits=digits+3,nsmall=digits+3),
                   "\n\nThe estimated risk difference is ",format(100*rd,digits=digits,nsmall=digits),"% ",
-                  paste("(CI_95%: [", format(100*rd.lower,digits=digits,nsmall=digits), ";", format(100*rd.upper,digits=digits,nsmall=digits), "]", sep = ""),
+                  paste(" (CI_95%: [", format(100*rd.lower,digits=digits,nsmall=digits), ";", format(100*rd.upper,digits=digits,nsmall=digits), "]", sep = ""),
                   ").\n",sep=""))
     }
     if ("rr" %in% stats){
@@ -67,7 +67,7 @@ print.table2x2 <- function(x,digits=1,...){
                   "\nUpper 95%-confidence limit: = RR * exp(1.96 * SE.RR) = ",
                   format(rr.upper,digits=digits+3,nsmall=digits+3),
                   "\n\nThe estimated risk ratio is ",format(rr,digits=digits+2,nsmall=digits+2),"",
-                  paste("(CI_95%: [", format(rr.lower,digits=digits+2,nsmall=digits+2), ";", format(rr.upper,digits=digits+2,nsmall=digits+2), "]", sep = ""),
+                  paste(" (CI_95%: [", format(rr.lower,digits=digits+2,nsmall=digits+2), ";", format(rr.upper,digits=digits+2,nsmall=digits+2), "]", sep = ""),
                   ").\n",sep=""))
     }
     if ("or" %in% stats){
@@ -76,7 +76,7 @@ print.table2x2 <- function(x,digits=1,...){
         or.lower <- x$or.lower
         or.upper <- x$or.upper
         cat(paste("\n_____________________________\n\nOdds ratio\n_____________________________\n\n",
-                  "Odds ratio = OR = p1/p2 = ",
+                  "Odds ratio = OR = (p1/(1-p1))/(p2/(1-p2)) = ",
                   format(or,digits=digits+3,nsmall=digits+3),
                   "\nStandard error = SE.OR = sqrt((1/a+1/b+1/c+1/d)) = ",
                   format(se.or,digits=digits+3,nsmall=digits+3),
@@ -85,7 +85,7 @@ print.table2x2 <- function(x,digits=1,...){
                   "\nUpper 95%-confidence limit: = OR * exp(1.96 * SE.OR) = ",
                   format(or.upper,digits=digits+3,nsmall=digits+3),
                   "\n\nThe estimated odds ratio is ",format(or,digits=digits+2,nsmall=digits+2),"",
-                  paste("(CI_95%: [", format(or.lower,digits=digits+2,nsmall=digits+2), ";", format(or.upper,digits=digits+2,nsmall=digits+2), "]", sep = ""),
+                  paste(" (CI_95%: [", format(or.lower,digits=digits+2,nsmall=digits+2), ";", format(or.upper,digits=digits+2,nsmall=digits+2), "]", sep = ""),
                   ").\n",sep=""))
     }
     if ("chisq" %in% stats){

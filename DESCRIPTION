@@ -17,7 +17,7 @@ Depends:
 Imports:
     survival (>= 2.38),
     data.table (>= 1.10.4),
-    lava (>= 1.4.3),
+    lava (>= 1.5.1),
     multcomp (>= 1.4)
 Suggests:
     lme4 (>= 1.1),

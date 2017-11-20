@@ -146,9 +146,11 @@ regressionTable <- function(object,
         }
     }
     if (is.null(object$data))
-        data <- eval(object$call$data)
+        data <- eval(object$call$data,env=parent.frame())
     else
         data <- object$data
+    ## print(class(data))
+    ## browser()
     if (is.null(units))
         units <- attr(data,"units")
     else{
@@ -244,12 +246,13 @@ regressionTable <- function(object,
         pval <- switch(pvalue.method,
                        "default"={
                            sumcoef <- coef(summary(object))
-                           sumcoef[,NCOL(sumcoef),drop=TRUE]},
+                           sumcoef[,NCOL(sumcoef),drop=FALSE]
+                       },
                        ## "lrt"={
                        ## drop1(object,test="Chisq")[,"Pr(>Chi)",drop=TRUE]
                        ## },
                        "robust"={
-                           lava.mat[,c("P-value"),drop=TRUE]
+                           lava.mat[,c("P-value"),drop=FALSE]
                        },
                        "simultaneous"={
                            summary(multcomp::glht(object))[,c("Pr(>|z|"),drop=TRUE]
@@ -312,10 +315,8 @@ regressionTable <- function(object,
         }
         coef.vn <- coef[parms]
         ci.vn <- ci[parms,,drop=FALSE]
-        p.vn <- pval[parms]
+        p.vn <- pval[parms,,drop=FALSE]
         # {{{ factor variables
-        ## varname <- all.vars(formula(paste("~",vn)),data=data)
-        ## varname <- names(get_all_vars(formula(paste("~",vn)),data=data))
         varname <- vn
         if (isfactor){
             if (factor.reference=="inline"){
@@ -339,14 +340,14 @@ regressionTable <- function(object,
             else
                 Units <- ""
         }
-        ## lis <- list(Variable=Variable,Units=Units,Missing=as.character(Missing),Coefficient=coef.vn,Lower=ci.vn[,1],Upper=ci.vn[,2],Pvalue=p.vn,stringsAsFactors=FALSE)
         block <- data.frame(Variable=Variable,
                             Units=Units,
                             Missing=as.character(Missing),
                             Coefficient=coef.vn,
                             Lower=ci.vn[,1],
                             Upper=ci.vn[,2],
-                            Pvalue=p.vn,stringsAsFactors=FALSE)
+                            Pvalue=as.vector(p.vn),
+                            stringsAsFactors=FALSE)
         if (any(class(object)%in%"MIresult")) colnames(block)[3] <- paste0("Imputed (",object$nimp,")")
         rownames(block) <- NULL
         block
