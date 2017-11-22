@@ -145,12 +145,12 @@ regressionTable <- function(object,
             }
         }
     }
-    if (is.null(object$data))
-        data <- eval(object$call$data,env=parent.frame())
-    else
-        data <- object$data
-    ## print(class(data))
-    ## browser()
+    if (is.null(data <- object$model)){
+        if (is.null(object$data))
+            data <- eval(object$call$data,env=parent.frame())
+        else
+            data <- object$data
+    }
     if (is.null(units))
         units <- attr(data,"units")
     else{

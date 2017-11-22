@@ -33,18 +33,18 @@
 ##' 
 ##' @export
 coxphSeries <- function(formula,data,vars,...){
-  clist <- lapply(vars,function(v){
-    form.v <- update.formula(formula,paste(".~.+",v))
-    cf <- survival::coxph(form.v,data=data,...)
-    cf$call$data <- data
-    u <- summary(regressionTable(cf),print=FALSE)$regressionTable
-    u <- u[grep(v,u$Variable),]
-  })
-  u <- sapply(clist,NCOL)
-  if (any(v <- (u<max(u)))){
-    for (x in (1:length(clist))[v]){
-      clist[[x]] <- cbind(clist[[x]],data.frame("Missing"=rep("--",NROW(clist[[x]])),stringsAsFactors=FALSE))
+    clist <- lapply(vars,function(v){
+        form.v <- update.formula(formula,paste(".~.+",v))
+        cf <- survival::coxph(form.v,data=data,...)
+        cf$call$data <- data
+        rtab <- regressionTable(cf)
+        rtab[v]
+    })
+    u <- sapply(clist,NCOL)
+    if (any(v <- (u<max(u)))){
+        for (x in (1:length(clist))[v]){
+            clist[[x]] <- cbind(clist[[x]],data.frame("Missing"=rep("--",NROW(clist[[x]])),stringsAsFactors=FALSE))
+        }
     }
-  }
-  do.call("rbind",clist)
+    do.call("rbind",clist)
 }
