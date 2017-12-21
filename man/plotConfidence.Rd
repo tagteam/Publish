@@ -100,7 +100,7 @@ values which default to fractions of 0.7 according to the relative
 widths of labels and values, thus by default only 0.3 are used for
 the graphical presentation of the confidence intervals. The
 remaining 30 % are used for the graphical presentation of the
-confidence intervals. See examles}
+confidence intervals. See examles.}
 
 \item{y.offset}{Either a single value or a vector determining the
 vertical offset of all rows.  If it is a single value all rows are

@@ -35,6 +35,7 @@ Collect prediction accuracy results in tables
 }
 \examples{
 library(riskRegression)
+library(survival)
 learn = sampleData(100)
 val= sampleData(100)
 f1=CSC(Hist(time,event)~X1+X8,data=learn)

@@ -1,5 +1,5 @@
 parseFrequencyFormat <- function(format,digits){
-    tmp <- strsplit(format,"[ \t]+|\\(|\\{|\\[|\\)",perl=TRUE)[[1]]
+    tmp <- strsplit(format,"[ \t]+|[^ \t]*=|[^ \t]*:|[^ \t]*-|[^ \t]*\\+|\\(|\\{|\\[|\\)",perl=TRUE)[[1]]
     stats <- tmp[grep("^x$",tmp)-1]
     for(s in 1:length(stats)){
         subs <- switch(stats[s],

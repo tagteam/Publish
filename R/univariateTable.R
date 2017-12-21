@@ -51,6 +51,9 @@
 ##' @param ... saved as part of the result to be passed on to
 ##' \code{labelUnits}
 ##' @return List with one summary table element for each variable on the right hand side of formula.
+##' The summary tables can be combined with \code{rbind}. The function \code{summary.univariateTable}
+##' combines the tables, and shows p-values in custom format.
+##' The summary tables 
 ##' @author Thomas A. Gerds
 ##' @seealso summary.univariateTable, publish.univariateTable
 ##' @examples
@@ -88,10 +91,16 @@
 ##' univariateTable(location~AgeGroups+gender+height+weight,
 ##'                 data=Diabetes)
 ##'
-##' ## Column percent
+##' ## Row percent
 ##' univariateTable(location~gender+age+AgeGroups,
 ##'                 data=Diabetes,
-##'                 column.percent=TRUE)
+##'                 column.percent=FALSE)
+##' 
+##' ## change of frequency format
+##' univariateTable(location~gender+age+AgeGroups,
+##'                 data=Diabetes,
+##'                 column.percent=FALSE,
+##'                 freq.format="percent(x) (n=count(x))")
 ##'
 ##' ## changing Labels
 ##' u <- univariateTable(location~gender+AgeGroups+ height + weight,

@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Oct 22 2017 (16:43) 
+## last-updated: Nov 23 2017 (06:38) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 311
+##     Update #: 315
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -110,7 +110,7 @@
 ##' widths of labels and values, thus by default only 0.3 are used for
 ##' the graphical presentation of the confidence intervals. The
 ##' remaining 30 % are used for the graphical presentation of the
-##' confidence intervals. See examles
+##' confidence intervals. See examles.
 ##' @param y.offset Either a single value or a vector determining the
 ##' vertical offset of all rows.  If it is a single value all rows are
 ##' shifted up (or down if negative) by this value.  This can be used
@@ -535,6 +535,7 @@ plotConfidence <- function(x,
                     ## xratio <- c((1-(lwidth/vwidth))*0.7,(lwidth/vwidth)*0.7)
                     ## xratio <- c(0.5,0.2)
                 }
+                print(xratio)
                 labelswidth <- plotwidth * xratio[1]
                 valueswidth <- plotwidth * xratio[2]
                 ciwidth <- plotwidth - labelswidth - valueswidth
@@ -625,7 +626,8 @@ plotConfidence <- function(x,
     # }}}
     # {{{ ref line
     if (add==FALSE){
-        do.call("segments",smartA$refline)
+        if (missing(refline) || !is.null(refline))
+            do.call("segments",smartA$refline)
     }
     # }}}
     # {{{ point estimates and confidence

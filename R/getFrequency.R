@@ -5,7 +5,6 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
     groupfreq <- vector(NCOL(matrix),mode="list")
     names(groupfreq) <- varnames
     for (v in varnames){
-        ## vv <- matrix[,grep(paste(v,":",sep=""),colnames(matrix))]
         vv <- matrix[,v,drop=FALSE]
         missing.v <- is.na(vv)
         if (is.factor(vv[[1]]))
@@ -16,7 +15,6 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
         ggg <- factor(groupvar[!missing.v],
                       levels=levels(groupvar))
         ## totals
-        ## if (is.null(groupvar) || ("percent" %in% stats)){
         tab.v <- table(vvv)
         total.v <- sum(tab.v)
         s.tab.v <- sum(tab.v)
@@ -34,11 +32,9 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
                 names(values) <- c("count","total","percent")
             do.call("sprintf",c(format,values[stats]))
         })
-        ## } 
-        ## else{
-        ## totals[[v]] <- table(vvv)
-        ## }
+        ## 
         ## groups
+        ##
         if (!is.null(groupvar) && !missing(groupvar) && length(groupvar)==NROW(matrix)){
             tables <- lapply(split(ggg,vvv),function(x){
                 xtab <- data.frame(table(factor(x,levels=groups)))
@@ -54,8 +50,11 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
                     }
                     else{
                         vals <- as.list(unlist(values))
-                        if (match("count",stats,nomatch=FALSE)){
-                            do.call("sprintf",c(format,vals))
+                        if (pos.count <- match("count",stats,nomatch=FALSE)){
+                            if (pos.count==1)
+                                do.call("sprintf",c(format,vals))
+                            else # pos.count==2
+                                do.call("sprintf",c(format,rev(vals)))
                         }else{ ## only percent
                             do.call("sprintf",c(format,vals["Percent"]))
                         }
@@ -71,9 +70,12 @@ getFrequency <- function(matrix,varnames,groupvar,groups,labels,stats,format){
                     colp <- 100*val/sum(val)
                     ## avoid NA when 0/0
                     colp[sum(val)==0] <- 0
-                    if (match("count",stats,nomatch=FALSE)){
+                    if (pos.count <- match("count",stats,nomatch=FALSE)){
                         sapply(1:length(val),function(i){
-                            do.call("sprintf",c(format,as.list(c(val[i],colp[i]))))
+                            if (pos.count==1)
+                                do.call("sprintf",c(format,as.list(c(val[i],colp[i]))))
+                            else # pos.count==2
+                                do.call("sprintf",c(format,as.list(c(colp[i],val[i]))))
                         })
                     }else{ ## show colpercent without count
                         sapply(1:length(val),function(i){

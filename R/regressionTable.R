@@ -147,7 +147,7 @@ regressionTable <- function(object,
     }
     if (is.null(data <- object$model)){
         if (is.null(object$data))
-            data <- eval(object$call$data,env=parent.frame())
+            data <- eval(object$call$data,envir=parent.frame())
         else
             data <- object$data
     }

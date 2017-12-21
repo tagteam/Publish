@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 10 2017 (17:47) 
 ## Version: 
-## Last-Updated: Oct  7 2017 (08:10) 
+## Last-Updated: Dec 21 2017 (09:53) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 13
+##     Update #: 14
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -31,6 +31,7 @@
 ##' @return Results of Score in tabular form
 ##' @examples
 ##' library(riskRegression)
+##' library(survival)
 ##' learn = sampleData(100)
 ##' val= sampleData(100)
 ##' f1=CSC(Hist(time,event)~X1+X8,data=learn)
