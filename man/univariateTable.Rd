@@ -92,8 +92,13 @@ univariateTable(~age+gender+ height+weight,data=Diabetes)
 ## same thing but less typing
 utable(~age+gender+ height+weight,data=Diabetes)
 
-## summary by location
-univariateTable(location~age+gender+height+weight,data=Diabetes)
+## summary by location: 
+univariateTable(location~Q(age)+gender+height+weight,data=Diabetes)
+## continuous variables marked with Q() are (by default) summarized
+## with median (IQR) and kruskal.test (with two groups equivalent to wilcox.test)
+## variables not marked with Q() are (by default) summarized
+## with mean (sd) and anova.glm(...,test="Chisq") (with two groups similar but not exactly equal to t.test)
+## categorical variables are (by default) summarized by count (percent) and anova.glm(...,family=binomial,test="Chisq")
 
 ## export result to csv
 table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),
@@ -119,10 +124,16 @@ Diabetes$AgeGroups <- cut(Diabetes$age,
 univariateTable(location~AgeGroups+gender+height+weight,
                 data=Diabetes)
 
-## Column percent
+## Row percent
 univariateTable(location~gender+age+AgeGroups,
                 data=Diabetes,
-                column.percent=TRUE)
+                column.percent=FALSE)
+
+## change of frequency format
+univariateTable(location~gender+age+AgeGroups,
+                data=Diabetes,
+                column.percent=FALSE,
+                freq.format="percent(x) (n=count(x))")
 
 ## changing Labels
 u <- univariateTable(location~gender+AgeGroups+ height + weight,
