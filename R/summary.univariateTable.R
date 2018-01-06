@@ -119,7 +119,7 @@ summary.univariateTable <- function(object,
                 || (is.character(drop.reference) && drop.reference[1]=="binary" && length(lev)==2)
                 || (is.character(drop.reference) && drop.reference[1]=="all")){
                 ## remove redundant line for reference level
-                lev <- lev[1]
+                lev <- lev[-1]
                 sum <- sum[-1,,drop=FALSE]
             }
         } else{
