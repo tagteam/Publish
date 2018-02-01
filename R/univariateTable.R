@@ -69,8 +69,11 @@
 ##' ## continuous variables marked with Q() are (by default) summarized
 ##' ## with median (IQR) and kruskal.test (with two groups equivalent to wilcox.test)
 ##' ## variables not marked with Q() are (by default) summarized
-##' ## with mean (sd) and anova.glm(...,test="Chisq") (with two groups similar but not exactly equal to t.test)
-##' ## categorical variables are (by default) summarized by count (percent) and anova.glm(...,family=binomial,test="Chisq")
+##' ## with mean (sd) and anova.glm(...,test="Chisq")
+##' ## the p-value of anova.glm with only two groups is similar
+##' ## but not exactly equal to that of a t.test
+##' ## categorical variables are (by default) summarized by count
+##' ## (percent) and anova.glm(...,family=binomial,test="Chisq")
 ##'
 ##' ## export result to csv
 ##' table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),

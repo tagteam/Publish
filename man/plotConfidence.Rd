@@ -5,21 +5,23 @@
 \title{Plot confidence intervals}
 \usage{
 plotConfidence(x, lower, upper, pch = 16, cex = 1, lwd = 1, col = 4,
-  xlim, xlab, labels, title.labels, values, title.values, order,
+  xlim, xlab, labels, title.labels, values, title.values, block.sep,
+  blocktitle = NULL, blocktitle.x, blocktitle.pos, blocktitle.offset, order,
   leftmargin = 0.025, rightmargin = 0.025, stripes, factor.reference.pos,
   factor.reference.label = "Reference", factor.reference.pch = 8,
-  refline = 1, xratio, y.offset = 0, y.title.offset = 1.3, digits = 2,
-  format, extremearrows.length = 0.05, extremearrows.angle = 30,
-  add = FALSE, layout = TRUE, xaxis = TRUE, ...)
+  refline = 1, titleline = TRUE, xratio, y.offset = 0, y.title.offset,
+  digits = 2, format, extremearrows.length = 0.05,
+  extremearrows.angle = 30, add = FALSE, layout = TRUE, xaxis = TRUE,
+  ...)
 }
 \arguments{
-\item{x}{Either a vector containing the point estimates or A list
-whose first element contains the point estimates.  Further list
+\item{x}{Either a vector containing the point estimates or a list
+whose first element contains the point estimates. Further list
 elements can contain the confidence intervals and labels. In this
 case the list needs to have names 'lower' and 'upper' to indicate
 the values of the lower and the upper limits of the confidence
-intervals, respectively, and 'labels' to indicate a vector or
-matrix or list with labels.}
+intervals, respectively, and may have an element 'labels' which is
+a vector or matrix or list with labels.}
 
 \item{lower}{Lower confidence limits. Used if object \code{x} is a
 vector and if \code{x} is a list \code{lower} overwrites element
@@ -46,10 +48,9 @@ controlled separately. See \code{...}.}
 
 \item{labels}{Vector or matrix or list with \code{labels}. Used if
 object \code{x} is a vector and if \code{x} is a list it
-overwrites element \code{x$labels}. If \code{labels=FALSE} do not
-draw labels.}
+overwrites element \code{x$labels}. To avoid drawing of labels, set \code{labels=FALSE}.}
 
-\item{title.labels}{Title of the \code{labels}. If \code{labels}
+\item{title.labels}{Main title for the column which shows the \code{labels}. If \code{labels}
 is a matrix or list \code{title.labels} should be a vector with as
 many elements as labels has columns or elements.}
 
@@ -61,6 +62,16 @@ constructed values. If \code{values=FALSE} do not draw values.}
 \item{title.values}{Title of the \code{values}. If \code{values}
 is a matrix or list \code{title.labels} should be a vector with as
 many elements as values has columns or elements.}
+
+\item{block.sep}{Amount of space between blocks (applies only if \code{labels} is a named  list)}
+
+\item{blocktitle}{Intermediate section headings.}
+
+\item{blocktitle.x}{x-position for blocktitles}
+
+\item{blocktitle.pos}{Vector with y-axis posititions for blocktitles.}
+
+\item{blocktitle.offset}{Y-offset for blocktitles}
 
 \item{order}{Order of the three blocks: labels, confidence limits,
 values. See examples.}
@@ -85,9 +96,11 @@ reference values.}
 \item{factor.reference.pch}{Plotting symbol to use at
 \code{factor.reference.pos}}
 
-\item{refline}{Vertical line to indicate the null
+\item{refline}{Position of a vertical line to indicate the null
 hypothesis. Default is 1 which would work for odds ratios and
 hazard ratios.}
+
+\item{titleline}{Position of a horizontal line to separate the title line from the plot}
 
 \item{xratio}{One or two values between 0 and 1 which determine
 how to split the plot window in horizontal x-direction. If there
@@ -103,11 +116,11 @@ remaining 30 % are used for the graphical presentation of the
 confidence intervals. See examles.}
 
 \item{y.offset}{Either a single value or a vector determining the
-vertical offset of all rows.  If it is a single value all rows are
-shifted up (or down if negative) by this value.  This can be used
-to add a second group of confidence intervals to an existing graph
-or to achieve a visual differentiation of rows that belong
-together.  See examples.}
+vertical offset of all rows. If it is a single value all rows are
+shifted up (or down if negative) by this value. This can be used
+to add a second set of confidence intervals to an existing graph
+or to achieve a visual grouping of rows that belong
+together. See examples.}
 
 \item{y.title.offset}{Numeric value by which to vertically shift
 the titles of the labels and values.}
@@ -188,7 +201,7 @@ limits continue.
 \examples{
 
 library(Publish)
-data(CiTable)
+data(CiTable) 
 
 ## columns 6, 7, 8, 9 contain the hazard ratio, the lower
 ## and the upper confidence limits and the p-values, respectively
@@ -200,27 +213,27 @@ head(CiTable[,1:5])
 ## A first draft version of the plot is obtained as follows
 plotConfidence(x=CiTable[,6:8], labels=CiTable[,1:5])
 
-## The graph consist of at most three blocks:
+## The graph consist of at most three columns:
 ##
-## block 1: labels
-## block 2: printed values of the confidence intervals
-## block 3: graphical presentation of the confidence intervals
+## column 1: labels
+## column 2: printed values of the confidence intervals
+## column 3: graphical presentation of the confidence intervals
 ##
-## NOTE: block 3 appears always, the user decides if also
-##       blocks 1, 2 should appear
+## NOTE: column 3 appears always, the user decides if also
+##       column 1, 2 should appear
 ##
-## The blocks are arranged with the function layout
+## The columns are arranged with the function layout
 ## and the default order is 1,3,2 such that the graphical
 ## display of the confidence intervals appears in the middle
 ##
-## the order of appearance of the three blocks can be changed as follows
+## the order of appearance of the three columns can be changed as follows
 plotConfidence(x=CiTable[,6:8],
                labels=CiTable[,1:5],
                order=c(1,3,2))
 plotConfidence(x=CiTable[,6:8],
                labels=CiTable[,1:5],
                order=c(2,3,1))
-## if there are only two blocks the order is 1, 2
+## if there are only two columns the order is 1, 2
 plotConfidence(x=CiTable[,6:8],
                labels=CiTable[,1:5],
                values=FALSE,
@@ -232,8 +245,8 @@ plotConfidence(x=CiTable[,6:8],
 
 
 
-## The relative size of the blocks needs to be controlled manually
-## by using the argument xratio. If there are only two blocks
+## The relative size of the columns needs to be controlled manually
+## by using the argument xratio. If there are only two columns
 plotConfidence(x=CiTable[,6:8],
                labels=CiTable[,1:5],xratio=c(0.4,0.15))
 
@@ -339,7 +352,7 @@ plotConfidence(x=CiTable[,6:8],
                xaxis.at=c(0.75,1,1.25,1.5))
 
 
-## the values block of the graph can have multiple columns as well
+## the values column of the graph can have multiple columns as well
 ## to illustrate this we create the confidence intervals
 ## before calling the function and then cbind them
 ## to the pvalues
@@ -353,7 +366,7 @@ plotConfidence(x=CiTable[,6:8],
                cex=1.2,
                xratio=c(0.5,0.3))
 
-## Finally, vertical blocks can be delimited with background color
+## Finally, vertical columns can be delimited with background color
 ## NOTE: this may slow things down and potentially create
 ##       large figures (many bytes)
 col1 <- rep(c(prodlim::dimColor("green",density=22),

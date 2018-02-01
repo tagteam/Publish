@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Oct 22 2017 (16:43) 
+## last-updated: Jan 29 2018 (12:48) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 55
+##     Update #: 94
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -21,16 +21,22 @@
 ##' @param x regression table obtained with regressionTable
 ##' @param xlim Limits for x-axis
 ##' @param xlab Label for x-axis
+##' @param style Determines how to arrange variable names and their corresponding units 
 ##' @param ... passed to plotConfidence
 ##' @return NULL
 ##' @seealso regressionTable
 ##' @examples
-##'
+##' ## linear regression
+##' data(Diabetes)
+##' f <- glm(bp.1s~AgeGroups+chol+gender+location,data=Diabetes)
+##' rtf <- regressionTable(f,factor.reference = "inline")
+##' plot(rtf,cex=1.3)
+##' 
 ##' ## logistic regression
 ##' data(Diabetes)
-##' f <- glm(bp.2s~bp.1s+age+chol+gender+location,data=Diabetes)
+##' f <- glm(I(BMI>25)~bp.1s+AgeGroups+chol+gender+location,data=Diabetes,family=binomial)
 ##' rtf <- regressionTable(f,factor.reference = "inline")
-##' plot(rtf,cex=2)
+##' plot(rtf,cex=1.3)
 ##'
 ##' ## Poisson regression
 ##' data(trace)
@@ -47,12 +53,14 @@
 ##'
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-plot.regressionTable <- function(x,xlim,xlab,...){
-    plot(summary(x,print=FALSE),xlim=xlim,xlab=xlab,...)
+plot.regressionTable <- function(x,xlim,xlab,style=1,...){
+    plot(summary(x,print=FALSE),xlim=xlim,xlab=xlab,style=style,...)
 }
 ##' @export
-plot.summary.regressionTable <- function(x,xlim,xlab,...){
+plot.summary.regressionTable <- function(x,xlim,xlab,style=1,...){
     X <- x$rawTable
+    X <- labelUnits(X,...)
+    X[X$Units=="",]$Units <- "1 unit"
     model <- x$model
     if (missing(xlab))
         xlab <- switch(model,
@@ -65,13 +73,24 @@ plot.summary.regressionTable <- function(x,xlim,xlab,...){
     Upper <- X$Upper
     if (missing(xlim)) xlim <- c(min(Lower),max(Upper))
     U <- X$Units
-    if (any(U!=""))
-        Labs <- data.frame(Variable=X$Variable,Units=U)
-    else
-        Labs <- data.frame(Variable=X$Variable)
+    V <- X$Variable
+    if (style==1){
+        Labs <- split(U,rep(1:length(x$blocks),x$blocks))
+        names(Labs) <- names(x$blocks)
+        labels <- list(...)
+        keys <- names(labels)
+        Flabels <- labels[match(keys,names(Labs),nomatch=0)!=0]
+        if (length(Flabels)>0)
+        names(Labs)[match(keys,names(Labs),nomatch=0)] <- Flabels
+    } else {
+        Labs <- data.frame(Variable=V,Units=U)
+    }
     plotConfidence(list(Coef,lower=Lower,upper=Upper),
                    xlim=xlim,
-                   labels=Labs,xlab=xlab,...)
+                   labels=Labs,
+                   xlab=xlab,
+                   refline=1*(model!="Linear regression"),
+                   ...)
 }
 
 

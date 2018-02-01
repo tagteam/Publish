@@ -4,7 +4,7 @@
 \alias{plot.regressionTable}
 \title{Plotting regression coefficients with confidence limits}
 \usage{
-\method{plot}{regressionTable}(x, xlim, xlab, ...)
+\method{plot}{regressionTable}(x, xlim, xlab, style = 1, ...)
 }
 \arguments{
 \item{x}{regression table obtained with regressionTable}
@@ -13,18 +13,25 @@
 
 \item{xlab}{Label for x-axis}
 
+\item{style}{Determines how to arrange variable names and their corresponding units}
+
 \item{...}{passed to plotConfidence}
 }
 \description{
 Plotting regression coefficients with confidence limits
 }
 \examples{
+## linear regression
+data(Diabetes)
+f <- glm(bp.1s~AgeGroups+chol+gender+location,data=Diabetes)
+rtf <- regressionTable(f,factor.reference = "inline")
+plot(rtf,cex=1.3)
 
 ## logistic regression
 data(Diabetes)
-f <- glm(bp.2s~bp.1s+age+chol+gender+location,data=Diabetes)
+f <- glm(I(BMI>25)~bp.1s+AgeGroups+chol+gender+location,data=Diabetes,family=binomial)
 rtf <- regressionTable(f,factor.reference = "inline")
-plot(rtf,cex=2)
+plot(rtf,cex=1.3)
 
 ## Poisson regression
 data(trace)

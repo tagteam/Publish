@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Nov 23 2017 (06:38) 
+## last-updated: Jan 29 2018 (12:47) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 315
+##     Update #: 467
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -44,13 +44,13 @@
 ##' arrows are drawn at the x-lim borders to indicate that the confidence
 ##' limits continue.
 ##' @title Plot confidence intervals
-##' @param x Either a vector containing the point estimates or A list
-##' whose first element contains the point estimates.  Further list
+##' @param x Either a vector containing the point estimates or a list
+##' whose first element contains the point estimates. Further list
 ##' elements can contain the confidence intervals and labels. In this
 ##' case the list needs to have names 'lower' and 'upper' to indicate
 ##' the values of the lower and the upper limits of the confidence
-##' intervals, respectively, and 'labels' to indicate a vector or
-##' matrix or list with labels.
+##' intervals, respectively, and may have an element 'labels' which is
+##' a vector or matrix or list with labels.
 ##' @param lower Lower confidence limits. Used if object \code{x} is a
 ##' vector and if \code{x} is a list \code{lower} overwrites element
 ##' \code{x$lower}.
@@ -68,9 +68,8 @@
 ##' @param xlab Label for the x-axis.
 ##' @param labels Vector or matrix or list with \code{labels}. Used if
 ##' object \code{x} is a vector and if \code{x} is a list it
-##' overwrites element \code{x$labels}. If \code{labels=FALSE} do not
-##' draw labels.
-##' @param title.labels Title of the \code{labels}. If \code{labels}
+##' overwrites element \code{x$labels}. To avoid drawing of labels, set \code{labels=FALSE}.
+##' @param title.labels Main title for the column which shows the \code{labels}. If \code{labels}
 ##' is a matrix or list \code{title.labels} should be a vector with as
 ##' many elements as labels has columns or elements.
 ##' @param values Either logical or vector, matrix or list with
@@ -80,6 +79,11 @@
 ##' @param title.values Title of the \code{values}. If \code{values}
 ##' is a matrix or list \code{title.labels} should be a vector with as
 ##' many elements as values has columns or elements.
+##' @param block.sep Amount of space between blocks (applies only if \code{labels} is a named  list)
+##' @param blocktitle Intermediate section headings.
+##' @param blocktitle.x x-position for blocktitles
+##' @param blocktitle.pos Vector with y-axis posititions for blocktitles.
+##' @param blocktitle.offset Y-offset for blocktitles 
 ##' @param order Order of the three blocks: labels, confidence limits,
 ##' values. See examples.
 ##' @param leftmargin Percentage of plotting region used for
@@ -96,9 +100,10 @@
 ##' \code{factor.reference.pos} instead of values.
 ##' @param factor.reference.pch Plotting symbol to use at
 ##' \code{factor.reference.pos}
-##' @param refline Vertical line to indicate the null
+##' @param refline Position of a vertical line to indicate the null
 ##' hypothesis. Default is 1 which would work for odds ratios and
 ##' hazard ratios.
+##' @param titleline Position of a horizontal line to separate the title line from the plot
 ##' @param xratio One or two values between 0 and 1 which determine
 ##' how to split the plot window in horizontal x-direction. If there
 ##' are two blocks (labels, CI) or (CI, values) only one value is used
@@ -112,11 +117,11 @@
 ##' remaining 30 % are used for the graphical presentation of the
 ##' confidence intervals. See examles.
 ##' @param y.offset Either a single value or a vector determining the
-##' vertical offset of all rows.  If it is a single value all rows are
-##' shifted up (or down if negative) by this value.  This can be used
-##' to add a second group of confidence intervals to an existing graph
-##' or to achieve a visual differentiation of rows that belong
-##' together.  See examples.
+##' vertical offset of all rows. If it is a single value all rows are
+##' shifted up (or down if negative) by this value. This can be used
+##' to add a second set of confidence intervals to an existing graph
+##' or to achieve a visual grouping of rows that belong
+##' together. See examples.
 ##' @param y.title.offset Numeric value by which to vertically shift
 ##' the titles of the labels and values.
 ##' @param digits Number of digits, passed to \code{pubformat} and
@@ -153,7 +158,7 @@
 ##' @examples
 ##'
 ##' library(Publish)
-##' data(CiTable)
+##' data(CiTable) 
 ##'
 ##' ## columns 6, 7, 8, 9 contain the hazard ratio, the lower
 ##' ## and the upper confidence limits and the p-values, respectively
@@ -165,27 +170,27 @@
 ##' ## A first draft version of the plot is obtained as follows
 ##' plotConfidence(x=CiTable[,6:8], labels=CiTable[,1:5])
 ##'
-##' ## The graph consist of at most three blocks:
+##' ## The graph consist of at most three columns:
 ##' ##
-##' ## block 1: labels
-##' ## block 2: printed values of the confidence intervals
-##' ## block 3: graphical presentation of the confidence intervals
+##' ## column 1: labels
+##' ## column 2: printed values of the confidence intervals
+##' ## column 3: graphical presentation of the confidence intervals
 ##' ##
-##' ## NOTE: block 3 appears always, the user decides if also
-##' ##       blocks 1, 2 should appear
+##' ## NOTE: column 3 appears always, the user decides if also
+##' ##       column 1, 2 should appear
 ##' ##
-##' ## The blocks are arranged with the function layout
+##' ## The columns are arranged with the function layout
 ##' ## and the default order is 1,3,2 such that the graphical
 ##' ## display of the confidence intervals appears in the middle
 ##' ##
-##' ## the order of appearance of the three blocks can be changed as follows
+##' ## the order of appearance of the three columns can be changed as follows
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                order=c(1,3,2))
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                order=c(2,3,1))
-##' ## if there are only two blocks the order is 1, 2
+##' ## if there are only two columns the order is 1, 2
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                values=FALSE,
@@ -197,8 +202,8 @@
 ##'
 ##' 
 ##'
-##' ## The relative size of the blocks needs to be controlled manually
-##' ## by using the argument xratio. If there are only two blocks
+##' ## The relative size of the columns needs to be controlled manually
+##' ## by using the argument xratio. If there are only two columns
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],xratio=c(0.4,0.15))
 ##'
@@ -304,7 +309,7 @@
 ##'                xaxis.at=c(0.75,1,1.25,1.5))
 ##'
 ##'
-##' ## the values block of the graph can have multiple columns as well
+##' ## the values column of the graph can have multiple columns as well
 ##' ## to illustrate this we create the confidence intervals
 ##' ## before calling the function and then cbind them
 ##' ## to the pvalues
@@ -318,7 +323,7 @@
 ##'                cex=1.2,
 ##'                xratio=c(0.5,0.3))
 ##'
-##' ## Finally, vertical blocks can be delimited with background color
+##' ## Finally, vertical columns can be delimited with background color
 ##' ## NOTE: this may slow things down and potentially create
 ##' ##       large figures (many bytes)
 ##' col1 <- rep(c(prodlim::dimColor("green",density=22),
@@ -363,6 +368,11 @@ plotConfidence <- function(x,
                            title.labels,
                            values,
                            title.values,
+                           block.sep,
+                           blocktitle=NULL,
+                           blocktitle.x,
+                           blocktitle.pos,
+                           blocktitle.offset,
                            order,
                            leftmargin=0.025,
                            rightmargin=0.025,
@@ -371,9 +381,10 @@ plotConfidence <- function(x,
                            factor.reference.label="Reference",
                            factor.reference.pch=8,
                            refline=1,
+                           titleline=TRUE,
                            xratio,
                            y.offset=0,
-                           y.title.offset=1.3,
+                           y.title.offset,
                            digits=2,
                            format,
                            extremearrows.length=0.05,
@@ -395,17 +406,6 @@ plotConfidence <- function(x,
     if (missing(xlim))
         xlim <- c(min(lower)-0.1*min(lower),max(upper)+0.1*min(upper))
     if (missing(xlab)) xlab <- ""
-    NR <- length(x[[1]])
-    if (!(length(y.offset) %in% c(1,NR))){
-        warning(paste("The given",length(y.offset),"many y-offsets are pruned/extended to the length",NR,"lines of the plot."))
-    }
-    if (length(y.offset)!=NR)
-        y.offset <- rep(y.offset,length.out=NR)
-    ylim <- c(0,NR+1+y.offset[[length(y.offset)]])
-    at <- (1:NR)+y.offset
-    rat <- rev(at)
-    dimensions <- list("NumberRows"=NR,xlim=xlim,ylim=ylim,ypos=at)
-
     # }}}
     # {{{ preprocessing of labels and title.labels
     if (!missing(labels) && (is.logical(labels) && labels[[1]]==FALSE))
@@ -420,8 +420,72 @@ plotConfidence <- function(x,
         labels <- x$labels
         if (is.null(labels)) do.labels <- FALSE
     }
+    if (missing(labels)) labels <- NULL
+    if (!is.data.frame(labels) && is.list(labels)){
+        block.rows <- sapply(labels,length)
+        nblocks <- length(labels)
+    }else{
+        nblocks <- 0
+    }
     # }}}
-
+    # {{{ set y positions and ylim 
+    NR <- length(x[[1]])
+    at <- 1:NR
+    if (nblocks>0){
+        if (!missing(blocktitle) && length(blocktitle)>0){
+            stop("Cannot have blocktitles when labels is a named list")
+        }
+        do.blocktitle <- TRUE
+        blocktitle <- rev(names(labels))
+        labels <- unlist(labels)
+        blocktitle.pos <- cumsum(rev(block.rows))
+    }else{
+        if (!missing(blocktitle) && length(blocktitle)>0){
+            if (missing(blocktitle.pos))
+                stop("Need y-positions for blocktitles")
+            do.blocktitle <- TRUE
+        }else{
+            do.blocktitle <- FALSE
+        }
+    }
+    ## oneM <- strheight("M",cex=cex)
+    oneM <- .5
+    if (do.blocktitle){
+        if (missing(blocktitle.offset)) blocktitle.offset <- 1.5*oneM
+        if (missing(block.sep)) block.sep <- 2*oneM
+        block.shift <- rep(cumsum(c(0,block.sep+rep(block.sep,nblocks-1))),
+                           c(blocktitle.pos[1],diff(blocktitle.pos)))
+        blocktitle.pos+block.shift[blocktitle.pos]
+        if ((sub.diff <- (length(at)-length(block.shift)))>0) 
+            block.shift <- c(block.shift,rep(blocktitle.offset+block.shift[length(block.shift)],sub.diff))
+    }else{
+        block.shift <- 0
+    }
+    at <- at+block.shift
+    ## if (!(length(y.offset) %in% c(1,NR))){
+    ## warning(paste("The given",length(y.offset),"many y-offsets are pruned/extended to the length",NR,"lines of the plot."))
+    ## }
+    if (length(y.offset)!=NR)
+        y.offset <- rep(y.offset,length.out=NR)
+    at <- at+y.offset
+    if (do.blocktitle){
+        block.y <- at[blocktitle.pos]
+        blocktitle.y <- block.y+blocktitle.offset
+    }else{
+        blocktitle.y <- 0
+    }
+    if (missing(y.title.offset)) {
+        if (do.blocktitle){
+            y.title.offset <- 1.5*oneM + blocktitle.offset
+        } else{
+            y.title.offset <- 1.5*oneM
+        }
+    }
+    title.y <- max(at)+y.title.offset
+    rat <- rev(at)
+    ylim <- c(0,at[length(at)]+1)
+    dimensions <- list("NumberRows"=NR,xlim=xlim,ylim=ylim,ypos=at)
+    # }}}
     # {{{ preprocessing of values and confidence intervals
     if (!missing(values) && (is.logical(values) && values[[1]]==FALSE))
         do.values <- FALSE
@@ -433,8 +497,8 @@ plotConfidence <- function(x,
         else
             do.title.values <- TRUE
     }else{
-         do.title.values <- FALSE
-     }
+        do.title.values <- FALSE
+    }
     if (do.values){
         if (missing(values)){
             if (missing(format))
@@ -449,15 +513,15 @@ plotConfidence <- function(x,
             if (!missing(factor.reference.pos) && is.numeric(factor.reference.pos) && all(factor.reference.pos<length(values.defaults)))
                 values.defaults[factor.reference.pos] <- factor.reference.label
             if (do.title.values && (missing(title.values)) || (!is.expression(title.values) && !is.character(title.values)))
-                title.values <- expression(bold(CI[95]))
+                title.values <- expression(paste(bold(Contrast)," (",bold(CI[95]),")"))
         }else{
-             values.defaults <- values
-             title.values <- NULL
-         }
+            values.defaults <- values
+            title.values <- NULL
+        }
     } else{
-          values.defaults <- NULL
-          title.values <- NULL
-      }
+        values.defaults <- NULL
+        title.values <- NULL
+    }
     # }}}
     if (add==TRUE) do.values <- do.title.values <- do.labels <- do.title.labels <- FALSE
     # {{{ smart argument control
@@ -476,22 +540,38 @@ plotConfidence <- function(x,
     plot.DefaultArgs <- list(0,0,type="n",ylim=ylim,xlim=xlim,axes=FALSE,ylab="",xlab=xlab)
     points.DefaultArgs <- list(x=m,y=rat,pch=16,cex=cex,col=col,xpd=NA)
     arrows.DefaultArgs <- list(x0=lower,y0=rat,x1=upper,y1=rat,lwd=lwd,col=col,xpd=NA,length=0,code=3,angle=90)
-    refline.DefaultArgs <- list(x0=refline,y0=0,x1=refline,y1=max(at),lwd=lwd,col="red",xpd=NA)
-    if (missing(labels)) labels <- NULL
+    refline.DefaultArgs <- list(x0=refline,y0=0,x1=refline,y1=max(at),lwd=lwd,col="gray71",xpd=NA)
     if (missing(title.labels)) title.labels <- NULL
     labels.DefaultArgs <- list(x=0,y=rat,cex=cex,labels=labels,xpd=NA,pos=4)
-    title.labels.DefaultArgs <- list(x=0,y=NR+1*y.title.offset + y.offset[length(y.offset)],cex=NULL,labels=title.labels,xpd=NA,font=2,pos=NULL)
+    title.labels.DefaultArgs <- list(x=0,y=at[length(at)]+y.title.offset,cex=NULL,labels=title.labels,xpd=NA,font=2,pos=NULL)
     values.DefaultArgs <- list(x=0,y=rat,labels=values.defaults,cex=cex,xpd=NA,pos=4)
-    title.values.DefaultArgs <- list(x=0,y=NR+1*y.title.offset+ y.offset[length(y.offset)],labels=title.values,cex=NULL,xpd=NA,font=2,pos=NULL)
+    title.y <- at[length(at)]+y.title.offset
+    title.values.DefaultArgs <- list(x=0,y=title.y,labels=title.values,cex=NULL,xpd=NA,font=2,pos=NULL)
+    titleline.y <- (title.y+max(blocktitle.y))/2
+    titleline.DefaultArgs <- list(x0=-Inf,y0=titleline.y,x1=Inf,y1=titleline.y,lwd=lwd,col="gray71",xpd=TRUE)
+    blocktitle.DefaultArgs <- list(x=0,y=blocktitle.y,labels=blocktitle,cex=NULL,xpd=NA,font=4,pos=4)
     smartA <- prodlim::SmartControl(call=  list(...),
-                                    keys=c("plot","points","arrows","refline","labels","values","title.labels","title.values","xaxis","stripes","xlab"),
+                                    keys=c("plot","points","arrows","refline","titleline","labels","values","title.labels","blocktitle","title.values","xaxis","stripes","xlab"),
                                     ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","factor.reference.pos","factor.reference.label","extremearrows.angle","extremearrows.length"),
-                                    defaults=list("plot"=plot.DefaultArgs,"points"=points.DefaultArgs,"refline"=refline.DefaultArgs,"labels"=labels.DefaultArgs,"title.labels"=title.labels.DefaultArgs,"stripes"=stripes.DefaultArgs,"values"=values.DefaultArgs,"title.values"=title.values.DefaultArgs,"arrows"=arrows.DefaultArgs,"xaxis"=xaxis.DefaultArgs,"xlab"=xlab.DefaultArgs),
+                                    defaults=list("plot"=plot.DefaultArgs,
+                                                  "points"=points.DefaultArgs,
+                                                  "refline"=refline.DefaultArgs,
+                                                  "titleline"=titleline.DefaultArgs,
+                                                  "labels"=labels.DefaultArgs,
+                                                  "title.labels"=title.labels.DefaultArgs,
+                                                  "blocktitle"=blocktitle.DefaultArgs,
+                                                  "stripes"=stripes.DefaultArgs,
+                                                  "values"=values.DefaultArgs,
+                                                  "title.values"=title.values.DefaultArgs,
+                                                  "arrows"=arrows.DefaultArgs,
+                                                  "xaxis"=xaxis.DefaultArgs,
+                                                  "xlab"=xlab.DefaultArgs),
                                     forced=list("plot"=list(axes=FALSE,xlab=""),"xaxis"=list(side=1)),
                                     verbose=TRUE)
     if (is.null(smartA$title.labels$pos)) smartA$title.labels$pos <- smartA$labels$pos
     if (is.null(smartA$title.values$pos)) smartA$title.values$pos <- smartA$values$pos
     if (is.null(smartA$title.labels$cex)) smartA$title.labels$cex <- smartA$labels$cex
+    if (is.null(smartA$blocktitle$cex)) smartA$blocktitle$cex <- smartA$labels$cex
     if (is.null(smartA$title.values$cex)) smartA$title.values$cex <- smartA$values$cex
     if (!missing(factor.reference.pos) && is.numeric(factor.reference.pos) && all(factor.reference.pos<length(values.defaults))){
         if (length(smartA$points$pch)<NR)
@@ -535,7 +615,6 @@ plotConfidence <- function(x,
                     ## xratio <- c((1-(lwidth/vwidth))*0.7,(lwidth/vwidth)*0.7)
                     ## xratio <- c(0.5,0.2)
                 }
-                print(xratio)
                 labelswidth <- plotwidth * xratio[1]
                 valueswidth <- plotwidth * xratio[2]
                 ciwidth <- plotwidth - labelswidth - valueswidth
@@ -545,44 +624,44 @@ plotConfidence <- function(x,
                     layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth,valueswidth)[order],rightmarginwidth))
                 ## layout.show(n=3)
             } else{
-                  ## only labels
-                  do.stripes <- rep(do.stripes,length.out=2)
-                  names(do.stripes) <- c("labels","ci")
-                  if (missing(xratio)) xratio <- 0.618
-                  labelswidth <- plotwidth * xratio[1]
-                  ciwidth <- plotwidth - labelswidth
-                  valueswidth <- 0
-                  if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
-                  mat <- matrix(c(0,c(1,2)[order],0),ncol=4)
-                  if (layout)
-                      layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth)[order],rightmarginwidth))
-              }
+                ## only labels
+                do.stripes <- rep(do.stripes,length.out=2)
+                names(do.stripes) <- c("labels","ci")
+                if (missing(xratio)) xratio <- 0.618
+                labelswidth <- plotwidth * xratio[1]
+                ciwidth <- plotwidth - labelswidth
+                valueswidth <- 0
+                if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
+                mat <- matrix(c(0,c(1,2)[order],0),ncol=4)
+                if (layout)
+                    layout(mat,width=c(leftmarginwidth,c(labelswidth,ciwidth)[order],rightmarginwidth))
+            }
         } else{
-              if (do.values){
-                  ## only values
-                  do.stripes <- rep(do.stripes,length.out=2)
-                  names(do.stripes) <- c("ci","values")
-                  if (missing(xratio)) xratio <- 0.618
-                  valueswidth <- plotwidth * (1-xratio[1])
-                  ciwidth <- plotwidth - valueswidth
-                  labelswidth <- 0
-                  mat <- matrix(c(0,c(2,1)[order],0),ncol=4)
-                  if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
-                  if (layout)
-                      layout(mat,width=c(leftmarginwidth,c(ciwidth,valueswidth)[order],rightmarginwidth))
-              }else{
-                   # none
-                   xratio <- 1
-                   ciwidth <- plotwidth
-                   do.stripes <- do.stripes[1]
-                   names(do.stripes) <- "ci"
-                   labelswidth <- 0
-                   valueswidth <- 0
-                   mat <- matrix(c(0,1,0),ncol=3)
-                   if (layout)
-                       layout(mat,width=c(leftmarginwidth,ciwidth,rightmarginwidth))
-               }
-          }
+            if (do.values){
+                ## only values
+                do.stripes <- rep(do.stripes,length.out=2)
+                names(do.stripes) <- c("ci","values")
+                if (missing(xratio)) xratio <- 0.618
+                valueswidth <- plotwidth * (1-xratio[1])
+                ciwidth <- plotwidth - valueswidth
+                labelswidth <- 0
+                mat <- matrix(c(0,c(2,1)[order],0),ncol=4)
+                if (!missing(order) && length(order)!=2) order <- rep(order,length.out=2)
+                if (layout)
+                    layout(mat,width=c(leftmarginwidth,c(ciwidth,valueswidth)[order],rightmarginwidth))
+            }else{
+                # none
+                xratio <- 1
+                ciwidth <- plotwidth
+                do.stripes <- do.stripes[1]
+                names(do.stripes) <- "ci"
+                labelswidth <- 0
+                valueswidth <- 0
+                mat <- matrix(c(0,1,0),ncol=3)
+                if (layout)
+                    layout(mat,width=c(leftmarginwidth,ciwidth,rightmarginwidth))
+            }
+        }
         dimensions <- c(dimensions,list(xratio=xratio,
                                         labelswidth=labelswidth,
                                         valueswidth=valueswidth,
@@ -590,7 +669,6 @@ plotConfidence <- function(x,
     }
     # }}}
     # {{{ labels
-
     if (add==FALSE) par(mar=oldmar*c(1,0,1,0))
     if (do.labels){
         if (do.stripes[["labels"]])
@@ -598,6 +676,19 @@ plotConfidence <- function(x,
         else
             preplabels <- c(preplabels,list(width=labelswidth,ylim=ylim))
         do.call("plotLabels",preplabels)
+        if ((missing(titleline) || !is.null(titleline))
+            && ((add==FALSE) & is.infinite(smartA$titleline$x0))){
+            smartA$titleline$x0 <- par()$usr[1]
+            smartA$titleline$x1 <- par()$usr[2]
+            do.call("segments",smartA$titleline)
+            smartA$titleline$x0 <- -Inf
+            ## box()
+        }
+    }
+    # }}}
+    # {{{ blocktitles
+    if (do.blocktitle){
+        do.call("text",smartA$blocktitle) 
     }
     # }}}
     # {{{ values
@@ -607,6 +698,14 @@ plotConfidence <- function(x,
         else
             prepvalues <- c(prepvalues,list(width=valueswidth,ylim=ylim))
         do.call("plotLabels",prepvalues)
+        if ((missing(titleline) || !is.null(titleline))
+            && ((add==FALSE) & is.infinite(smartA$titleline$x0))){
+            smartA$titleline$x0 <- par()$usr[1]
+            smartA$titleline$x1 <- par()$usr[2]
+            do.call("segments",smartA$titleline)
+            smartA$titleline$x0 <- -Inf
+            ## box()
+        }
     }
     # }}}
     # {{{ plot which contains the confidence intervals
@@ -628,6 +727,16 @@ plotConfidence <- function(x,
     if (add==FALSE){
         if (missing(refline) || !is.null(refline))
             do.call("segments",smartA$refline)
+    }
+    # }}}
+    if (add==FALSE){
+        if (missing(titleline) || !is.null(titleline)){
+            if (is.infinite(smartA$titleline$x0)){
+                smartA$titleline$x0 <- par()$usr[1]
+                smartA$titleline$x1 <- par()$usr[2]
+            }
+            do.call("segments",smartA$titleline)
+        }
     }
     # }}}
     # {{{ point estimates and confidence
@@ -671,6 +780,9 @@ plotConfidence <- function(x,
         suppressWarnings(do.call("arrows",smartA$arrows))
     }
     # }}}
+    ## if (show.coords){
+    ## axis(1,xpd=NA)
+    ## }
     invisible(dimensions)
 }
 #----------------------------------------------------------------------

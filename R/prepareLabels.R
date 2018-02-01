@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 13 2015 (07:21) 
 ## Version: 
-## last-updated: May 14 2015 (10:19) 
+## last-updated: Jan 29 2018 (11:46) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 14
+##     Update #: 17
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -26,7 +26,8 @@ prepareLabels <- function(labels,titles,...){
         labels <- lapply(1:ncol(labels),function(j)labels[,j])
         names(labels) <- cnames
     }
-    if (is.factor(labels) || is.numeric(labels) || is.character(labels)) labels <- list(col1=labels)
+    if (is.factor(labels) || is.numeric(labels) || is.character(labels)) 
+        labels <- list(" "=labels)
     ncolumns <- length(labels)
     if (is.null(titles)){
         titles <- names(labels)
