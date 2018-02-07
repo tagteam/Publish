@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Jan 29 2018 (12:48) 
+## last-updated: Feb  6 2018 (13:30) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 94
+##     Update #: 100
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -60,7 +60,8 @@ plot.regressionTable <- function(x,xlim,xlab,style=1,...){
 plot.summary.regressionTable <- function(x,xlim,xlab,style=1,...){
     X <- x$rawTable
     X <- labelUnits(X,...)
-    X[X$Units=="",]$Units <- "1 unit"
+    if (sum(X$Units=="")>0)
+        X[X$Units=="",]$Units <- "1 unit"
     model <- x$model
     if (missing(xlab))
         xlab <- switch(model,

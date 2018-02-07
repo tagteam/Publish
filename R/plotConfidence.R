@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Jan 29 2018 (12:47) 
+## last-updated: Feb  7 2018 (11:01) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 467
+##     Update #: 515
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -76,15 +76,23 @@
 ##' values. If \code{values=TRUE} values are constructed according to
 ##' \code{format} from \code{lower} and \code{upper} overwrites
 ##' constructed values. If \code{values=FALSE} do not draw values.
-##' @param title.values Title of the \code{values}. If \code{values}
+##' @param title.values Main title for the column \code{values}. If \code{values}
 ##' is a matrix or list \code{title.labels} should be a vector with as
 ##' many elements as values has columns or elements.
-##' @param block.sep Amount of space between blocks (applies only if \code{labels} is a named  list)
-##' @param blocktitle Intermediate section headings.
-##' @param blocktitle.x x-position for blocktitles
-##' @param blocktitle.pos Vector with y-axis posititions for blocktitles.
-##' @param blocktitle.offset Y-offset for blocktitles 
-##' @param order Order of the three blocks: labels, confidence limits,
+##' @param section Guide on how to vertically group the confidence intervals and their corresponding
+##' values and labels. This argument can have the following formats:
+##' \itemize{
+##'  \item{}{a vector of posititions (integers between 1 and the number of confidence intervals)
+##'          which indicate where the next section starts.
+##' }
+##' \item{a vector }
+##' }
+##' @param section.sep Amount of space between paragraphs (applies only if \code{labels} is a named  list)
+##' @param section.title Intermediate section headings.
+##' @param section.title.x x-position for section.titles
+##' @param section.pos Vector with y-axis posititions for section.titles.
+##' @param section.title.offset Y-offset for section.titles 
+##' @param order Order of the three columns: labels, confidence limits,
 ##' values. See examples.
 ##' @param leftmargin Percentage of plotting region used for
 ##' leftmargin. Default is 0.025. See also Details.
@@ -103,14 +111,14 @@
 ##' @param refline Position of a vertical line to indicate the null
 ##' hypothesis. Default is 1 which would work for odds ratios and
 ##' hazard ratios.
-##' @param titleline Position of a horizontal line to separate the title line from the plot
+##' @param title.line Position of a horizontal line to separate the title line from the plot
 ##' @param xratio One or two values between 0 and 1 which determine
 ##' how to split the plot window in horizontal x-direction. If there
-##' are two blocks (labels, CI) or (CI, values) only one value is used
+##' are two columns (labels, CI) or (CI, values) only one value is used
 ##' and the default is 0.618 (goldener schnitt) which gives the
 ##' graphical presentation of the confidence intervals 38.2 % of the
 ##' graph. The remaining 61.8 % are used for the labels (or values).
-##' If there are three blocks (labels, CI, values), xratio has two
+##' If there are three columns (labels, CI, values), xratio has two
 ##' values which default to fractions of 0.7 according to the relative
 ##' widths of labels and values, thus by default only 0.3 are used for
 ##' the graphical presentation of the confidence intervals. The
@@ -159,17 +167,17 @@
 ##'
 ##' library(Publish)
 ##' data(CiTable) 
-##'
-##' ## columns 6, 7, 8, 9 contain the hazard ratio, the lower
-##' ## and the upper confidence limits and the p-values, respectively
-##' head(CiTable[,6:9])
-##'
-##' ## columns 1,2,3,4,5 contain the labels
-##' head(CiTable[,1:5])
-##'
+##' 
 ##' ## A first draft version of the plot is obtained as follows
-##' plotConfidence(x=CiTable[,6:8], labels=CiTable[,1:5])
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper","p")],
+##'           labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")])
 ##'
+##' ## if argument labels is a named list the table is subdivided:
+##' labellist <- split(CiTable[,c("Dose","Mean","SD","n")],CiTable[,"Drug"])
+##' labellist
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")], labels=labellist)
+##'
+##' 
 ##' ## The graph consist of at most three columns:
 ##' ##
 ##' ## column 1: labels
@@ -218,7 +226,8 @@
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                xlab="Hazard ratio",
 ##'                labels=CiTable[,1:5],
-##'                cex=1.3,
+##'                points.cex=3,
+##'                cex=2,
 ##'                lwd=3,
 ##'                xaxis.lwd=1.3,
 ##'                xaxis.cex=1.3)
@@ -231,7 +240,6 @@
 ##'                lwd=0.8,
 ##'                xaxis.lwd=0.8,
 ##'                xaxis.cex=0.8)
-##'
 ##' 
 ##' ## Another good news is that all figures can be controlled separately
 ##'
@@ -244,7 +252,9 @@
 ##' }
 ##'
 ##' ## More control of the x-axis and confidence intervals that
-##' ## stretch outside the x-range.
+##' ## stretch outside the x-range end in an arrow. 
+##' ## the argument xlab.line adjusts the distance of the x-axis
+##' ## label from the graph
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                xlab="Hazard ratio",
 ##'                xlab.line=1.8,
@@ -275,6 +285,7 @@
 ##'                title.values=expression(bold(HR (CI[95]))),
 ##'                title.labels=c("Drug/Time","Dose","Mean","St.dev.","N"),
 ##'                factor.reference.pos=c(1,10,19),
+##'                factor.reference.pch=16,
 ##'                cex=1.3,
 ##'                xaxis.at=c(0.75,1,1.25,1.5,2))
 ##'
@@ -282,7 +293,7 @@
 ##' ## confidence intervals by the word Reference, as in the previous example.
 ##' ## To change the word 'Reference' we use the argument factor.reference.label:
 ##' ## To change the plot symbol for the reference lines factor.reference.pch
-##' ## To remove the plot symbol use 'NA' as follows:
+##' ## To remove the plot symbol in the reference lines use 'NA' as follows:
 ##' plotConfidence(x=CiTable[,6:8],
 ##'                labels=CiTable[,1:5],
 ##'                xlab="Hazard ratio",
@@ -307,7 +318,6 @@
 ##'                cex=1.3,
 ##'                order=c(1,3,2),
 ##'                xaxis.at=c(0.75,1,1.25,1.5))
-##'
 ##'
 ##' ## the values column of the graph can have multiple columns as well
 ##' ## to illustrate this we create the confidence intervals
@@ -353,6 +363,8 @@
 ##'                stripes.horizontal=c(0,9,18,27)+0.5,
 ##'                stripes.col=threegreens)
 ##'
+##' 
+##'
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plotConfidence <- function(x,
@@ -368,11 +380,12 @@ plotConfidence <- function(x,
                            title.labels,
                            values,
                            title.values,
-                           block.sep,
-                           blocktitle=NULL,
-                           blocktitle.x,
-                           blocktitle.pos,
-                           blocktitle.offset,
+                           section,
+                           section.pos,
+                           section.sep,
+                           section.title=NULL,
+                           section.title.x,
+                           section.title.offset,
                            order,
                            leftmargin=0.025,
                            rightmargin=0.025,
@@ -381,7 +394,7 @@ plotConfidence <- function(x,
                            factor.reference.label="Reference",
                            factor.reference.pch=8,
                            refline=1,
-                           titleline=TRUE,
+                           title.line=TRUE,
                            xratio,
                            y.offset=0,
                            y.title.offset,
@@ -406,8 +419,14 @@ plotConfidence <- function(x,
     if (missing(xlim))
         xlim <- c(min(lower)-0.1*min(lower),max(upper)+0.1*min(upper))
     if (missing(xlab)) xlab <- ""
+
     # }}}
     # {{{ preprocessing of labels and title.labels
+    NR <- length(x[[1]])
+    if (length(lower)!=NR)
+        stop(paste0("lower has wrong dimension. There are ",NR," contrasts but ",length(upper)," upper limits"))
+    if (length(upper)!=NR)
+        stop(paste0("upper has wrong dimension. There are ",NR," contrasts but ",length(upper)," upper limits"))
     if (!missing(labels) && (is.logical(labels) && labels[[1]]==FALSE))
         do.labels <- FALSE
     else
@@ -422,61 +441,69 @@ plotConfidence <- function(x,
     }
     if (missing(labels)) labels <- NULL
     if (!is.data.frame(labels) && is.list(labels)){
-        block.rows <- sapply(labels,length)
-        nblocks <- length(labels)
+        section.rows <- sapply(labels,NROW)
+        nsections <- length(labels)
+        if (sum(section.rows)!=NR) stop(paste0("Label list has wrong dimension. There are ",NR," confidence intervals but ",sum(section.rows)," labels"))
     }else{
-        nblocks <- 0
+        nsections <- 0
     }
     # }}}
     # {{{ set y positions and ylim 
-    NR <- length(x[[1]])
     at <- 1:NR
-    if (nblocks>0){
-        if (!missing(blocktitle) && length(blocktitle)>0){
-            stop("Cannot have blocktitles when labels is a named list")
+    if (nsections>0){
+        if (!missing(section.title) && length(section.title)>0){
+            names(labels) <- section.title
+            ## stop("Cannot have section.titles when labels is a named list")
         }
-        do.blocktitle <- TRUE
-        blocktitle <- rev(names(labels))
-        labels <- unlist(labels)
-        blocktitle.pos <- cumsum(rev(block.rows))
+        do.sections <- TRUE
+        section.title <- rev(names(labels))
+        ## check for second level
+        if (!is.data.frame(labels[[1]]) && is.list(labels[[1]])){
+            sublevels <- names(labels)
+            labels <- lapply(1:length(labels),function(l){
+                cbind(sublevels[[l]],data.table(labels[[l]]))
+            })
+        }
+        labels <- data.table::rbindlist(lapply(labels,data.table::data.table),use.names=TRUE)
+        section.pos <- cumsum(rev(section.rows))
     }else{
-        if (!missing(blocktitle) && length(blocktitle)>0){
-            if (missing(blocktitle.pos))
-                stop("Need y-positions for blocktitles")
-            do.blocktitle <- TRUE
+        if (!missing(section.title) && length(section.title)>0){
+            if (missing(section.pos))
+                stop("Need y-positions for section.titles")
+            do.sections <- TRUE
         }else{
-            do.blocktitle <- FALSE
+            do.sections <- FALSE
         }
     }
     ## oneM <- strheight("M",cex=cex)
     oneM <- .5
-    if (do.blocktitle){
-        if (missing(blocktitle.offset)) blocktitle.offset <- 1.5*oneM
-        if (missing(block.sep)) block.sep <- 2*oneM
-        block.shift <- rep(cumsum(c(0,block.sep+rep(block.sep,nblocks-1))),
-                           c(blocktitle.pos[1],diff(blocktitle.pos)))
-        blocktitle.pos+block.shift[blocktitle.pos]
-        if ((sub.diff <- (length(at)-length(block.shift)))>0) 
-            block.shift <- c(block.shift,rep(blocktitle.offset+block.shift[length(block.shift)],sub.diff))
+    if (do.sections){
+        if (missing(section.title.offset)) section.title.offset <- 1.5*oneM
+        if (missing(section.sep)) section.sep <- 2*oneM
+        section.shift <- rep(cumsum(c(0,section.sep+rep(section.sep,nsections-1))),
+                           c(section.pos[1],diff(section.pos)))
+        section.pos+section.shift[section.pos]
+        if ((sub.diff <- (length(at)-length(section.shift)))>0) 
+            section.shift <- c(section.shift,rep(section.title.offset+section.shift[length(section.shift)],sub.diff))
     }else{
-        block.shift <- 0
+        section.shift <- 0
     }
-    at <- at+block.shift
+    at <- at+section.shift
     ## if (!(length(y.offset) %in% c(1,NR))){
     ## warning(paste("The given",length(y.offset),"many y-offsets are pruned/extended to the length",NR,"lines of the plot."))
     ## }
     if (length(y.offset)!=NR)
         y.offset <- rep(y.offset,length.out=NR)
     at <- at+y.offset
-    if (do.blocktitle){
-        block.y <- at[blocktitle.pos]
-        blocktitle.y <- block.y+blocktitle.offset
+    if (do.sections){
+        section.y <- at[section.pos]
+        section.title.y <- section.y+section.title.offset
     }else{
-        blocktitle.y <- 0
+        section.title.y <- 0
     }
     if (missing(y.title.offset)) {
-        if (do.blocktitle){
-            y.title.offset <- 1.5*oneM + blocktitle.offset
+        if (do.sections){
+            y.title.offset <- 1.5*oneM + section.title.offset
         } else{
             y.title.offset <- 1.5*oneM
         }
@@ -513,7 +540,7 @@ plotConfidence <- function(x,
             if (!missing(factor.reference.pos) && is.numeric(factor.reference.pos) && all(factor.reference.pos<length(values.defaults)))
                 values.defaults[factor.reference.pos] <- factor.reference.label
             if (do.title.values && (missing(title.values)) || (!is.expression(title.values) && !is.character(title.values)))
-                title.values <- expression(paste(bold(Contrast)," (",bold(CI[95]),")"))
+                title.values <- expression(paste(bold(Estimate)," (",bold(CI[95]),")"))
         }else{
             values.defaults <- values
             title.values <- NULL
@@ -525,6 +552,7 @@ plotConfidence <- function(x,
     # }}}
     if (add==TRUE) do.values <- do.title.values <- do.labels <- do.title.labels <- FALSE
     # {{{ smart argument control
+
     dist <- (at[2]-at[1])/2
     if (missing(stripes) || is.null(stripes))
         do.stripes <- FALSE
@@ -547,19 +575,22 @@ plotConfidence <- function(x,
     values.DefaultArgs <- list(x=0,y=rat,labels=values.defaults,cex=cex,xpd=NA,pos=4)
     title.y <- at[length(at)]+y.title.offset
     title.values.DefaultArgs <- list(x=0,y=title.y,labels=title.values,cex=NULL,xpd=NA,font=2,pos=NULL)
-    titleline.y <- (title.y+max(blocktitle.y))/2
-    titleline.DefaultArgs <- list(x0=-Inf,y0=titleline.y,x1=Inf,y1=titleline.y,lwd=lwd,col="gray71",xpd=TRUE)
-    blocktitle.DefaultArgs <- list(x=0,y=blocktitle.y,labels=blocktitle,cex=NULL,xpd=NA,font=4,pos=4)
+    if (do.sections)
+        title.line.y <- (title.y+max(section.title.y))/2
+    else
+        title.line.y <- title.y-.25
+    title.line.DefaultArgs <- list(x0=-Inf,y0=title.line.y,x1=Inf,y1=title.line.y,lwd=lwd,col="gray71",xpd=TRUE)
+    section.title.DefaultArgs <- list(x=0,y=section.title.y,labels=section.title,cex=NULL,xpd=NA,font=4,pos=4)
     smartA <- prodlim::SmartControl(call=  list(...),
-                                    keys=c("plot","points","arrows","refline","titleline","labels","values","title.labels","blocktitle","title.values","xaxis","stripes","xlab"),
+                                    keys=c("plot","points","arrows","refline","title.line","labels","values","title.labels","section.title","title.values","xaxis","stripes","xlab"),
                                     ignore=c("formula","data","add","col","lty","lwd","ylim","xlim","xlab","ylab","axes","factor.reference.pos","factor.reference.label","extremearrows.angle","extremearrows.length"),
                                     defaults=list("plot"=plot.DefaultArgs,
                                                   "points"=points.DefaultArgs,
                                                   "refline"=refline.DefaultArgs,
-                                                  "titleline"=titleline.DefaultArgs,
+                                                  "title.line"=title.line.DefaultArgs,
                                                   "labels"=labels.DefaultArgs,
                                                   "title.labels"=title.labels.DefaultArgs,
-                                                  "blocktitle"=blocktitle.DefaultArgs,
+                                                  "section.title"=section.title.DefaultArgs,
                                                   "stripes"=stripes.DefaultArgs,
                                                   "values"=values.DefaultArgs,
                                                   "title.values"=title.values.DefaultArgs,
@@ -571,7 +602,7 @@ plotConfidence <- function(x,
     if (is.null(smartA$title.labels$pos)) smartA$title.labels$pos <- smartA$labels$pos
     if (is.null(smartA$title.values$pos)) smartA$title.values$pos <- smartA$values$pos
     if (is.null(smartA$title.labels$cex)) smartA$title.labels$cex <- smartA$labels$cex
-    if (is.null(smartA$blocktitle$cex)) smartA$blocktitle$cex <- smartA$labels$cex
+    if (is.null(smartA$section.title$cex)) smartA$section.title$cex <- smartA$labels$cex
     if (is.null(smartA$title.values$cex)) smartA$title.values$cex <- smartA$values$cex
     if (!missing(factor.reference.pos) && is.numeric(factor.reference.pos) && all(factor.reference.pos<length(values.defaults))){
         if (length(smartA$points$pch)<NR)
@@ -581,6 +612,7 @@ plotConfidence <- function(x,
 
     # }}}
     # {{{ layout
+
     if (add==FALSE){
         oldmar <- par()$mar
         on.exit(par(mar=oldmar))
@@ -667,6 +699,7 @@ plotConfidence <- function(x,
                                         valueswidth=valueswidth,
                                         ciwidth=ciwidth,layout=mat))
     }
+
     # }}}
     # {{{ labels
     if (add==FALSE) par(mar=oldmar*c(1,0,1,0))
@@ -676,19 +709,21 @@ plotConfidence <- function(x,
         else
             preplabels <- c(preplabels,list(width=labelswidth,ylim=ylim))
         do.call("plotLabels",preplabels)
-        if ((missing(titleline) || !is.null(titleline))
-            && ((add==FALSE) & is.infinite(smartA$titleline$x0))){
-            smartA$titleline$x0 <- par()$usr[1]
-            smartA$titleline$x1 <- par()$usr[2]
-            do.call("segments",smartA$titleline)
-            smartA$titleline$x0 <- -Inf
+        # }}}
+        # {{{ title underline
+        if ((missing(title.line) || !is.null(title.line))
+            && ((add==FALSE) & is.infinite(smartA$title.line$x0))){
+            smartA$title.line$x0 <- par()$usr[1]
+            smartA$title.line$x1 <- par()$usr[2]
+            do.call("segments",smartA$title.line)
+            smartA$title.line$x0 <- -Inf
             ## box()
         }
     }
     # }}}
-    # {{{ blocktitles
-    if (do.blocktitle){
-        do.call("text",smartA$blocktitle) 
+    # {{{ section.titles
+    if (do.sections){
+        do.call("text",smartA$section.title) 
     }
     # }}}
     # {{{ values
@@ -698,12 +733,12 @@ plotConfidence <- function(x,
         else
             prepvalues <- c(prepvalues,list(width=valueswidth,ylim=ylim))
         do.call("plotLabels",prepvalues)
-        if ((missing(titleline) || !is.null(titleline))
-            && ((add==FALSE) & is.infinite(smartA$titleline$x0))){
-            smartA$titleline$x0 <- par()$usr[1]
-            smartA$titleline$x1 <- par()$usr[2]
-            do.call("segments",smartA$titleline)
-            smartA$titleline$x0 <- -Inf
+        if ((missing(title.line) || !is.null(title.line))
+            && ((add==FALSE) & is.infinite(smartA$title.line$x0))){
+            smartA$title.line$x0 <- par()$usr[1]
+            smartA$title.line$x1 <- par()$usr[2]
+            do.call("segments",smartA$title.line)
+            smartA$title.line$x0 <- -Inf
             ## box()
         }
     }
@@ -729,13 +764,14 @@ plotConfidence <- function(x,
             do.call("segments",smartA$refline)
     }
     # }}}
+    # {{{ title underline
     if (add==FALSE){
-        if (missing(titleline) || !is.null(titleline)){
-            if (is.infinite(smartA$titleline$x0)){
-                smartA$titleline$x0 <- par()$usr[1]
-                smartA$titleline$x1 <- par()$usr[2]
+        if (missing(title.line) || !is.null(title.line)){
+            if (is.infinite(smartA$title.line$x0)){
+                smartA$title.line$x0 <- par()$usr[1]
+                smartA$title.line$x1 <- par()$usr[2]
             }
-            do.call("segments",smartA$titleline)
+            do.call("segments",smartA$title.line)
         }
     }
     # }}}

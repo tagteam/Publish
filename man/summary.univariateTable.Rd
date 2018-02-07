@@ -60,7 +60,7 @@ summary(u)
 summary(u,n=NULL)
 summary(u,pvalue.digits=2,"age"="Age (years)","height"="Body height (cm)")
 
-u2 <- univariateTable(location~age+gender+height+weight,
+u2 <- univariateTable(location~age+AgeGroups+gender+height+weight,
                 data=Diabetes)
 summary(u2)
 summary(u2,drop.reference=TRUE)
