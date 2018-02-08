@@ -108,6 +108,8 @@ NULL
 #' @docType data
 #' @format A data frame with 27 observations on the following 9 variables.
 #' \describe{
+#' \item{Drug}{}
+#' \item{Time}{}
 #' \item{Drug.Time}{}
 #' \item{Dose}{}
 #' \item{Mean}{}

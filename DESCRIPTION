@@ -4,7 +4,7 @@ Title: Format Output of Various Routines in a Suitable Way for Reports and Publi
 Description: A bunch of convenience functions that transform the results of some basic statistical analyses
        into table format nearly ready for publication. This includes descriptive tables, tables of
        logistic regression and Cox regression results as well as forest plots. 
-Version: 2018.02.08
+Version: 2018.2.8
 Authors@R: c(person("Thomas A.", "Gerds", role = c("aut", "cre"),
                     email = "tag@biostat.ku.dk"),
              person("Christian", "Torp-Pedersen", role = "ctb"),
@@ -26,6 +26,7 @@ Suggests:
     riskRegression (>= 1.4.3),
     testthat,
     smcfcs (>= 1.3.0),
+    rms (>= 5.1),
     mitools (>= 2.3),
     nlme (>= 3.1-131)
 License: GPL (>= 2)
