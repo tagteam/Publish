@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Feb  7 2018 (11:01) 
+## last-updated: Feb  8 2018 (12:59) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 515
+##     Update #: 518
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -192,19 +192,19 @@
 ##' ## display of the confidence intervals appears in the middle
 ##' ##
 ##' ## the order of appearance of the three columns can be changed as follows
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                order=c(1,3,2))
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                order=c(2,3,1))
 ##' ## if there are only two columns the order is 1, 2
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                values=FALSE,
 ##'                order=c(2,1))
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                values=FALSE,
 ##'                order=c(1,2))
 ##'
@@ -212,20 +212,23 @@
 ##'
 ##' ## The relative size of the columns needs to be controlled manually
 ##' ## by using the argument xratio. If there are only two columns
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],xratio=c(0.4,0.15))
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
+##'                xratio=c(0.4,0.15))
 ##'
 ##' ## The amount of space on the left and right margin can be controlled
 ##' ## as follows:
-##' plotConfidence(x=CiTable[,6:8],labels=CiTable[,1:5],xratio=c(0.4,0.15),
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
+##'                xratio=c(0.4,0.15),
 ##'                leftmargin=0.1,rightmargin=0.00)
 ##'
 ##' ## The actual size of the current graphics device determines
 ##' ## the size of the figures and the space between them.
 ##' ## The sizes and line widths are increased as follows:
-##' plotConfidence(x=CiTable[,6:8],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
 ##'                xlab="Hazard ratio",
-##'                labels=CiTable[,1:5],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                points.cex=3,
 ##'                cex=2,
 ##'                lwd=3,
@@ -234,8 +237,8 @@
 ##' ## Note that 'cex' of axis ticks is controlled via 'par' but
 ##' ## cex of the label via argument 'cex' of 'mtext'.
 ##' ## The sizes and line widths are decreased as follows:
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                cex=0.8,
 ##'                lwd=0.8,
 ##'                xaxis.lwd=0.8,
@@ -246,8 +249,8 @@
 ##' ## The size of the graphic device can be controlled in the usual way, e.g.:
 ##' \dontrun{
 ##'     pdf("~/tmp/testCI.pdf",width=8,height=8)
-##'     plotConfidence(x=CiTable[,6:8],
-##'                    labels=CiTable[,1:5])
+##'     plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                    labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")])
 ##'     dev.off()
 ##' }
 ##'
@@ -255,32 +258,35 @@
 ##' ## stretch outside the x-range end in an arrow. 
 ##' ## the argument xlab.line adjusts the distance of the x-axis
 ##' ## label from the graph
-##' plotConfidence(x=CiTable[,6:8],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
 ##'                xlab="Hazard ratio",
 ##'                xlab.line=1.8,
 ##'                xaxis.at=c(0.8,1,1.3),
-##'                labels=CiTable[,1:5],xlim=c(0.8,1.3))
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
+##'                xlim=c(0.8,1.3))
 ##'
 ##' ## log-scale
-##' plotConfidence(x=CiTable[,6:8],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
 ##'                xlab="Hazard ratio",
 ##'                xlab.line=1.8,
 ##'                xaxis.at=c(0.8,1,1.3),
-##'                labels=CiTable[,1:5],xlim=c(0.8,1.3),plot.log="x")
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
+##'                xlim=c(0.8,1.3),plot.log="x")
 ##' ## More pronounced arrows
 ##' ## Coloured xlab expression
-##' plotConfidence(x=CiTable[,6:8],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
 ##'                xlab=expression(HR[1](s)),
 ##'                xlab.line=1.8,
 ##'                xlab.col="darkred",
 ##'                extremearrows.angle=50,
 ##'                extremearrows.length=0.1,
-##'                labels=CiTable[,1:5],xlim=c(0.8,1.3))
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
+##'                xlim=c(0.8,1.3))
 ##'
 ##' ## Controlling the labels and their titles
 ##' ## and the values and their titles
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                xlab="Hazard ratio",
 ##'                title.values=expression(bold(HR (CI[95]))),
 ##'                title.labels=c("Drug/Time","Dose","Mean","St.dev.","N"),
@@ -294,8 +300,8 @@
 ##' ## To change the word 'Reference' we use the argument factor.reference.label:
 ##' ## To change the plot symbol for the reference lines factor.reference.pch
 ##' ## To remove the plot symbol in the reference lines use 'NA' as follows:
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                xlab="Hazard ratio",
 ##'                factor.reference.label="Ref",
 ##'                title.values=expression(bold(HR (CI[95]))),
@@ -307,8 +313,8 @@
 ##'
 ##'
 ##' ## changing the style of the graphical confidence intervals
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                xlab="Hazard ratio",
 ##'                factor.reference.pos=c(1,10,19),
 ##'                points.pch=15,
@@ -327,8 +333,8 @@
 ##' CI95 <- formatCI(lower=CiTable[,7],upper=CiTable[,8],format="(l-u)")
 ##' pval <- format.pval(CiTable[,9],digits=3,eps=10^{-3})
 ##' pval[pval=="NA"] <- ""
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                values=list("HR"=HR,"CI-95"=CI95,"P-value"=pval),
 ##'                cex=1.2,
 ##'                xratio=c(0.5,0.3))
@@ -342,20 +348,20 @@
 ##'               prodlim::dimColor("orange")),length.out=9)
 ##' col3 <- rep(c(prodlim::dimColor("blue",density=22),
 ##'               prodlim::dimColor("blue")),length.out=9)
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                stripes=c(1,0,1),
 ##'                stripes.col=c(col1,col2,col3))
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                stripes=c(1,1,1),
 ##'                stripes.col=c(col1,col2,col3))
 ##'
 ##' threegreens <- c(prodlim::dimColor("green",density=55),
 ##'                  prodlim::dimColor("green",density=33),
 ##'                  prodlim::dimColor("green",density=22))
-##' plotConfidence(x=CiTable[,6:8],
-##'                labels=CiTable[,1:5],
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'                labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")],
 ##'                values=FALSE,
 ##'                xlim=c(0.75,1.5),
 ##'                stripes=c(1,1,1),
@@ -461,7 +467,7 @@ plotConfidence <- function(x,
         if (!is.data.frame(labels[[1]]) && is.list(labels[[1]])){
             sublevels <- names(labels)
             labels <- lapply(1:length(labels),function(l){
-                cbind(sublevels[[l]],data.table(labels[[l]]))
+                cbind(sublevels[[l]],data.table::data.table(labels[[l]]))
             })
         }
         labels <- data.table::rbindlist(lapply(labels,data.table::data.table),use.names=TRUE)
