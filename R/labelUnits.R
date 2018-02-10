@@ -26,6 +26,7 @@
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 labelUnits <- function(x,...){
     ## stopifnot(match("summary.univariateTable",class(x),nomatch=0)>0)
+    x
     units <- prodlim::SmartControl(list(...),
                                    keys=c("units",unique(x$Variable[x$Variable!=""])),
                                    defaults=NULL,
@@ -34,15 +35,16 @@ labelUnits <- function(x,...){
                                    verbose=FALSE)
     lunits <- sapply(units,length)
     units <- units[lunits>0]
+    ulvar <- grep("Level|Unit",names(x),value=TRUE)
     ## factor specific units
     if (length(units)>0){
         for (i in 1:length(units)){
             uat <- grep(names(units)[i],x$Variable)
-            lat <- match(names(units[[i]]),x$Level[uat:length(x$Variable)],nomatch=FALSE)
+            lat <- match(names(units[[i]]),x[[ulvar]][uat:length(x$Variable)],nomatch=FALSE)
             lat <- lat[lat!=0]
             vals <- unlist(units[[i]])
             vals <- vals[lat!=0]
-            x$Level[uat -1 + lat] <- vals
+            x[[ulvar]][uat -1 + lat] <- vals
         }
     }
     ## labels for variables
@@ -51,14 +53,14 @@ labelUnits <- function(x,...){
         keys <- names(labels)
         Flabels <- labels[match(keys,x$Variable,nomatch=0)!=0]
         x$Variable[match(keys,x$Variable,nomatch=0)] <- Flabels
-        Funits <- labels[match(keys,x$Level,nomatch=0)!=0]
+        Funits <- labels[match(keys,x[[ulvar]],nomatch=0)!=0]
         for (f in names(Funits)){
-            x$Level[x$Level%in%f] <- Funits[[f]]
+            x[[ulvar]][x[[ulvar]]%in%f] <- Funits[[f]]
         }
         ## now flatten lists. otherwise
         ## write.csv will complain 
         x$Variable <- unlist(x$Variable)
-        x$Level <- unlist(x$Level)
+        x[[ulvar]] <- unlist(x[[ulvar]])
     }
     x
 }
