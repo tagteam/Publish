@@ -31,10 +31,9 @@
 ##' @export
 glmSeries <- function(formula,data,vars,...){
     ## ref <- glm(formula,data=data,...)
-    if (is.data.table(data))
-        data <- data[,c(all.vars(formula),vars),with=FALSE]
-    else
-        data <- data[,c(all.vars(formula),vars)]
+    Missing=NULL
+    data.table::setDT(data)
+    data <- data[,c(all.vars(formula),vars),with=FALSE]
     glist <- lapply(vars,function(v){
         form.v <- update.formula(formula,paste(".~.+",v))
         if (is.logical(data[[v]]))
@@ -46,7 +45,7 @@ glmSeries <- function(formula,data,vars,...){
         rtab <- regressionTable(gf)
         rtab[[v]]
     })
-    out <- rbindlist(glist)
+    out <- data.table::rbindlist(glist)
     if (all(out$Missing%in%c("","0")))
         out[,Missing:=NULL]
     out[]

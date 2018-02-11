@@ -105,7 +105,6 @@ publish.glm <- function(object,
     srt <- summary.regressionTable(rt,
                                    digits=digits,
                                    print=FALSE,...)
-    XXsrt <- do.call(labelUnits,c(list(x=srt),list(...),srt$Variable))
     if (print==TRUE)
         publish(srt$regressionTable,...)
     invisible(srt)
