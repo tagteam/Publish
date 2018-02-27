@@ -52,7 +52,7 @@ labelUnits <- function(x,...){
     if (length(labels)>0){
         keys <- names(labels)
         Flabels <- labels[match(keys,x$Variable,nomatch=0)!=0]
-        x$Variable[match(keys,x$Variable,nomatch=0)] <- Flabels
+        x$Variable[match(keys,x$Variable,nomatch=0)] <- unlist(Flabels)
         Funits <- labels[match(keys,x[[ulvar]],nomatch=0)!=0]
         for (f in names(Funits)){
             x[[ulvar]][x[[ulvar]]%in%f] <- Funits[[f]]

@@ -55,7 +55,7 @@ table2x2 <- function(x,digits=1,stats=c("table","rd","rr","or","chisq","fisher")
         se.or <- sqrt(1/a+1/b+1/c+1/d)
         or.lower <- exp(log(or) - qnorm(1-0.05/2)*se.or)
         or.upper <- exp(log(or) + qnorm(1-0.05/2)*se.or)
-        out <- c(out,list(or=or,se.or=or,or.lower=or.lower,or.upper=or.upper))
+        out <- c(out,list(or=or,se.or=se.or,or.lower=or.lower,or.upper=or.upper))
     }
     class(out) <- "table2x2"
     out
