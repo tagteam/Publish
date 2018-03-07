@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Feb  8 2018 (12:59) 
+## last-updated: Mar  5 2018 (19:36) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 518
+##     Update #: 524
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -398,7 +398,7 @@ plotConfidence <- function(x,
                            stripes,
                            factor.reference.pos,
                            factor.reference.label="Reference",
-                           factor.reference.pch=8,
+                           factor.reference.pch=16,
                            refline=1,
                            title.line=TRUE,
                            xratio,
@@ -577,7 +577,13 @@ plotConfidence <- function(x,
     refline.DefaultArgs <- list(x0=refline,y0=0,x1=refline,y1=max(at),lwd=lwd,col="gray71",xpd=NA)
     if (missing(title.labels)) title.labels <- NULL
     labels.DefaultArgs <- list(x=0,y=rat,cex=cex,labels=labels,xpd=NA,pos=4)
-    title.labels.DefaultArgs <- list(x=0,y=at[length(at)]+y.title.offset,cex=NULL,labels=title.labels,xpd=NA,font=2,pos=NULL)
+    title.labels.DefaultArgs <- list(x=0,
+                                     y=at[length(at)]+y.title.offset,
+                                     cex=NULL,
+                                     labels=title.labels,
+                                     xpd=NA,
+                                     font=2,
+                                     pos=NULL)
     values.DefaultArgs <- list(x=0,y=rat,labels=values.defaults,cex=cex,xpd=NA,pos=4)
     title.y <- at[length(at)]+y.title.offset
     title.values.DefaultArgs <- list(x=0,y=title.y,labels=title.values,cex=NULL,xpd=NA,font=2,pos=NULL)
