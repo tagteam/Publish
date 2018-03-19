@@ -315,7 +315,11 @@ regressionTable <- function(object,
         }
         coef.vn <- coef[parms]
         ci.vn <- ci[parms,,drop=FALSE]
-        p.vn <- pval[parms,,drop=FALSE]
+        if (is.matrix(pval))
+            p.vn <- pval[parms,,drop=TRUE]
+        else{
+            p.vn <- pval[parms]
+        }
         # {{{ factor variables
         varname <- vn
         if (isfactor){
@@ -384,6 +388,7 @@ regressionTable <- function(object,
                                     Pvalue = NA)
             }
             rownames(block) <- NULL
+            if (any(class(object)%in%"MIresult")) colnames(block)[3] <- paste0("Imputed (",object$nimp,")")
             block
         })
         names(blocks2) <- names(terms2)
@@ -419,7 +424,6 @@ regressionTable <- function(object,
                 x
             }
         })
-
     attr(out,"terms1") <- terms1
     attr(out,"terms2") <- terms2
     attr(out,"factornames") <- factornames

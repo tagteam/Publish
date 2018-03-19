@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: Feb  2 2015 (06:55)
 ## Version:
-## last-updated: Feb  6 2018 (13:30) 
+## last-updated: Mar  7 2018 (09:18) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 100
+##     Update #: 101
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -49,7 +49,7 @@
 ##' data(pbc)
 ##' coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(albumin)+factor(edema)+sex,data=pbc)
 ##' pubcox <- publish(coxfit)
-##' plot(pubcox,cex=1.5)
+##' plot(pubcox,cex=1.5,xratio=c(0.4,0.2))
 ##'
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>

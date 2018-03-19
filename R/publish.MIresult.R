@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 17 2017 (09:52)
 ## Version:
-## Last-Updated: Oct 31 2017 (15:52) 
+## Last-Updated: Mar 19 2018 (09:57) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 39
+##     Update #: 49
 #----------------------------------------------------------------------
 ### Code:
 #' Regression tables after multiple imputations
@@ -147,7 +147,8 @@ publish.MIresult <- function(object,
                              ...){
     pvalMIresult <- function(object){
         se <- sqrt(diag(stats::vcov(object)))
-        2*stats::pnorm(-abs(object$coef/se))
+        p <- 2*stats::pnorm(-abs(object$coef/se))
+        p
     }
     if (missing(fit)) stop("Need the model fitted in the complete cases.")
     object$xlevels <- fit$xlevels
