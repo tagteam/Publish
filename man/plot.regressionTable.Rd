@@ -44,7 +44,7 @@ library(survival)
 data(pbc)
 coxfit <- coxph(Surv(time,status!=0)~age+log(bili)+log(albumin)+factor(edema)+sex,data=pbc)
 pubcox <- publish(coxfit)
-plot(pubcox,cex=1.5)
+plot(pubcox,cex=1.5,xratio=c(0.4,0.2))
 
 }
 \seealso{
