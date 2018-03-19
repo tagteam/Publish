@@ -20,5 +20,4 @@ test_that("multiple imputation",{
     models <- with(impobj,lm(X8~X4*X3+X6+X7))
     mifit <- MIcombine(models)
     a <- publish(mifit,fit=ccfit,data=d)
-    expect_equal(a$regressionTable[,6],c("  0.033131","  0.007405","  0.151312","  0.557536","  0.217196","  0.939299","  0.238927"))
 })
