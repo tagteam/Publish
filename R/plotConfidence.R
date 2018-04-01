@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Mar  5 2018 (19:36) 
+## last-updated: Apr  1 2018 (17:12) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 524
+##     Update #: 536
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -51,6 +51,7 @@
 ##' the values of the lower and the upper limits of the confidence
 ##' intervals, respectively, and may have an element 'labels' which is
 ##' a vector or matrix or list with labels.
+##' @param y.at Optional vector of y-position for the 
 ##' @param lower Lower confidence limits. Used if object \code{x} is a
 ##' vector and if \code{x} is a list \code{lower} overwrites element
 ##' \code{x$lower}.
@@ -374,6 +375,7 @@
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 plotConfidence <- function(x,
+                           y.at,
                            lower,
                            upper,
                            pch=16,
@@ -455,7 +457,11 @@ plotConfidence <- function(x,
     }
     # }}}
     # {{{ set y positions and ylim 
-    at <- 1:NR
+    if (missing(y.at)) {at <- 1:NR
+    } else{
+        if(length(y.at)!=NR) stop(paste0("Number of y positions must match number of confidence intervals which is ",NR))
+        at <- y.at
+    }
     if (nsections>0){
         if (!missing(section.title) && length(section.title)>0){
             names(labels) <- section.title
@@ -487,7 +493,7 @@ plotConfidence <- function(x,
         if (missing(section.title.offset)) section.title.offset <- 1.5*oneM
         if (missing(section.sep)) section.sep <- 2*oneM
         section.shift <- rep(cumsum(c(0,section.sep+rep(section.sep,nsections-1))),
-                           c(section.pos[1],diff(section.pos)))
+                             c(section.pos[1],diff(section.pos)))
         section.pos+section.shift[section.pos]
         if ((sub.diff <- (length(at)-length(section.shift)))>0) 
             section.shift <- c(section.shift,rep(section.title.offset+section.shift[length(section.shift)],sub.diff))
@@ -549,7 +555,7 @@ plotConfidence <- function(x,
                 title.values <- expression(paste(bold(Estimate)," (",bold(CI[95]),")"))
         }else{
             values.defaults <- values
-            title.values <- NULL
+            if (missing(title.values)) title.values <- NULL
         }
     } else{
         values.defaults <- NULL
@@ -586,12 +592,24 @@ plotConfidence <- function(x,
                                      pos=NULL)
     values.DefaultArgs <- list(x=0,y=rat,labels=values.defaults,cex=cex,xpd=NA,pos=4)
     title.y <- at[length(at)]+y.title.offset
-    title.values.DefaultArgs <- list(x=0,y=title.y,labels=title.values,cex=NULL,xpd=NA,font=2,pos=NULL)
+    title.values.DefaultArgs <- list(x=0,
+                                     y=title.y,
+                                     labels=title.values,
+                                     cex=NULL,
+                                     xpd=NA,
+                                     font=2,
+                                     pos=NULL)
     if (do.sections)
         title.line.y <- (title.y+max(section.title.y))/2
     else
         title.line.y <- title.y-.25
-    title.line.DefaultArgs <- list(x0=-Inf,y0=title.line.y,x1=Inf,y1=title.line.y,lwd=lwd,col="gray71",xpd=TRUE)
+    title.line.DefaultArgs <- list(x0=-Inf,
+                                   y0=title.line.y,
+                                   x1=Inf,
+                                   y1=title.line.y,
+                                   lwd=lwd,
+                                   col="gray71",
+                                   xpd=TRUE)
     section.title.DefaultArgs <- list(x=0,y=section.title.y,labels=section.title,cex=NULL,xpd=NA,font=4,pos=4)
     smartA <- prodlim::SmartControl(call=  list(...),
                                     keys=c("plot","points","arrows","refline","title.line","labels","values","title.labels","section.title","title.values","xaxis","stripes","xlab"),
@@ -831,6 +849,7 @@ plotConfidence <- function(x,
     ## if (show.coords){
     ## axis(1,xpd=NA)
     ## }
+    dimensions <- c(smartA,dimensions)
     invisible(dimensions)
 }
 #----------------------------------------------------------------------

@@ -4,11 +4,11 @@
 \alias{plotConfidence}
 \title{Plot confidence intervals}
 \usage{
-plotConfidence(x, lower, upper, pch = 16, cex = 1, lwd = 1, col = 4,
-  xlim, xlab, labels, title.labels, values, title.values, section, section.pos,
-  section.sep, section.title = NULL, section.title.x, section.title.offset,
-  order, leftmargin = 0.025, rightmargin = 0.025, stripes,
-  factor.reference.pos, factor.reference.label = "Reference",
+plotConfidence(x, y.at, lower, upper, pch = 16, cex = 1, lwd = 1,
+  col = 4, xlim, xlab, labels, title.labels, values, title.values, section,
+  section.pos, section.sep, section.title = NULL, section.title.x,
+  section.title.offset, order, leftmargin = 0.025, rightmargin = 0.025,
+  stripes, factor.reference.pos, factor.reference.label = "Reference",
   factor.reference.pch = 16, refline = 1, title.line = TRUE, xratio,
   y.offset = 0, y.title.offset, digits = 2, format,
   extremearrows.length = 0.05, extremearrows.angle = 30, add = FALSE,
@@ -22,6 +22,8 @@ case the list needs to have names 'lower' and 'upper' to indicate
 the values of the lower and the upper limits of the confidence
 intervals, respectively, and may have an element 'labels' which is
 a vector or matrix or list with labels.}
+
+\item{y.at}{Optional vector of y-position for the}
 
 \item{lower}{Lower confidence limits. Used if object \code{x} is a
 vector and if \code{x} is a list \code{lower} overwrites element

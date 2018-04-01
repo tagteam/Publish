@@ -25,6 +25,8 @@
 ##'     \code{format} or \code{prettyNum} used format numeric vectors
 ##'     .
 ##' @param sep Field separator
+##' @param reference.pos Position of factor reference  
+##' @param reference.label Label for factor reference
 ##' @param ... passed to handler
 ##' @return String vector with confidence intervals
 ##' @seealso plot.ci ci.mean
@@ -62,7 +64,10 @@ formatCI <- function(x,
                      digits=2,
                      nsmall=digits,
                      trim=TRUE,
-                     sep="",...){
+                     sep="",
+                     reference.pos,
+                     reference.label="",
+                     ...){
     stopifnot(length(upper)==length(lower))
     format <- sub("l","%s",format)
     format <- sub("u","%s",format)
@@ -78,5 +83,7 @@ formatCI <- function(x,
     })
     if (show.x)
         out <- paste(pubformat(x,digits=digits,handler=handler,nsmall=nsmall),out)
+    if (!missing(reference.pos))
+        out[reference.pos] <- reference.label
     out
 }
