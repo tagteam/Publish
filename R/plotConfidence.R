@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Apr  1 2018 (17:12) 
+## last-updated: Apr  6 2018 (10:12) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 536
+##     Update #: 549
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -51,7 +51,7 @@
 ##' the values of the lower and the upper limits of the confidence
 ##' intervals, respectively, and may have an element 'labels' which is
 ##' a vector or matrix or list with labels.
-##' @param y.at Optional vector of y-position for the 
+##' @param y.at Optional vector of y-position for the confidence intervals and corresponding values and labels.
 ##' @param lower Lower confidence limits. Used if object \code{x} is a
 ##' vector and if \code{x} is a list \code{lower} overwrites element
 ##' \code{x$lower}.
@@ -80,14 +80,6 @@
 ##' @param title.values Main title for the column \code{values}. If \code{values}
 ##' is a matrix or list \code{title.labels} should be a vector with as
 ##' many elements as values has columns or elements.
-##' @param section Guide on how to vertically group the confidence intervals and their corresponding
-##' values and labels. This argument can have the following formats:
-##' \itemize{
-##'  \item{}{a vector of posititions (integers between 1 and the number of confidence intervals)
-##'          which indicate where the next section starts.
-##' }
-##' \item{a vector }
-##' }
 ##' @param section.sep Amount of space between paragraphs (applies only if \code{labels} is a named  list)
 ##' @param section.title Intermediate section headings.
 ##' @param section.title.x x-position for section.titles
@@ -454,6 +446,7 @@ plotConfidence <- function(x,
         if (sum(section.rows)!=NR) stop(paste0("Label list has wrong dimension. There are ",NR," confidence intervals but ",sum(section.rows)," labels"))
     }else{
         nsections <- 0
+        section.rows <- NULL
     }
     # }}}
     # {{{ set y positions and ylim 
@@ -523,7 +516,7 @@ plotConfidence <- function(x,
     title.y <- max(at)+y.title.offset
     rat <- rev(at)
     ylim <- c(0,at[length(at)]+1)
-    dimensions <- list("NumberRows"=NR,xlim=xlim,ylim=ylim,ypos=at)
+    dimensions <- list("NumberRows"=NR,xlim=xlim,ylim=ylim,y.at=at)
     # }}}
     # {{{ preprocessing of values and confidence intervals
     if (!missing(values) && (is.logical(values) && values[[1]]==FALSE))
@@ -541,7 +534,7 @@ plotConfidence <- function(x,
     if (do.values){
         if (missing(values)){
             if (missing(format))
-                if (any(upper<0))
+                if (all(!is.na(upper)) && any(upper<0))
                     format <- "(u;l)"
                 else
                     format <- "(u-l)"
