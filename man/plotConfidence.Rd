@@ -5,7 +5,7 @@
 \title{Plot confidence intervals}
 \usage{
 plotConfidence(x, y.at, lower, upper, pch = 16, cex = 1, lwd = 1,
-  col = 4, xlim, xlab, labels, title.labels, values, title.values, section,
+  col = 4, xlim, xlab, labels, title.labels, values, title.values,
   section.pos, section.sep, section.title = NULL, section.title.x,
   section.title.offset, order, leftmargin = 0.025, rightmargin = 0.025,
   stripes, factor.reference.pos, factor.reference.label = "Reference",
@@ -23,7 +23,7 @@ the values of the lower and the upper limits of the confidence
 intervals, respectively, and may have an element 'labels' which is
 a vector or matrix or list with labels.}
 
-\item{y.at}{Optional vector of y-position for the}
+\item{y.at}{Optional vector of y-position for the confidence intervals and corresponding values and labels.}
 
 \item{lower}{Lower confidence limits. Used if object \code{x} is a
 vector and if \code{x} is a list \code{lower} overwrites element
@@ -64,15 +64,6 @@ constructed values. If \code{values=FALSE} do not draw values.}
 \item{title.values}{Main title for the column \code{values}. If \code{values}
 is a matrix or list \code{title.labels} should be a vector with as
 many elements as values has columns or elements.}
-
-\item{section}{Guide on how to vertically group the confidence intervals and their corresponding
-values and labels. This argument can have the following formats:
-\itemize{
- \item{}{a vector of posititions (integers between 1 and the number of confidence intervals)
-         which indicate where the next section starts.
-}
-\item{a vector }
-}}
 
 \item{section.pos}{Vector with y-axis posititions for section.titles.}
 

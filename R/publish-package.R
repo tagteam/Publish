@@ -136,6 +136,6 @@ NULL
 #'
 #' This package processes results of descriptive statistcs and regression analysis into final tables and figures of a manuscript
 #' @docType package
-#' @name Publish
+#' @name Publish-package
 #' @importFrom data.table as.data.table copy data.table is.data.table melt rbindlist setnames setorder setcolorder setkey ":=" ".N" ".SD"
 NULL

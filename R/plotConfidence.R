@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Apr  6 2018 (10:12) 
+## last-updated: Apr  6 2018 (10:20) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 549
+##     Update #: 550
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -380,7 +380,6 @@ plotConfidence <- function(x,
                            title.labels,
                            values,
                            title.values,
-                           section,
                            section.pos,
                            section.sep,
                            section.title=NULL,

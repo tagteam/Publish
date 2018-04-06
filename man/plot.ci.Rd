@@ -4,104 +4,36 @@
 \alias{plot.ci}
 \title{Plot confidence intervals}
 \usage{
-\method{plot}{ci}(x, y.offset = 0, y.title.offset = 1.3, lower, upper,
-  labels, title.labels, values, title.values, factor.reference.pos,
-  factor.reference.label = "Reference", pch = 16, cex = 1, lwd = 2,
-  col = 1, xlim, ylim, ylab, xlab, automar = TRUE, leftmargin = 0.25,
-  rightmargin = 0.25, labels.colintersp = 1, digits = 1, format = NULL,
-  shift = 0, add = FALSE, axes = TRUE, axis2 = FALSE, ...)
+\method{plot}{ci}(x, xlim, xlab = "", labels, ...)
 }
 \arguments{
-\item{x}{Object containing point estimates and the corresponding
-confidence intervals}
-
-\item{y.offset}{Adjustment of position of confidence intervals and
-text on y-axis. When \code{y.offset=0} the positions are integers
-between the number of intervals (upper most) and 1 (lowest
-interval).}
-
-\item{y.title.offset}{Vertical offset for title line}
-
-\item{lower}{lower confidence limits}
-
-\item{upper}{upper confidence limits}
-
-\item{labels}{labels}
-
-\item{title.labels}{title for label column}
-
-\item{values}{Logical: if \code{TRUE} show the values of the point
-estimates and confidence intervals on the graph}
-
-\item{title.values}{Label for the column (or row) of the values.}
-
-\item{factor.reference.pos}{Position of factor references.}
-
-\item{factor.reference.label}{Label to use at factor.reference.pos instead of value.}
-
-\item{pch}{Point type for point estimates}
-
-\item{cex}{Size of points}
-
-\item{lwd}{Line type for the confidence intervals}
-
-\item{col}{Color for confidence intervals and point estimates.
-Can be controlled separately via points.col and segments.col}
+\item{x}{List, data.frame or other object of this form containing point estimates (first element) and the corresponding confidence intervals as elements lower and upper.}
 
 \item{xlim}{Limit of the x-axis}
 
-\item{ylim}{Limit of the y-axis}
-
-\item{ylab}{Label for the x-axis}
-
 \item{xlab}{Label for the y-axis}
 
-\item{automar}{If \code{TRUE} set margin elements 2 and 4 of
-\code{par()$mar} based on string width of labels and values.}
+\item{labels}{labels}
 
-\item{leftmargin}{If \code{automar} is \code{TRUE} additional
-offset -- measured in margin lines -- which is added to left margin.}
-
-\item{rightmargin}{If \code{automar} is \code{TRUE} additional
-offset -- measured in margin lines -- which is added to right margin.}
-
-\item{labels.colintersp}{Interspace between label columns}
-
-\item{digits}{For rounding of values, passed to \code{pubformat} and \code{print.ci}}
-
-\item{format}{A string which indicates the format used for
-confidence intervals.  The string is passed to
-\code{\link{formatCI}} with two arguments: the lower and the upper
-limit. For example \code{'(l;u)'} yields confidence intervals with
-round parenthesis in which the upper and the lower limits are
-separated by semicolon.}
-
-\item{shift}{Shift the whole graph \code{shift} units to the right
-if \code{shift} is positive and to the left if shift is
-negative. Useful for combining multiple plots.}
-
-\item{add}{If not \code{FALSE} add to an existing plot.}
-
-\item{axes}{if FALSE do not add axes}
-
-\item{axis2}{if FALSE do not y-axis}
-
-\item{...}{Used to transport arguments for the following
-subroutines: \code{"plot"}, \code{"points"}, \code{"segments"},
-\code{"labels"}, \code{"values"}, \code{"title.labels"},
-\code{"title.values"}, \code{"axis1"}, \code{"axis2"},
-\code{"background"}.}
+\item{...}{Used to transport arguments to \code{plotConfidence}.}
 }
 \description{
 Function to plot confidence intervals
 }
 \details{
-Function to plot means and other point estimates with confidence intervals
+Function to plot means and other point estimates with confidence
+intervals
 }
 \examples{
 
 data(Diabetes)
-x=ci.mean(bp.2s~frame,data=Diabetes)
+x=ci.mean(bp.2s~AgeGroups,data=Diabetes)
+plot(x,title.labels="Age groups",xratio=c(0.4,0.3))
+x=ci.mean(bp.2s/500~AgeGroups+gender,data=Diabetes)
+plot(x,xratio=c(0.4,0.2))
+plot(x,xratio=c(0.4,0.2),
+     labels=split(x$labels[,"AgeGroups"],x$labels[,"gender"]),
+     title.labels="Age groups")
 \dontrun{
 plot(x, leftmargin=0, rightmargin=0)
 plotConfidence(x, leftmargin=0, rightmargin=0)
