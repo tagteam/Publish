@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Apr  6 2018 (10:20) 
+## last-updated: Apr 11 2018 (14:27) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 550
+##     Update #: 551
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -638,6 +638,7 @@ plotConfidence <- function(x,
     if (add==FALSE){
         oldmar <- par()$mar
         on.exit(par(mar=oldmar))
+        on.exit(par(mfrow=c(1,1)))
         par(mar=c(0,0,0,0))
         ## layout
         dsize <- dev.size(units="cm")
