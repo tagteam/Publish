@@ -33,18 +33,23 @@
 ##' 
 ##' @export
 coxphSeries <- function(formula,data,vars,...){
+    ## ref <- glm(formula,data=data,...)
+    Missing=NULL
+    data.table::setDT(data)
+    data <- data[,c(all.vars(formula),vars),with=FALSE]
     clist <- lapply(vars,function(v){
         form.v <- update.formula(formula,paste(".~.+",v))
+        if (is.logical(data[[v]]))
+            data[[v]] <- factor(data[[v]],levels=c("FALSE","TRUE"))
         cf <- survival::coxph(form.v,data=data,...)
         cf$call$data <- data
+        cf$model <- data
+        nv <- length(cf$xlevels[[v]])
         rtab <- regressionTable(cf)
-        rtab[v]
+        rtab[[v]]
     })
-    u <- sapply(clist,NCOL)
-    if (any(v <- (u<max(u)))){
-        for (x in (1:length(clist))[v]){
-            clist[[x]] <- cbind(clist[[x]],data.frame("Missing"=rep("--",NROW(clist[[x]])),stringsAsFactors=FALSE))
-        }
-    }
-    do.call("rbind",clist)
+    out <- data.table::rbindlist(clist)
+    if (all(out$Missing%in%c("","0")))
+        out[,Missing:=NULL]
+    out[]
 }

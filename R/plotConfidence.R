@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Apr 11 2018 (14:27) 
+## last-updated: Jun 14 2018 (08:22) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 551
+##     Update #: 552
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -801,7 +801,7 @@ plotConfidence <- function(x,
     # {{{ point estimates and confidence
     do.call("points",smartA$points)
     ## treat arrows that go beyond the x-limits
-    if (smartA$arrows$x0>xlim[2]||smartA$arrows$x1<xlim[1])
+    if (any(smartA$arrows$x0>xlim[2],na.rm=TRUE)||any(smartA$arrows$x1<xlim[1],na.rm=TRUE))
         warning("One or several confidence intervals are completely outside xlim. You should adjust xlim.")
     tooHigh <- smartA$arrows$x1>xlim[2]
     tooHigh[is.na(tooHigh)] <- FALSE

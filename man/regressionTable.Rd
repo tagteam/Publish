@@ -16,13 +16,13 @@ regressionTable(object, param.method = "coef", confint.method = c("default",
 \item{param.method}{Method to obtain model coefficients.}
 
 \item{confint.method}{Method to obtain confidence
-intervals. Default is \code{'default'} which leads to Wald
+intervals. Default is 'default' which leads to Wald
 type intervals using the model based estimate of standard
-error.  \code{'profile'} yields profile likelihood confidence
+error. 'profile' yields profile likelihood confidence
 intervals, available from library MASS for \code{lm} and
-\code{glm} objects. \code{'robust'} uses the sandwich form
+\code{glm} objects. 'robust' uses the sandwich form
 standard error to construct Wald type intervals (see
-\code{lava::estimate.default}). \code{simultaneous} calls
+\code{lava::estimate.default}). 'simultaneous' calls
 \code{multcomp::glht} to obtain simultaneous confidence
 intervals.}
 
