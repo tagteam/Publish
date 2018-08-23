@@ -61,6 +61,14 @@
 ##' @export
 acut <- function(x,n=5,format=NULL,format.low=NULL,format.high=NULL,dig.lab=3,right=TRUE,breaks,labels=TRUE,...){
     stopifnot(n>1)
+    update.label <- function(str,low=NULL,upper=NULL,low.str="%l",upper.str="%u"){
+        if(is.null(low)) low <- low.str
+        if(is.null(upper)) upper <- upper.str
+        new.label <- str
+        new.label <- sub(low.str, low, new.label)
+        new.label <- sub(upper.str, upper, new.label)
+        return(new.label)
+    }
     if(missing(breaks)){
         breaks <- as.numeric(quantile(x, seq(0,1,length.out=n+1), na.rm=TRUE))
         breaks[1] <- -Inf
@@ -102,14 +110,4 @@ acut <- function(x,n=5,format=NULL,format.low=NULL,format.high=NULL,dig.lab=3,ri
         levels(out) <- out.labels
     }
     return(out)
-}
-
-# Where to place this function?
-update.label <- function(str,low=NULL,upper=NULL,low.str="%l",upper.str="%u"){
-    if(is.null(low)) low <- low.str
-    if(is.null(upper)) upper <- upper.str
-    new.label <- str
-    new.label <- sub(low.str, low, new.label)
-    new.label <- sub(upper.str, upper, new.label)
-    return(new.label)
 }
