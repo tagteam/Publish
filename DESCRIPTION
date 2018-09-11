@@ -30,4 +30,4 @@ Suggests:
     mitools (>= 2.3),
     nlme (>= 3.1-131)
 License: GPL (>= 2)
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0
