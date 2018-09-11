@@ -20,16 +20,25 @@
 ##' @param ... further arguments passed to \code{cut}.
 ##' @return same as for cut. A vector of 'factors' is created, unless 'labels=FALSE'. 
 ##' @examples
-##' data(Diabetes)
+##' data(Diabetes) # load dataset
+##'
+##' ## The default uses format similar to cut
 ##' chol.groups <- acut(Diabetes$chol)
 ##' table(chol.groups)
 ##'
+##' ## The formatting can easily be changed
+##' chol.groups <- acut(Diabetes$chol,format="%l-%u",n=5)
+##' table(chol.groups)
+##' 
+##' ## The default is to automatic place the breaks, so the number of this can easily be changed.
 ##' chol.groups <- acut(Diabetes$chol,n=7)
 ##' table(chol.groups)
 ##'
+##' ## Manually setting format and breaks
 ##' age.groups <- acut(Diabetes$age,format="%l-%u",breaks=seq(0,100,by=10))
 ##' table(age.groups)
 ##'
+##' ## Other variations 
 ##' age.groups <- acut(Diabetes$age,
 ##'                    format="%l-%u",
 ##'                    format.low="below %u",
@@ -81,9 +90,9 @@ acut <- function(x,n=5,format=NULL,format.low=NULL,format.high=NULL,dig.lab=3,ri
         }
         if(is.null(format.high)){
             if(right)
-                format.high <- "%l <"
+                format.high <- "> %l"
             else
-                format.high <- "%l <="
+                format.high <- ">= %l"
         }
     }
     if(labels) labels <- NULL
