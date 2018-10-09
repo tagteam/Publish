@@ -4,8 +4,8 @@
 \alias{publish.glm}
 \title{Tabulize regression coefficients with confidence intervals and p-values.}
 \usage{
-\method{publish}{glm}(object, confint.method, pvalue.method, digits = c(2, 4),
-  print = TRUE, factor.reference = "extraline",
+\method{publish}{glm}(object, confint.method, pvalue.method,
+  digits = c(2, 4), print = TRUE, factor.reference = "extraline",
   intercept = ifelse((is.null(object$family) || object$family$family ==
   "gaussian"), 1L, 0L), units = NULL, ...)
 }

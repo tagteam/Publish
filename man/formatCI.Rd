@@ -5,8 +5,9 @@
 \title{Formatting confidence intervals}
 \usage{
 formatCI(x, lower, upper, show.x = FALSE, handler = "sprintf",
-  format = "[l;u]", degenerated = "asis", digits = 2, nsmall = digits,
-  trim = TRUE, sep = "", reference.pos, reference.label = "", ...)
+  format = "[l;u]", degenerated = "asis", digits = 2,
+  nsmall = digits, trim = TRUE, sep = "", reference.pos,
+  reference.label = "", ...)
 }
 \arguments{
 \item{x}{not used (for compatibility with format)}

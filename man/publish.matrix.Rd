@@ -4,11 +4,12 @@
 \alias{publish.matrix}
 \title{Publishing a matrix in raw, org, latex, or muse format}
 \usage{
-\method{publish}{matrix}(object, title, colnames = TRUE, rownames = TRUE,
-  col1name = "", digits = 4, sep = " ", endhead, endrow, style,
-  inter.lines, latex = FALSE, wiki = FALSE, org = FALSE,
-  markdown = FALSE, tabular = TRUE, latex.table.format = NA,
-  latex.hline = 1, latex.nodollar = FALSE, ...)
+\method{publish}{matrix}(object, title, colnames = TRUE,
+  rownames = TRUE, col1name = "", digits = 4, sep = " ", endhead,
+  endrow, style, inter.lines, latex = FALSE, wiki = FALSE,
+  org = FALSE, markdown = FALSE, tabular = TRUE,
+  latex.table.format = NA, latex.hline = 1, latex.nodollar = FALSE,
+  ...)
 }
 \arguments{
 \item{object}{Matrix to be published}

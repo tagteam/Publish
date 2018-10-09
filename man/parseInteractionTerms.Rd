@@ -4,8 +4,8 @@
 \alias{parseInteractionTerms}
 \title{Parse interaction terms}
 \usage{
-parseInteractionTerms(terms, xlevels, units, format.factor, format.contrast,
-  format.scale, format.scale.unit, sep = ": ", ...)
+parseInteractionTerms(terms, xlevels, units, format.factor,
+  format.contrast, format.scale, format.scale.unit, sep = ": ", ...)
 }
 \arguments{
 \item{terms}{Terms of a formula}
