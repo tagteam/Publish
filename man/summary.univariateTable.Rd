@@ -6,8 +6,8 @@
 \usage{
 \method{summary}{univariateTable}(object, n = "inNames",
   drop.reference = FALSE, pvalue.stars = FALSE, pvalue.digits = 4,
-  show.missing = c("ifany", "always", "never"), show.pvalues, show.totals,
-  ...)
+  show.missing = c("ifany", "always", "never"), show.pvalues,
+  show.totals, ...)
 }
 \arguments{
 \item{object}{\code{univariateTable} object as obtained with

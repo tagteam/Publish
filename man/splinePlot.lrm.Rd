@@ -5,8 +5,9 @@
 \title{Plot predictions of logistic regression}
 \usage{
 splinePlot.lrm(object, xvar, xvalues, xlim = range(xvalues), ylim,
-  xlab = xvar, ylab = scale[[1]], col = 1, lwd = 3, confint = TRUE,
-  newdata = NULL, scale = c("risk", "odds"), add = FALSE, ...)
+  xlab = xvar, ylab = scale[[1]], col = 1, lwd = 3,
+  confint = TRUE, newdata = NULL, scale = c("risk", "odds"),
+  add = FALSE, ...)
 }
 \arguments{
 \item{object}{Logistic regression model fitted with \code{rms::lrm}}

@@ -60,6 +60,8 @@ publish.matrix <- function(object,
                            latex.hline=1,
                            latex.nodollar=FALSE,
                            ...){
+    if (is.data.table(object))
+        object <- as.matrix(object)
     if (missing(inter.lines))
         inter.lines <- NULL
     rrr <- rownames(object)
@@ -177,10 +179,15 @@ publish.matrix <- function(object,
             else{ u
               }
         })
+        if (NROW(object)==1) tmpx <- matrix(tmpx,nrow=1)
         rownames(tmpx) <- rownames(object)
+        colnames(tmpx) <- colnames(object)
         object <- tmpx
     }
-    ccc <- colnames(object)
+    if (!is.null(colnames(object)))
+        ccc <- matrix(colnames(object),nrow=1)
+    else 
+        ccc <- rep("",NCOL(object))
     if (!latex){
         object <- rbind(ccc,object)
         ## object <- format(object,justify="right")

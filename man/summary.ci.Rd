@@ -4,8 +4,8 @@
 \alias{summary.ci}
 \title{Summarize confidence intervals}
 \usage{
-\method{summary}{ci}(object, format = "[u;l]", se = FALSE, print = TRUE,
-  ...)
+\method{summary}{ci}(object, format = "[u;l]", se = FALSE,
+  print = TRUE, ...)
 }
 \arguments{
 \item{object}{Object of class ci containing point estimates and the

@@ -4,8 +4,9 @@
 \alias{publish.CauseSpecificCox}
 \title{Tabulizing cause-specific hazard ratio from all causes with confidence limits and Wald test p-values.}
 \usage{
-\method{publish}{CauseSpecificCox}(object, cause, confint.method, pvalue.method,
-  factor.reference = "extraline", units = NULL, print = TRUE, ...)
+\method{publish}{CauseSpecificCox}(object, cause, confint.method,
+  pvalue.method, factor.reference = "extraline", units = NULL,
+  print = TRUE, ...)
 }
 \arguments{
 \item{object}{Cause-specific hazard model obtained with
