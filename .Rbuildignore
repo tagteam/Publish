@@ -1,3 +1,5 @@
 test/
 manuscript/
 ^\.travis\.yml$
+^.*\.Rproj$
+^\.Rproj\.user$
