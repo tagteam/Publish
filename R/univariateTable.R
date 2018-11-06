@@ -34,6 +34,7 @@
 ##' freq.format is used then column percentages are given instead of
 ##' row percentages for categorical variables (factors).
 ##' @param digits Number of digits
+##' @param big.mark For formatting large numbers (i.e., greater than 1,000). \code{""} turn this off.  
 ##' @param short.groupnames If \code{TRUE} group names are abbreviated.
 ##' @param compare.groups Method used to compare groups. If
 ##' \code{"logistic"} and there are exactly two groups logistic
@@ -58,7 +59,7 @@
 ##' @seealso summary.univariateTable, publish.univariateTable
 ##' @examples
 ##' data(Diabetes)
-##' vunivariateTable(~age,data=Diabetes)
+##' univariateTable(~age,data=Diabetes)
 ##' univariateTable(~gender,data=Diabetes)
 ##' univariateTable(~age+gender+ height+weight,data=Diabetes)
 ##' ## same thing but less typing
@@ -142,17 +143,11 @@
 ##'                               summary.format="median(x) (range(x))"))
 ##' publish(rbind(u1,u2),digits=2)
 ##'
-##' ## Large number format
+##' ## Large number format (big.mark)
 ##' Diabetes$AGE <- 1000*Diabetes$age
-##' Big.median <- function(x){format(median(x),big.mark=",",nsmall=1)}
-##' Big.iqr <- function (x, na.rm = FALSE,digits,...){
-##'   paste("(",paste(format(quantile(as.numeric(x), c(0.25, 0.75),
-##'   na.rm = na.rm),digits=1,nsmall=1,big.mark=","),
-##' collapse=";"),")",sep="")}
 ##' u3 <- summary(univariateTable(frame~AGE,
-##'                               data=Diabetes,
-##'                               summary.format="Big.median(x) (Big.iqr(x))"))
-##' u3
+##'                               data=Diabetes,big.mark="'"))
+##' 
 ##' 
 ##'
 ##' @export

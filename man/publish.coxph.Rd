@@ -45,7 +45,7 @@ library(survival)
 data(pbc)
 pbc$edema <- factor(pbc$edema,
              levels=c("0","0.5","1"), labels=c("0","0.5","1"))
-fit = coxph(Surv(time,status!=0)~age+sex*edema+log(bili)+log(albumin),
+fit = coxph(Surv(time,status!=0)~age+sex+edema+log(bili)+log(albumin),
             data=na.omit(pbc))
 publish(fit)
 ## forest plot
