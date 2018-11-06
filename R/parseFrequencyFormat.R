@@ -3,10 +3,10 @@ parseFrequencyFormat <- function(format,digits){
     stats <- tmp[grep("^x$",tmp)-1]
     for(s in 1:length(stats)){
         subs <- switch(stats[s],
-                       "count"="%d",
-                       "total"="%d",
-                       "percent"=paste("%1.",digits,"f",sep=""),
-                       "colpercent"=paste("%1.",digits,"f",sep=""),
+                       "count"="%s",
+                       "total"="%s",
+                       "percent"="%s", #paste("%1.",digits,"f",sep=""),
+                       "colpercent"="%s", #paste("%1.",digits,"f",sep=""),
                        stop(paste("Cannot parse function ",
                                   stats[s],
                                   ". ",

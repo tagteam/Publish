@@ -62,7 +62,7 @@ library(MASS)
 library(data.table)
 library(Publish)
 library(survival)
-#data(traceR) get dataframe traceR
+data(traceR) # get dataframe traceR
 traceR$wmi2 <- ifelse(traceR$wallMotionIndex<0.9,"bad","good")
 traceR$abd2 <- ifelse(traceR$abdominalCircumference<95,"slim","fat")
 # univariate analysis of smoking in subgroups of age and sex

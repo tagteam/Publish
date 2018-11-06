@@ -35,15 +35,13 @@ A forest plot can be added with the plot function.
 #load libraries
 library(Publish)
 library(survival)
-#data(traceR) get dataframe traceR
+data(traceR) #get dataframe traceR
 traceR$wmi2 <- ifelse(traceR$wallMotionIndex<0.9,"bad","good")
 traceR$abd2 <- ifelse(traceR$abdominalCircumference<95,"slim","fat")
 # Selected subgroups - univariable analysis
 sub <- subgroupAnalysis(traceR,outcome="dead",timevar="observationTime",
   treatment="treatment", subgroup=c("smoking","sex","wmi2","abd2")) 
 sub2 <- summary(sub)  
-sub3 <- summary(sub,keepDigital=TRUE)
-sub3
 sub2 
 }
 \seealso{

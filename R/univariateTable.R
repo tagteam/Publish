@@ -58,7 +58,7 @@
 ##' @seealso summary.univariateTable, publish.univariateTable
 ##' @examples
 ##' data(Diabetes)
-##' univariateTable(~age,data=Diabetes)
+##' vunivariateTable(~age,data=Diabetes)
 ##' univariateTable(~gender,data=Diabetes)
 ##' univariateTable(~age+gender+ height+weight,data=Diabetes)
 ##' ## same thing but less typing
@@ -142,6 +142,19 @@
 ##'                               summary.format="median(x) (range(x))"))
 ##' publish(rbind(u1,u2),digits=2)
 ##'
+##' ## Large number format
+##' Diabetes$AGE <- 1000*Diabetes$age
+##' Big.median <- function(x){format(median(x),big.mark=",",nsmall=1)}
+##' Big.iqr <- function (x, na.rm = FALSE,digits,...){
+##'   paste("(",paste(format(quantile(as.numeric(x), c(0.25, 0.75),
+##'   na.rm = na.rm),digits=1,nsmall=1,big.mark=","),
+##' collapse=";"),")",sep="")}
+##' u3 <- summary(univariateTable(frame~AGE,
+##'                               data=Diabetes,
+##'                               summary.format="Big.median(x) (Big.iqr(x))"))
+##' u3
+##' 
+##'
 ##' @export
 univariateTable <- function(formula,
                             data=parent.frame(),
@@ -150,6 +163,7 @@ univariateTable <- function(formula,
                             freq.format="count(x) (percent(x))",
                             column.percent=TRUE,
                             digits=c(1,1,3),
+                            big.mark=",",
                             short.groupnames,
                             compare.groups=TRUE,
                             show.totals=TRUE,
@@ -270,7 +284,7 @@ univariateTable <- function(formula,
                                      labels=grouplabels,
                                      stats=sumformat$stats,
                                      format=sumformat$format,
-                                     digits=digits.summary)
+                                     digits=digits.summary,big.mark=big.mark)
     }
     else{
         sumformat <- NULL
@@ -286,7 +300,7 @@ univariateTable <- function(formula,
                                groups=groups,
                                labels=grouplabels,
                                stats=Qformat$stats,
-                               format=Qformat$format)
+                               format=Qformat$format,digits=digits.summary,big.mark=big.mark)
     }
     else{
         Qformat <- NULL
@@ -308,7 +322,7 @@ univariateTable <- function(formula,
                                    groups=groups,
                                    labels=grouplabels,
                                    stats=freqformat$stats,
-                                   format=freqformat$format)
+                                   format=freqformat$format,big.mark=big.mark,digits=digits.freq)
     }
     else{
         freqformat <- NULL

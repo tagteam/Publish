@@ -8,9 +8,9 @@
 univariateTable(formula, data = parent.frame(),
   summary.format = "mean(x) (sd(x))", Q.format = "median(x) [iqr(x)]",
   freq.format = "count(x) (percent(x))", column.percent = TRUE,
-  digits = c(1, 1, 3), short.groupnames, compare.groups = TRUE,
-  show.totals = TRUE, n = "inNames", outcome = NULL, na.rm = FALSE,
-  ...)
+  digits = c(1, 1, 3), big.mark = ",", short.groupnames,
+  compare.groups = TRUE, show.totals = TRUE, n = "inNames",
+  outcome = NULL, na.rm = FALSE, ...)
 }
 \arguments{
 \item{formula}{Formula specifying the grouping variable (strata)
@@ -87,7 +87,7 @@ summary functions.
 }
 \examples{
 data(Diabetes)
-univariateTable(~age,data=Diabetes)
+vunivariateTable(~age,data=Diabetes)
 univariateTable(~gender,data=Diabetes)
 univariateTable(~age+gender+ height+weight,data=Diabetes)
 ## same thing but less typing
@@ -170,6 +170,19 @@ u2 <- summary(univariateTable(frame~BMI,
                               data=na.omit(Diabetes),
                               summary.format="median(x) (range(x))"))
 publish(rbind(u1,u2),digits=2)
+
+## Large number format
+Diabetes$AGE <- 1000*Diabetes$age
+Big.median <- function(x){format(median(x),big.mark=",",nsmall=1)}
+Big.iqr <- function (x, na.rm = FALSE,digits,...){
+  paste("(",paste(format(quantile(as.numeric(x), c(0.25, 0.75),
+  na.rm = na.rm),digits=1,nsmall=1,big.mark=","),
+collapse=";"),")",sep="")}
+u3 <- summary(univariateTable(frame~AGE,
+                              data=Diabetes,
+                              summary.format="Big.median(x) (Big.iqr(x))"))
+u3
+
 
 }
 \seealso{
