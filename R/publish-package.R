@@ -139,3 +139,41 @@ NULL
 #' @name Publish-package
 #' @importFrom data.table as.data.table copy data.table is.data.table melt rbindlist setnames setorder setcolorder setkey ":=" ".N" ".SD"
 NULL
+
+#' traceR data
+#'
+#' These data are from the TRACE randomised trial,  a comparison between the angiotensin converting
+#' enzyme inhibitor trandolapril and placebo ford large myocardial infarctions. In all, 1749 patients
+#' were randomised. The current data are from a 15 year follow-up. 
+#' @name traceR
+#' @docType data
+#' @format A data frame with 1749 observations on the following variables.
+#' \describe{
+#' \item{weight}{Weight in kilo}
+#' \item{height}{Height in meters}
+#' \item{abdominalCircumference}{in centimeters}
+#' \item{seCreatinine}{in mmol per liter}
+#' \item{wallMotionIndex}{left ventricular function 0-2, 0 worst, 2 normal}
+#' \item{observationTime}{time to death or censor}
+#' \item{age}{age in years}
+#' \item{sex}{0=female,1=male}
+#' \item{smoking}{0=never,1=prior,2=current}
+#' \item{dead}{0=censor,1=dead}
+#' \item{treatment}{placebo or trandolapril}
+#' 
+#' }
+#' @references
+#' Kober et al 1995 NEJM 333,1670
+#'
+#' @keywords datasets
+##' @examples
+##'
+##' data(trace)
+##' Units(trace,list("age"="years"))
+##' fit <- glm(dead ~ smoking+sex+age+Time+offset(log(ObsTime)), family="poisson",data=trace)
+##' rtf <- regressionTable(fit,factor.reference = "inline")
+##' summary(rtf)
+##' publish(fit)
+##'
+NULL
+
