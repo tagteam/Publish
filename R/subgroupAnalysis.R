@@ -40,7 +40,6 @@
 #' @export
 #' @examples
 #' #load libraries
-#' library(MASS)
 #' library(data.table)
 #' library(Publish)
 #' library(survival)

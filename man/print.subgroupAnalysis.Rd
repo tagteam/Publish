@@ -7,7 +7,7 @@
 \method{print}{subgroupAnalysis}(x, ...)
 }
 \arguments{
-\item{x}{An object obtained with \code{subgroupAnalysis}}
+\item{x}{- An object obtained with \code{subgroupAnalysis}}
 
 \item{...}{Passed to summary.subgroupAnalysis}
 }

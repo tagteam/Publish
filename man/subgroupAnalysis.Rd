@@ -54,7 +54,6 @@ mates of subgroup effects are from the regressionTable funtion.
 }
 \examples{
 #load libraries
-library(MASS)
 library(data.table)
 library(Publish)
 library(survival)

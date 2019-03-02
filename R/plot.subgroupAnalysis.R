@@ -3,7 +3,7 @@
 #' This function operates on a "subgroupAnalysis" object to produce a formatted
 #' table and a forest plot
 #' @author Christian Torp-Pedersen
-#' @param fit - a subgroupAnalysis object
+#' @param x - a subgroupAnalysis object
 #' @param ... - passed on to plotConfidence
 #' @details 
 #' This function produces a formatted table of a subgroupAnalysis object and
@@ -29,11 +29,11 @@
 #' sub_cox <- subgroupAnalysis(fit_cox,traceR,treatment="treatment",
 #'   subgroup=c("smoking","sex","wmi2","abd2")) # subgroups as character string
 #' plot(sub_cox)  
-plot.subgroupAnalysis <- function(fit,...)
+plot.subgroupAnalysis <- function(x,...)
 {
-  if (class(fit)[1]!="subgroupAnalysis") stop("Object not of class subgroupAnalysis")
-  num <- length(names(fit))
-  plotcols<-fit[,(num-4):(num-2)]
-  tabcols <-fit[,1:2]
+  if (class(x)[1]!="subgroupAnalysis") stop("Object not of class subgroupAnalysis")
+  num <- length(names(x))
+  plotcols<-x[,(num-4):(num-2)]
+  tabcols <-x[,1:2]
   Publish::plotConfidence(x=plotcols, labels=tabcols)
 }
