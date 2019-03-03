@@ -27,6 +27,7 @@
 ##' summary(regressionTable(fit),handler="prettyNum")
 ##' summary(regressionTable(fit),handler="format")
 ##' summary(regressionTable(fit),handler="sprintf",digits=c(2,2),pValue.stars=TRUE)
+##' summary(regressionTable(fit),handler="sprintf",digits=c(2,2),pValue.stars=TRUE,ci.format="(l,u)")
 #' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 summary.regressionTable <- function(object,

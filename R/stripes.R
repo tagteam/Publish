@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 12 2015 (06:52) 
 ## Version: 
-## last-updated: Jun 19 2016 (09:19) 
+## last-updated: Feb 11 2019 (17:10) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 23
+##     Update #: 26
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -72,6 +72,7 @@ stripes <- function(xlim,
         U[3] <- ylim[1]
         U[4] <- ylim[2]
     }
+    print(U)
     # background
     if (!is.null(fill))
         rect(U[1],U[3],U[2],U[4],col=fill, border=border,xpd=xpd) 
@@ -79,20 +80,19 @@ stripes <- function(xlim,
         if (length(col)==1){
             rect(U[1],U[3],U[2],U[4],col=col[1], border=border,xpd=xpd)
         }else{
-             if (length(col)>1){
-                 horizontal
-                 NR <- length(horizontal)
-                 bcol <- rep(col,length.out=NR)
-                 nix <- sapply(1:(NR-1),function(r){
-                                     polygon(x=c(U[1],U[1],U[2],U[2],U[1]),
-                                             y=c(horizontal[r],horizontal[r+1],horizontal[r+1],horizontal[r],horizontal[r]),
-                                             col=bcol[r],
-                                             xpd=xpd,
-                                             border=FALSE)
-                                     ## do NOT specify: density=100 as this slows this down!
-                                 })
-             }
-         }
+            if (length(col)>1){
+                NR <- length(horizontal)
+                bcol <- rep(col,length.out=NR)
+                nix <- sapply(1:(NR-1),function(r){
+                    polygon(x=c(U[1],U[1],U[2],U[2],U[1]),
+                            y=c(horizontal[r],horizontal[r+1],horizontal[r+1],horizontal[r],horizontal[r]),
+                            col=bcol[r],
+                            xpd=xpd,
+                            border=FALSE)
+                    ## do NOT specify: density=100 as this slows this down!
+                })
+            } 
+        }
     }
     # grid
     if (length(gridcol)>0){

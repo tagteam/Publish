@@ -65,7 +65,6 @@ variables when calculating p-values.}
 List with one summary table element for each variable on the right hand side of formula.
 The summary tables can be combined with \code{rbind}. The function \code{summary.univariateTable}
 combines the tables, and shows p-values in custom format.
-The summary tables
 }
 \description{
 Categorical variables are summarized using counts and frequencies.
@@ -89,6 +88,7 @@ summary functions.
 }
 \examples{
 data(Diabetes)
+library(data.table)
 univariateTable(~age,data=Diabetes)
 univariateTable(~gender,data=Diabetes)
 univariateTable(~age+gender+ height+weight,data=Diabetes)

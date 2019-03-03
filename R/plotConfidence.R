@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 10 2015 (11:03)
 ## Version:
-## last-updated: Jun 14 2018 (18:46) 
+## last-updated: Feb 26 2019 (10:31) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 556
+##     Update #: 558
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -166,9 +166,11 @@
 ##'           labels=CiTable[,c("Drug.Time","Dose","Mean","SD","n")])
 ##'
 ##' ## if argument labels is a named list the table is subdivided:
-##' labellist <- split(CiTable[,c("Dose","Mean","SD","n")],CiTable[,"Drug"])
+##' labellist <- split(CiTable[,c("Dose","Time","Mean","SD","n")],CiTable[,"Drug"])
 ##' labellist
-##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")], labels=labellist)
+##' ## the data need to be ordered accordingly
+##' CC= data.table::rbindlist(split(CiTable[,c("HazardRatio","lower","upper")],CiTable[,"Drug"]))
+##' plotConfidence(x=CC, labels=labellist)
 ##'
 ##' 
 ##' ## The graph consist of at most three columns:
@@ -362,6 +364,13 @@
 ##'                stripes.horizontal=c(0,9,18,27)+0.5,
 ##'                stripes.col=threegreens)
 ##'
+##' # combining multiple plots into one
+##' layout(t(matrix(1:5)))
+##' plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'        labels=CiTable[,c("Mean","n")],
+##'        layout=FALSE)
+##'  plotConfidence(x=CiTable[,c("HazardRatio","lower","upper")],
+##'        layout=FALSE)
 ##' 
 ##'
 ##' @export
