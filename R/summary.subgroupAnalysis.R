@@ -3,13 +3,14 @@
 #' This function operates on a "subgroupAnalysis" object to produce a formatted
 #' table.
 #' @author Christian Torp-Pedersen
-#' @param fit - a subgroupAnalysis object
+#' @param object - a subgroupAnalysis object
 #' @param digits - number of digits for risk ratios 
 #' @param eps - lowest value of p to be shown exactly, others will be "<eps"
-#' @param subGroupP - present p-values for analyses in subgroups
-#' @param keepDigital - prevents formatting risk ratio and confidence limits. Useful
+#' @param subgroup.p - present p-values for analyses in subgroups
+#' @param keep.digital - prevents formatting risk ratio and confidence limits. Useful
 #' for cases when further manipulations of rows and columns prior to adding a
 #' forest plot is relevant.
+#' @param ... - not currently used
 #' @details 
 #' This function produces a formatted or unformatted table of a subgroupAnalysis object.
 #' A forest plot can be added with the plot function.
@@ -35,11 +36,11 @@
 #' sub_cox <- subgroupAnalysis(fit_cox,traceR,treatment="treatment",
 #'   subgroup=c("smoking","sex","wmi2","abd2")) # subgroups as character string
 #' summary(sub_cox)   
-summary.subgroupAnalysis <- function(fit,digits=3,eps=0.001,subGroupP=FALSE,keepDigital=FALSE)                             
+summary.subgroupAnalysis <- function(object,digits=3,eps=0.001,subgroup.p=FALSE,keep.digital=FALSE,...)                             
 {
   dup=subgroup=dup=Pvalue=Lower=Upper=pinteraction=NULL
-  if (class(fit)[1]!="subgroupAnalysis") stop("Object not of class subgroupAnalysis")
-  fitt <- copy(fit)
+  if (class(object)[1]!="subgroupAnalysis") stop("Object not of class subgroupAnalysis")
+  fitt <- copy(object)
   data.table::setDT(fitt)
   fitt[,dup:=duplicated(subgroup)]
   fitt[dup==TRUE,':='(subgroup='')]
@@ -48,9 +49,9 @@ summary.subgroupAnalysis <- function(fit,digits=3,eps=0.001,subGroupP=FALSE,keep
   if (max(grepl("Missing",names(fitt)))==1)
     fitt[,c(names(fitt)[grepl("Missing",names(fitt))]):=NULL] #remove Units and Units missing
   riskname <- names(fitt)[length(names(fitt))-5]# hazardRatio or ODDSratio
-  if (subGroupP & !keepDigital) fitt[,Pvalue:=format.pval(Pvalue,eps=eps,digits=3)]
+  if (subgroup.p & !keep.digital) fitt[,Pvalue:=format.pval(Pvalue,eps=eps,digits=3)]
   else  fitt[,Pvalue:=NULL]
-  if (!keepDigital){
+  if (!keep.digital){
     fitt[,':='(riskname=format(eval(parse(text=riskname)),digits=digits),
               confint= paste0(format(Lower,digits=digits),'-',format(Upper,digits=digits)),           
               pinteraction=format.pval(pinteraction,eps=eps,digits=3))]

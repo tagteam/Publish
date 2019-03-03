@@ -4,21 +4,23 @@
 \alias{summary.subgroupAnalysis}
 \title{summary.subgroupAnalysis}
 \usage{
-\method{summary}{subgroupAnalysis}(fit, digits = 3, eps = 0.001,
-  subGroupP = FALSE, keepDigital = FALSE)
+\method{summary}{subgroupAnalysis}(object, digits = 3, eps = 0.001,
+  subgroup.p = FALSE, keep.digital = FALSE, ...)
 }
 \arguments{
-\item{fit}{- a subgroupAnalysis object}
+\item{object}{- a subgroupAnalysis object}
 
 \item{digits}{- number of digits for risk ratios}
 
 \item{eps}{- lowest value of p to be shown exactly, others will be "<eps"}
 
-\item{subGroupP}{- present p-values for analyses in subgroups}
+\item{subgroup.p}{- present p-values for analyses in subgroups}
 
-\item{keepDigital}{- prevents formatting risk ratio and confidence limits. Useful
+\item{keep.digital}{- prevents formatting risk ratio and confidence limits. Useful
 for cases when further manipulations of rows and columns prior to adding a
 forest plot is relevant.}
+
+\item{...}{- not currently used}
 }
 \value{
 A data.frame with formatted values for subgroups

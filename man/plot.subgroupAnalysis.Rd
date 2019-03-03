@@ -4,10 +4,10 @@
 \alias{plot.subgroupAnalysis}
 \title{plot.subgroupAnalysis}
 \usage{
-\method{plot}{subgroupAnalysis}(fit, ...)
+\method{plot}{subgroupAnalysis}(x, ...)
 }
 \arguments{
-\item{fit}{- a subgroupAnalysis object}
+\item{x}{- a subgroupAnalysis object}
 
 \item{...}{- passed on to plotConfidence}
 }
