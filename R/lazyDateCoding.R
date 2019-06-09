@@ -28,7 +28,7 @@ lazyDateCoding <- function(data,format,pattern,varnames,testlength=10){
         dx <- d[[x]]
         if (is.character(dx)){
             test.x <- dx[!is.na(dx)]
-            test.x <- test.x[min(length(test.x),testlength)]
+            test.x <- test.x[1:(min(length(test.x),testlength))]
             ## separator
             separators <- c("-","/","\\|"," ")
             sep <- sapply(separators,grep,test.x,value=TRUE)
@@ -53,12 +53,29 @@ lazyDateCoding <- function(data,format,pattern,varnames,testlength=10){
                               paste0(year,sep,day,sep,month),
                               paste0(month,sep,year,sep,day),
                               paste0(month,sep,day,sep,year))
+            if (sep!=""){
+                list.x <- strsplit(test.x,sep)
+                Y <- match(4,nchar(list.x[[1]]),nomatch=0)
+                if (Y>0) year <- "%Y"
+                test.formats <- switch(as.character(Y),
+                                       "3"={c(paste0(day,sep,month,sep,year),
+                                              paste0(month,sep,day,sep,year))},
+                                       "1"={c(paste0(year,sep,month,sep,day),
+                                              paste0(year,sep,day,sep,month))},
+                                       "2"={c(paste0(month,sep,year,sep,day),
+                                              paste0(day,sep,year,sep,month))},
+                                       {test.formats})
+            }
             ## print(test.formats)
             nix <- try(this.x <- as.Date(test.x[[1]],format=test.formats))
             if ((class(nix)[[1]]=="try-error") || all(is.na(this.x))){
                 format.x <- "dontknow"
             }else{
-                format.x <- test.formats[!is.na(this.x)][[1]]
+                format.x <- test.formats[!is.na(this.x)]
+                if (length(format.x)>1){  # multiple matches
+                    winner <- sapply(format.x,function(fx){sum(!is.na(as.Date(test.x,format=fx)))})
+                    format.x <- format.x[winner==max(winner)][1]
+                }
             }
             if (isdt){
                 paste0(data,"[",",",x,":=as.Date(",x,",format=\"",format.x,"\"))]\n")
