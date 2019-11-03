@@ -54,9 +54,13 @@ publish.CauseSpecificCox <- function(object,
                                   units=units,...)
             summary.regressionTable(pm,print=FALSE,...)
         })
-        cause1 <- clist[[1]]
+        cause1 <- clist[[1]]$regressionTable
         ## colnames(cause1) <- paste(names(object$models)[[1]],names(cause1),sep=".")
-        cause2 <- clist[[2]]
+        cause2 <- clist[[2]]$regressionTable
+        if (NROW(cause1)==NROW(cause2)){
+            table=cbind(cause1[,1:2],"A"=paste(cause1[,3],cause1[,4]),"B"=paste(cause2[,3],cause2[,4]))
+            colnames(table)[3:4] <- object$causes
+        }else{table <- NULL}
         ## colnames(cause2) <- paste(names(object$models)[[2]],names(cause2),sep=".")
         out <- clist
     } else{
@@ -72,7 +76,14 @@ publish.CauseSpecificCox <- function(object,
         out <- summary.regressionTable(pm,print=FALSE,...)$regressionTable
     }
     if (print==TRUE) {
-        print.listof(lapply(out,function(x)x$regressionTable))
+        if (is.null(table))
+            lapply(1:length(out),function(i){
+                publish(names(out)[[i]])
+                publish(out[[1]]$regressionTable)
+            })
+        else{
+            publish(table,...)
+        }
     }
     invisible(out)
 }

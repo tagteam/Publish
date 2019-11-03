@@ -10,6 +10,7 @@
 ##' @param format passed to as.Date
 ##' @param pattern match date variables
 ##' @param varnames variable names
+##' @param testlength how many rows of data should be evaluated to guess the format.
 ##' @return R-code one line for each variable.
 ##' @author Thomas Alexander Gerds
 ##' @examples
@@ -78,10 +79,10 @@ lazyDateCoding <- function(data,format,pattern,varnames,testlength=10){
                 }
             }
             if (isdt){
-                paste0(data,"[",",",x,":=as.Date(",x,",format=\"",format.x,"\"))]\n")
+                paste0(data,"[",",",x,":=as.Date(",x,",format=\"",format.x,"\")]\n")
             }else{
                 obj.x <- paste(data,"$",x,sep="")
-                paste(obj.x," <- as.Date(",obj.x,",format=c(\"",format.x,"\"))\n",sep="")
+                paste(obj.x," <- as.Date(",obj.x,",format=c(\"",format.x,"\")\n",sep="")
             }
         }else{
             NULL

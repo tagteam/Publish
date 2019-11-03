@@ -41,7 +41,7 @@ table2x2 <- function(x,digits=1,stats=c("table","rd","rr","or","chisq","fisher")
         se.rd <- sqrt(p1*(1-p1)/(a+b)+p2*(1-p2)/(c+d))
         rd.lower <- rd - qnorm(1-0.05/2)*se.rd
         rd.upper <- rd + qnorm(1-0.05/2)*se.rd
-        out <- c(out,list(rd=rd,se.rd=rd,rd.lower=rd.lower,rd.upper=rd.upper))
+        out <- c(out,list(rd=rd,se.rd=se.rd,rd.lower=rd.lower,rd.upper=rd.upper))
     }
     if ("rr" %in% stats){
         rr <- p1/p2
