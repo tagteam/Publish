@@ -14,6 +14,8 @@ lazyDateCoding(data, format, pattern, varnames, testlength = 10)
 \item{pattern}{match date variables}
 
 \item{varnames}{variable names}
+
+\item{testlength}{how many rows of data should be evaluated to guess the format.}
 }
 \value{
 R-code one line for each variable.

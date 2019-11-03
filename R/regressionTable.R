@@ -279,7 +279,7 @@ regressionTable <- function(object,
         if (vn=="Intercept"||vn=="(Intercept)")
             Missing <- ""
         else
-            Missing <- try(eval(parse(text=misscall),data))
+            Missing <- try(eval(parse(text=misscall),data),silent=TRUE)
         if (class(Missing)[1]=="try-error") Missing <- NA
         # }}}
         if (isfactor){

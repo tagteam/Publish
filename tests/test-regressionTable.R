@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 13 2017 (07:39) 
 ## Version: 
-## Last-Updated: Oct 22 2017 (16:43) 
+## Last-Updated: Nov  3 2019 (19:32) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 5
+##     Update #: 6
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -34,7 +34,7 @@ test_that("plot.regressionTable",{
     f <- glm(hyp1~frame+gender+log(age)+I(chol>245)+ofak,data=Diabetes,family="binomial")
     f <- glm(hyp1~log(age)+I(chol>245),data=Diabetes,family="binomial")
     u <- regressionTable(f)
-    plot(u,xlim=c(0.5,3))
+    plot(u)
 })
 
 ######################################################################
