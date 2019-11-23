@@ -9,7 +9,8 @@
 #' In randomised studies the main regression analysis is often univariate and
 #' includes only the exposure of interest. In
 #' observational studies the main regression analysis can readily be adjusted for
-#' other variables including those which may modify the effect of the variable of interest.
+#' other variables including those which may modify the effect of the variable 
+#' of interest.
 #' 
 #' @author Christian Torp-Pedersen
 #' @usage
@@ -18,9 +19,8 @@
 #' @param object - glm, coxph or cph object for which subgroups should be
 #' analyzed.
 #' @param data - Dataset including all relevant variables
-#' @param treatment - The variable to be examined in subgroups, best coded
-#'   as 0/1 numeric.
-#' @param subgroups - A vector of variable names presenting the variables
+#' @param treatment - Must be a factor
+#' @param subgroups - A vector of variable names presenting the factor variables
 #' where subgroups should be formed. These variables should
 #' all be "factors"
 #' @param confint.method "default" creates Wald type confidence interval, "robust",
@@ -113,6 +113,10 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
     datt <- copy(data)
     data.table::setDT(datt)
   }
+browser()  
+  classes <- sapply(datt,class)
+  if (!classes[treatment]=="factor") stop("Error - treatment must be a factor variable")
+  for(i in 1:length(subgroups)) if (!classes[subgroups[i]]=="factor") stop("Error - subgroups must be a factor variables")
   ## if (!all(stats::complete.cases(data[,.SD,.SDcols=c(subgroups,all.vars(object$formula),treatment)]))) 
     ## warning("data has missing values in columns used, may cause problems")
   if (!treatment %in% all.vars(object$formula)) stop("Error - treatment must be in the formula")
@@ -194,7 +198,7 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
     OUT[,pinteraction:=pinteraction]
     OUT
   }
-  ) ,fill=TRUE) # end do.call/rbind  
+  ) ,fill=TRUE) # end rbindlist
   class(Result) <- c("subgroupAnalysis","data.frame","data.table")
   Result 
 }
