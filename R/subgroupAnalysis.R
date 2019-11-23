@@ -113,7 +113,6 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
     datt <- copy(data)
     data.table::setDT(datt)
   }
-browser()  
   classes <- sapply(datt,class)
   if (!classes[treatment]=="factor") stop("Error - treatment must be a factor variable")
   for(i in 1:length(subgroups)) if (!classes[subgroups[i]]=="factor") stop("Error - subgroups must be a factor variables")
