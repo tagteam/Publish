@@ -45,7 +45,10 @@ of interest.
 \details{
 The function can only handle a bivariate treatment, most conviniently coded as
 zero or one. The p-value for interaction is obtained with a likelihood ratio test
-comparing the main regression analysis with the interaction model.
+comparing the main regression analysis with the interaction model. 
+
+There are plot and print functions available for the function
+see helppages for plot.subgroupAnalysis and print.subgroupAnalysis
 }
 \examples{
 #load libraries
