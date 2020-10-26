@@ -14,7 +14,6 @@ formatCI(
   degenerated = "asis",
   digits = 2,
   nsmall = digits,
-  right.align = TRUE,
   sep = "",
   reference.pos,
   reference.label = "",
@@ -57,10 +56,6 @@ format numeric vectors.}
 \item{reference.label}{Label for factor reference}
 
 \item{...}{passed to handler}
-
-\item{align}{Used to aligning resulting intervals. Also, if handler
-\code{format} or \code{prettyNum} used format numeric vectors
-.}
 }
 \value{
 String vector with confidence intervals
@@ -80,11 +75,6 @@ formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884))
 formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="(l, u)")
 # show x
 formatCI(x=x$mean,lower=x$lower,upper=x$upper,format="(l, u)",show.x=TRUE)
-
-# if the first lower limit is shorter than the second (missing negative sign),
-# then, option align will make a difference:
-formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="[l;u)",align=FALSE)
-formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="[l;u)",align=TRUE)
 
 # change of handler function
 l <- c(-0.0890139,0.0084736,144.898333,0.000000001)

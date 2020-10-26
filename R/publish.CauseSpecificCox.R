@@ -84,7 +84,7 @@ publish.CauseSpecificCox <- function(object,
                               factor.reference=factor.reference,
                               units=units,...)
         ## now pm is  a regression table
-        out <- summary.regressionTable(pmm,print=FALSE,...)$regressionTable
+        out <- summary.regressionTable(pm,print=FALSE,...)$regressionTable
     }
     if (print==TRUE) {
         if (is.null(table))
