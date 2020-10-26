@@ -4,7 +4,8 @@
 \name{trace}
 \alias{trace}
 \title{trace data}
-\format{A data frame with 1832 observations on the following 6 variables.
+\format{
+A data frame with 1832 observations on the following 6 variables.
 \describe{
 \item{Time}{Time after myocardial infarction, in 6 months intervals}
 \item{smoking}{Smoking status. A factor with levels (Never, Current, Previous)}
@@ -12,7 +13,8 @@
 \item{age}{Age in years at the time of myocardial infarction}
 \item{ObsTime}{Cumulative risk time in each split}
 \item{dead}{Count of deaths}
-}}
+}
+}
 \description{
 These data are from screening to the TRACE study, a comparison between the angiotensin converting
 enzyme inhibitor trandolapril and placebo ford large myocardial infarctions. A total of 6676

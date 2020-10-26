@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May 11 2015 (09:05) 
 ## Version: 
-## last-updated: Jun 14 2018 (18:44) 
+## last-updated: May  8 2020 (07:41) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 64
+##     Update #: 69
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -40,13 +40,14 @@ plotLabels <- function(labels,
         stripes$xlim <- c(0,width)
         do.call("stripes",stripes)
     }
-    
     ## arrows(x0=0,x1=width,y0=12,y1=12,lwd=8,col="orange")
     ## abline(v=xpos,col=1:5)
     nix <- lapply(1:ncolumns,function(l){
                       labels.args$x <- xpos[[l]]
                       labels.args$labels <- labels[[l]]
                       labels.args$cex <- labels.args$cex[[l]]
+                      ## if (length(grep("\\;",labels[[1]]))>0)    browser()
+                      ## if (!is.null(labels.args$adj)) labels.args$pos=NULL
                       do.call("text",labels.args)
                   })
     ## to avoid that expression(bold(CI[95])) is

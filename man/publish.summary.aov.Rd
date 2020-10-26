@@ -4,8 +4,14 @@
 \alias{publish.summary.aov}
 \title{Format summary table of aov results}
 \usage{
-\method{publish}{summary.aov}(object, print = TRUE,
-  handler = "sprintf", digits = c(2, 4), nsmall = digits, ...)
+\method{publish}{summary.aov}(
+  object,
+  print = TRUE,
+  handler = "sprintf",
+  digits = c(2, 4),
+  nsmall = digits,
+  ...
+)
 }
 \arguments{
 \item{object}{glm object}

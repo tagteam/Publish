@@ -4,8 +4,11 @@
 \alias{table2x2}
 \title{2x2 table calculus for teaching}
 \usage{
-table2x2(x, digits = 1, stats = c("table", "rd", "rr", "or", "chisq",
-  "fisher"))
+table2x2(
+  x,
+  digits = 1,
+  stats = c("table", "rd", "rr", "or", "chisq", "fisher")
+)
 }
 \arguments{
 \item{x}{2x2 table}

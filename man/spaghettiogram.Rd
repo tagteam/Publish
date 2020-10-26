@@ -5,9 +5,23 @@
 \alias{Spaghettiogram}
 \title{Spaghettiogram}
 \usage{
-spaghettiogram(formula, data, xlim, ylim, xlab = "", ylab = "",
-  axes = TRUE, col, lwd, lty, pch, legend = FALSE, add = FALSE,
-  background = TRUE, ...)
+spaghettiogram(
+  formula,
+  data,
+  xlim,
+  ylim,
+  xlab = "",
+  ylab = "",
+  axes = TRUE,
+  col,
+  lwd,
+  lty,
+  pch,
+  legend = FALSE,
+  add = FALSE,
+  background = TRUE,
+  ...
+)
 }
 \arguments{
 \item{formula}{A formula which specifies the variables for the

@@ -105,10 +105,10 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
                              factor.reference="extraline"){
   level=tail=Variable=NULL
   if(!(class(object)[1] %in% c("coxph","cph","glm"))) stop ("Error - Object must be coxph, cph or glm")
-  if(!(class(treatment)=="character")) stop("Error - Variable treament must be character")
-  if(class(subgroups)=="formula") subgroups <- all.vars(subgroups)
-  else if(!(class(subgroups)=="character")) stop ("Error - subgroups must be formula or character")
-  if (!class(data)[1] %in% c("data.frame","data.table")) stop ("Error - data must be data.frame og data.table")
+  if(!(class(treatment)[1]=="character")) stop("Error - Variable treament must be character")
+  if(class(subgroups)[1]=="formula") subgroups <- all.vars(subgroups)
+  else if(!(class(subgroups)[1]=="character")) stop ("Error - subgroups must be formula or character")
+  if (!(class(data)[1] %in% c("data.frame","data.table"))) stop ("Error - data must be data.frame og data.table")
   else{
     datt <- copy(data)
     data.table::setDT(datt)

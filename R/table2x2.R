@@ -13,11 +13,11 @@
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 table2x2 <- function(x,digits=1,stats=c("table","rd","rr","or","chisq","fisher")){
-    if (class(x)=="data.frame"){
+    if (class(x)[1]=="data.frame"){
         table2x2 <- as.matrix(x)
     } else{
-        if (class(x)=="matrix"||class(x)=="table"){
-            if (class(x)=="table"){table2x2 <- as.matrix(x)}
+        if ("matrix"%in%class(x)||"table" %in% class(x)){
+            if ("table"%in%class(x)){table2x2 <- as.matrix(x)}
             else table2x2 <- x
         } else{
             stop("first argument `x' must be a matrix or a data.frame")

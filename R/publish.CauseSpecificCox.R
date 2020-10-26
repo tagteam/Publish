@@ -27,6 +27,17 @@
 ##' publish(fit1)
 ##' publish(fit1,pvalue.stars=TRUE)
 ##' publish(fit1,factor.reference="inline",units=list("age"="years"))
+##'
+##' # wide format (same variables in both Cox regression formula) 
+##' fit2 <- CSC(Hist(time,status)~invasion+epicel+age, data=Melanoma)
+##' publish(fit2)
+##'
+##' # with p-values
+##' x <- publish(fit2,print=FALSE)
+##' table <- cbind(x[[1]]$regressionTable,
+##'            x[[2]]$regressionTable[,-c(1,2)])
+##' 
+##' 
 ##' @export
 publish.CauseSpecificCox <- function(object,
                                      cause,
@@ -73,13 +84,13 @@ publish.CauseSpecificCox <- function(object,
                               factor.reference=factor.reference,
                               units=units,...)
         ## now pm is  a regression table
-        out <- summary.regressionTable(pm,print=FALSE,...)$regressionTable
+        out <- summary.regressionTable(pmm,print=FALSE,...)$regressionTable
     }
     if (print==TRUE) {
         if (is.null(table))
             lapply(1:length(out),function(i){
                 publish(names(out)[[i]])
-                publish(out[[1]]$regressionTable)
+                publish(out[[i]]$regressionTable)
             })
         else{
             publish(table,...)

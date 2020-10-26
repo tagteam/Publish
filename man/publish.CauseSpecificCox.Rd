@@ -4,9 +4,16 @@
 \alias{publish.CauseSpecificCox}
 \title{Tabulizing cause-specific hazard ratio from all causes with confidence limits and Wald test p-values.}
 \usage{
-\method{publish}{CauseSpecificCox}(object, cause, confint.method,
-  pvalue.method, factor.reference = "extraline", units = NULL,
-  print = TRUE, ...)
+\method{publish}{CauseSpecificCox}(
+  object,
+  cause,
+  confint.method,
+  pvalue.method,
+  factor.reference = "extraline",
+  units = NULL,
+  print = TRUE,
+  ...
+)
 }
 \arguments{
 \item{object}{Cause-specific hazard model obtained with
@@ -49,6 +56,17 @@ fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
 publish(fit1)
 publish(fit1,pvalue.stars=TRUE)
 publish(fit1,factor.reference="inline",units=list("age"="years"))
+
+# wide format (same variables in both Cox regression formula) 
+fit2 <- CSC(Hist(time,status)~invasion+epicel+age, data=Melanoma)
+publish(fit2)
+
+# with p-values
+x <- publish(fit2,print=FALSE)
+table <- cbind(x[[1]]$regressionTable,
+           x[[2]]$regressionTable[,-c(1,2)])
+
+
 }
 \author{
 Thomas Alexander Gerds <tab@biostat.ku.dk>

@@ -104,6 +104,8 @@ summary.univariateTable <- function(object,
             if (!show.totals){
                 if (is.null(object$groups)){
                     miss <- object$missing$totals[[s]]
+                }else{
+                    miss <- unlist(object$missing$group[[s]])
                 }
             } else{
                 miss <- c(unlist(object$missing$group[[s]]),object$missing$totals[[s]])

@@ -6,13 +6,15 @@
 \title{A study was made of all 26 astronauts on the first eight space shuttle flights (Bungo et.al., 1985).
 On a voluntary basis 17 astronauts consumed large quantities of salt and fluid prior to landing as
 a countermeasure to space deconditioning, while nine did not.}
-\format{A data frame with 52 observations on the following 4 variables:
+\format{
+A data frame with 52 observations on the following 4 variables:
 \describe{
 \item{Status}{Factor with levels Post (after flight) and Pre (before flight)}
 \item{HR}{Supine heart rate(beats per minute)}
 \item{Treatment}{Countermeasure salt/fluid (1= yes, 0=no)}
 \item{ID}{Person id}
-}}
+}
+}
 \description{
 A study was made of all 26 astronauts on the first eight space shuttle flights (Bungo et.al., 1985).
 On a voluntary basis 17 astronauts consumed large quantities of salt and fluid prior to landing as

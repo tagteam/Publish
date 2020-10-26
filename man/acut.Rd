@@ -4,9 +4,18 @@
 \alias{acut}
 \title{Automatic selection and formatting of breaks in \code{cut}}
 \usage{
-acut(x, n = 5, format = NULL, format.low = NULL,
-  format.high = NULL, dig.lab = 3, right = TRUE, breaks,
-  labels = TRUE, ...)
+acut(
+  x,
+  n = 5,
+  format = NULL,
+  format.low = NULL,
+  format.high = NULL,
+  dig.lab = 3,
+  right = TRUE,
+  breaks,
+  labels = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{a numeric vector which is to be converted to a factor by cutting (passed directly to \code{cut}).}
@@ -39,7 +48,7 @@ A version of \code{cut} that easily formats the labels and places breaks by defa
 The formats are supplied by specifiyng the text around the lower (\%l) and upper (\%l) value (see examples).
 If user specified breaks are supplied, the default labels from \code{cut} are used.
 If automatic breaks are used, the default labels are a slight modification at the end point of the default from \code{cut}
-All this can of course be adjusted manually through the format functionality (see below).
+All this can of course be adjusted manually through the format functionality (see below). 
 
 By default, 5 breaks are constructed according to the quantiles with of the input \code{x}.
 The number of breaks can be adjusted, and default specifying breaks (as in \code{cut}) can be supplied instead.

@@ -4,7 +4,8 @@
 \name{CiTable}
 \alias{CiTable}
 \title{CiTable data}
-\format{A data frame with 27 observations on the following 9 variables.
+\format{
+A data frame with 27 observations on the following 9 variables.
 \describe{
 \item{Drug}{}
 \item{Time}{}
@@ -17,7 +18,8 @@
 \item{lower}{}
 \item{upper}{}
 \item{p}{}
-}}
+}
+}
 \description{
 These data are used for testing Publish package functionality.
 }

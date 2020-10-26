@@ -137,7 +137,7 @@ regressionTable <- function(object,
         if (!is.null(object$formula)){
             formula <- object$formula
         }else if (is.null(object$terms)){
-            if (class(object$call$formula)=="name"){
+            if (class(object$call$formula)[[1]]=="name"){
                 stop("Cannot extract the formula from object")
             }
             else{
@@ -372,7 +372,7 @@ regressionTable <- function(object,
                                                    f=function(p)lapply(t2,eval,envir=sys.parent(-1)),
                                                    coef = coef,
                                                    robust=confint.method=="robust")$coefmat), silent = TRUE)
-            if("try-error" %in% class(block) == FALSE){
+            if(("try-error" %in% class(block)) == FALSE){
                 colnames(block) <- c("Coefficient","StandardError","Lower","Upper","Pvalue")
                 block <- data.frame(Variable=attr(t2,"names"),
                                     Units="",
@@ -388,7 +388,7 @@ regressionTable <- function(object,
                                     Pvalue = NA)
             }
             rownames(block) <- NULL
-            if (any(class(object)%in%"MIresult")) colnames(block)[3] <- paste0("Imputed (",object$nimp,")")
+            if (any("MIresult" %in% class(object))) colnames(block)[3] <- paste0("Imputed (",object$nimp,")")
             block
         })
         names(blocks2) <- names(terms2)
