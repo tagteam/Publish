@@ -13,10 +13,9 @@ analyzed.}
 
 \item{data}{- Dataset including all relevant variables}
 
-\item{treatment}{- The variable to be examined in subgroups, best coded
-as 0/1 numeric.}
+\item{treatment}{- Must be a factor}
 
-\item{subgroups}{- A vector of variable names presenting the variables
+\item{subgroups}{- A vector of variable names presenting the factor variables
 where subgroups should be formed. These variables should
 all be "factors"}
 
@@ -40,12 +39,16 @@ systematically checks for effect modification with a list of other variables.
 In randomised studies the main regression analysis is often univariate and
 includes only the exposure of interest. In
 observational studies the main regression analysis can readily be adjusted for
-other variables including those which may modify the effect of the variable of interest.
+other variables including those which may modify the effect of the variable 
+of interest.
 }
 \details{
 The function can only handle a bivariate treatment, most conviniently coded as
 zero or one. The p-value for interaction is obtained with a likelihood ratio test
-comparing the main regression analysis with the interaction model.
+comparing the main regression analysis with the interaction model. 
+
+There are plot and print functions available for the function
+see helppages for plot.subgroupAnalysis and print.subgroupAnalysis
 }
 \examples{
 #load libraries

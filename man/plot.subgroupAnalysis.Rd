@@ -31,7 +31,8 @@ setDT(traceR)
 traceR[,':='(wmi2=factor(wallMotionIndex<0.9,levels=c(TRUE,FALSE), 
                 labels=c("bad","good")),
              abd2=factor(abdominalCircumference<95, levels=c(TRUE,FALSE), 
-                labels=c("slim","fat")))]
+                labels=c("slim","fat")),
+             sex=factor(sex))]
 fit_cox <- coxph(Surv(observationTime,dead)~treatment,data=traceR)
 # Selected subgroups - univariable analysis
 sub_cox <- subgroupAnalysis(fit_cox,traceR,treatment="treatment",
