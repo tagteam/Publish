@@ -90,9 +90,9 @@ parseInteractionTerms <- function(terms,
         if (missing(format.contrast)){
             format.contrast <- "var(level vs ref)"
         }else{
-            stopifnot(length(grep("var",format.scale.contrast))>0)
-            stopifnot(length(grep("level",format.scale.contrast))>0)
-            stopifnot(length(grep("ref",format.scale.contrast))>0)
+            stopifnot(length(grep("var",format.contrast))>0)
+            stopifnot(length(grep("level",format.contrast))>0)
+            stopifnot(length(grep("ref",format.contrast))>0)
         }
         format.factor <- sub("var","%s",format.factor)
         format.factor <- sub("level","%s",format.factor)
