@@ -5,12 +5,22 @@
 \alias{utable}
 \title{Univariate table}
 \usage{
-univariateTable(formula, data = parent.frame(),
-  summary.format = "mean(x) (sd(x))", Q.format = "median(x) [iqr(x)]",
-  freq.format = "count(x) (percent(x))", column.percent = TRUE,
-  digits = c(1, 1, 3), big.mark = ",", short.groupnames,
-  compare.groups = TRUE, show.totals = TRUE, n = "inNames",
-  outcome = NULL, na.rm = FALSE, ...)
+univariateTable(
+  formula,
+  data = parent.frame(),
+  summary.format = "mean(x) (sd(x))",
+  Q.format = "median(x) [iqr(x)]",
+  freq.format = "count(x) (percent(x))",
+  column.percent = TRUE,
+  digits = c(1, 1, 3),
+  big.mark = ",",
+  short.groupnames,
+  compare.groups = TRUE,
+  show.totals = TRUE,
+  n = "inNames",
+  outcome = NULL,
+  ...
+)
 }
 \arguments{
 \item{formula}{Formula specifying the grouping variable (strata)
@@ -55,9 +65,6 @@ number of subjects.}
 \item{outcome}{Outcome data used to calculate p-values when
 compare groups method is \code{'logistic'} or \code{'cox'}.}
 
-\item{na.rm}{If \code{TRUE} remove missing values from categorical
-variables when calculating p-values.}
-
 \item{...}{saved as part of the result to be passed on to
 \code{labelUnits}}
 }
@@ -67,7 +74,7 @@ The summary tables can be combined with \code{rbind}. The function \code{summary
 combines the tables, and shows p-values in custom format.
 }
 \description{
-Categorical variables are summarized using counts and frequencies.
+Categorical variables are summarized using counts and frequencies and compared .
 }
 \details{
 This function can generate the baseline demographic characteristics
@@ -81,7 +88,9 @@ used to modify, add or remove columns/rows and for users not accustomed to R the
 generated can be exported to a text file which can be read by other software, e.g., via
 write.csv(table,file="path/to/results/table.csv")
 
-Continuous variables are summarized by means and standard deviations.
+By default, continuous variables are summarized by means and standard deviations
+and compared with t-tests. When continuous variables are summarized by medians
+and interquartile ranges the 
 Deviations from the above defaults are obtained when the
 arguments summary.format and freq.format are combined with suitable
 summary functions.
@@ -101,10 +110,11 @@ univariateTable(location~Q(age)+gender+height+weight,data=Diabetes)
 ## with median (IQR) and kruskal.test (with two groups equivalent to wilcox.test)
 ## variables not marked with Q() are (by default) summarized
 ## with mean (sd) and anova.glm(...,test="Chisq")
-## the p-value of anova.glm with only two groups is similar
+## the p-value of anova(glm()) with only two groups is similar
 ## but not exactly equal to that of a t.test
 ## categorical variables are (by default) summarized by count
-## (percent) and anova.glm(...,family=binomial,test="Chisq")
+## (percent) and chi-square tests (\code{chisq.test}). When \code{compare.groups ='logistic'}
+## anova(glm(...,family=binomial,test="Chisq")) is used to calculate p-values.
 
 ## export result to csv
 table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),

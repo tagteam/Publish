@@ -4,8 +4,7 @@
 \alias{publish.Score}
 \title{Publish predictive accuracy results}
 \usage{
-\method{publish}{Score}(object, metrics, score = TRUE,
-  contrasts = TRUE, level = 3, ...)
+\method{publish}{Score}(object, metrics, score = TRUE, contrasts = TRUE, level = 3, ...)
 }
 \arguments{
 \item{object}{Object obtained with \code{riskRegression::Score}}

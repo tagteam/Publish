@@ -4,9 +4,19 @@
 \alias{publish.MIresult}
 \title{Present logistic regression and Cox regression  obtained with mitools::MIcombine based on smcfcs::smcfcs multiple imputation analysis}
 \usage{
-\method{publish}{MIresult}(object, confint.method, pvalue.method,
-  digits = c(2, 4), print = TRUE, factor.reference = "extraline",
-  intercept, units = NULL, fit, data, ...)
+\method{publish}{MIresult}(
+  object,
+  confint.method,
+  pvalue.method,
+  digits = c(2, 4),
+  print = TRUE,
+  factor.reference = "extraline",
+  intercept,
+  units = NULL,
+  fit,
+  data,
+  ...
+)
 }
 \arguments{
 \item{object}{Object obtained with mitools::MIcombine based on smcfcs::smcfcs multiple imputation analysis}

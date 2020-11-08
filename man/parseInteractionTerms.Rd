@@ -4,8 +4,17 @@
 \alias{parseInteractionTerms}
 \title{Parse interaction terms}
 \usage{
-parseInteractionTerms(terms, xlevels, units, format.factor,
-  format.contrast, format.scale, format.scale.unit, sep = ": ", ...)
+parseInteractionTerms(
+  terms,
+  xlevels,
+  units,
+  format.factor,
+  format.contrast,
+  format.scale,
+  format.scale.unit,
+  sep = ": ",
+  ...
+)
 }
 \arguments{
 \item{terms}{Terms of a formula}
@@ -15,22 +24,22 @@ parseInteractionTerms(terms, xlevels, units, format.factor,
 
 \item{units}{named list with unit labels. names should match variable names in formula.}
 
-\item{format.factor}{For categorical variables. A string which specifies the format for factor labels.
-The string should contain the keywords \code{"var"} and \code{"level"} which will be
+\item{format.factor}{For categorical variables. A string which specifies the print format for factor labels.
+The string has to contain the keywords \code{"var"} and \code{"level"} which will be
 replaced by the name of the variable and the current level, respectively.
 Default is \code{"var(level)"}.}
 
-\item{format.contrast}{For categorical variables. A string which specifies the format for constrast statements.
-The string should contain the keywords \code{"var"}, \code{"level"} and \code{"ref"} which will be
+\item{format.contrast}{For categorical variables. A string which specifies the print format for constrast statements.
+The string has to contain the keywords \code{"var"}, \code{"level"} and \code{"ref"} which will be
 replaced by the name of the variable, the current level and the reference level, respectively.}
 
-\item{format.scale}{For continuous variables. For categorical variables. A string which specifies the format for factor labels.
-The string should contain the keywords \code{"var"} and \code{"level"} which will be
-replaced by the name of the variable and the current level, respectively.
-Default is \code{"var(level)"}.}
+\item{format.scale}{A string which specifies the print format for continuous variables without units. 
+The string has to contain the keyword \code{"var"} which will be
+replaced by the name of the variable and the unit, respectively.
+Default is \code{"var"}.}
 
-\item{format.scale.unit}{For continuous variables which have a unit. A string which specifies the format for factor labels.
-The string should contain the keywords \code{"var"} and \code{"unit"} which will be
+\item{format.scale.unit}{A string which specifies the print format for continuous variables with units. 
+The string has to contain the keywords \code{"var"} and \code{"unit"} which will be
 replaced by the name of the variable and the unit, respectively.
 Default is \code{"var(unit)"}.}
 
@@ -68,7 +77,7 @@ fit <- glm(bp.2s~age*factor(gender)+BMI,data=Diabetes)
 parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels,
                       format.scale="var -- level:ref",units=list("age"='years'))
 parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels,
-                      format.scale.unit="var -- level:ref",units=list("age"='years'))
+                      format.scale.unit="var [unit]",units=list("age"='years'))
 it <- parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels)
 ivars <- unlist(lapply(it,function(x)attr(x,"variables")))
 lava::estimate(fit,function(p)lapply(unlist(it),eval,envir=sys.parent(-1)))

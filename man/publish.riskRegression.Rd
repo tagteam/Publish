@@ -4,8 +4,7 @@
 \alias{publish.riskRegression}
 \title{Publishing results of riskRegression}
 \usage{
-\method{publish}{riskRegression}(object, digits = c(2, 4),
-  print = TRUE, ...)
+\method{publish}{riskRegression}(object, digits = c(2, 4), print = TRUE, ...)
 }
 \arguments{
 \item{object}{object of class riskRegression as obtained with

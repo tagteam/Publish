@@ -4,8 +4,14 @@
 \alias{summary.subgroupAnalysis}
 \title{summary.subgroupAnalysis}
 \usage{
-\method{summary}{subgroupAnalysis}(object, digits = 3, eps = 0.001,
-  subgroup.p = FALSE, keep.digital = FALSE, ...)
+\method{summary}{subgroupAnalysis}(
+  object,
+  digits = 3,
+  eps = 0.001,
+  subgroup.p = FALSE,
+  keep.digital = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{- a subgroupAnalysis object}

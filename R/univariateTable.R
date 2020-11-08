@@ -1,4 +1,4 @@
-##' Categorical variables are summarized using counts and frequencies.
+##' Categorical variables are summarized using counts and frequencies and compared .
 ##'
 ##' This function can generate the baseline demographic characteristics
 ##' that forms table 1 in many publications. It is also useful for generating
@@ -11,7 +11,9 @@
 ##' generated can be exported to a text file which can be read by other software, e.g., via
 ##' write.csv(table,file="path/to/results/table.csv")
 ##'
-##' Continuous variables are summarized by means and standard deviations.
+##' By default, continuous variables are summarized by means and standard deviations
+##' and compared with t-tests. When continuous variables are summarized by medians
+##' and interquartile ranges the 
 ##' Deviations from the above defaults are obtained when the
 ##' arguments summary.format and freq.format are combined with suitable
 ##' summary functions.
@@ -47,8 +49,6 @@
 ##' number of subjects.
 ##' @param outcome Outcome data used to calculate p-values when
 ##' compare groups method is \code{'logistic'} or \code{'cox'}.
-##' @param na.rm If \code{TRUE} remove missing values from categorical
-##' variables when calculating p-values.
 ##' @param ... saved as part of the result to be passed on to
 ##' \code{labelUnits}
 ##' @return List with one summary table element for each variable on the right hand side of formula.
@@ -71,10 +71,11 @@
 ##' ## with median (IQR) and kruskal.test (with two groups equivalent to wilcox.test)
 ##' ## variables not marked with Q() are (by default) summarized
 ##' ## with mean (sd) and anova.glm(...,test="Chisq")
-##' ## the p-value of anova.glm with only two groups is similar
+##' ## the p-value of anova(glm()) with only two groups is similar
 ##' ## but not exactly equal to that of a t.test
 ##' ## categorical variables are (by default) summarized by count
-##' ## (percent) and anova.glm(...,family=binomial,test="Chisq")
+##' ## (percent) and chi-square tests (\code{chisq.test}). When \code{compare.groups ='logistic'}
+##' ## anova(glm(...,family=binomial,test="Chisq")) is used to calculate p-values.
 ##'
 ##' ## export result to csv
 ##' table1 = summary(univariateTable(location~age+gender+height+weight,data=Diabetes),
@@ -164,7 +165,6 @@ univariateTable <- function(formula,
                             show.totals=TRUE,
                             n="inNames",
                             outcome=NULL,
-                            na.rm=FALSE,
                             ...){
     if (length(digits)<3) digits <- rep(digits,3)
     if (!is.numeric(digits.summary <- digits[[1]])) digits.summary <- 1
@@ -411,11 +411,6 @@ univariateTable <- function(formula,
                        },
                        "true"={
                            fv <- factor.matrix[,v]
-                           missv <- is.na(fv)
-                           if (any(missv) & na.rm==TRUE){
-                               fv <- factor(fv[!missv])
-                               groupvar <- factor(groupvar[!missv])
-                           }
                            tabx <- table(fv,groupvar)
                            if (sum(tabx)==0) {
                                px <- NA

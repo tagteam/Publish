@@ -4,11 +4,21 @@
 \alias{specialFrame}
 \title{Special frame}
 \usage{
-specialFrame(formula, data, unspecials.design = TRUE, specials,
-  specials.factor = TRUE, specials.design = FALSE,
-  strip.specials = TRUE, strip.arguments = NULL, strip.alias = NULL,
-  strip.unspecials = NULL, drop.intercept = TRUE, response = TRUE,
-  na.action = options()$na.action)
+specialFrame(
+  formula,
+  data,
+  unspecials.design = TRUE,
+  specials,
+  specials.factor = TRUE,
+  specials.design = FALSE,
+  strip.specials = TRUE,
+  strip.arguments = NULL,
+  strip.alias = NULL,
+  strip.unspecials = NULL,
+  drop.intercept = TRUE,
+  response = TRUE,
+  na.action = options()$na.action
+)
 }
 \arguments{
 \item{formula}{Formula whose left hand side specifies the event

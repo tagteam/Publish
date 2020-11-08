@@ -1,32 +1,40 @@
 ##' Publishing a matrix in raw, org, latex, or muse format
 ##' 
-##' This is the heart of the Publish package 
+##' This is the heart of the Publish package
 ##' @param object Matrix to be published
 ##' @param title Title for table, only in wiki and muse format
 ##' @param colnames If \code{TRUE} show column names
 ##' @param rownames If \code{TRUE} show row names
 ##' @param col1name Name for first column
 ##' @param digits Numbers are rounded according to digits
+##' @param try.convert Logical. If \code{TRUE} try to convert also non-numeric
+##' formats such as character to numeric before rounding. Default is \code{TRUE}.
 ##' @param sep Field separator when style is \code{"none"}
 ##' @param endhead String to be pasted at the end of the first row
-##' (header)
+##'     (header)
 ##' @param endrow String to be pasted at the end of each row
 ##' @param style Table style for export to \code{"latex"},
-##' \code{"org"}, \code{"markdown"}, \code{"wiki"},
-##' \code{"none"}. Overwritten by argments below.
-##' @param inter.lines A named list which contains strings to be placed
-##' between the rows of the table. An element with name \code{"0"} is
-##' used to place a line before the first column, elements with name
-##' \code{"r"} are placed between line r and r+1.
+##'     \code{"org"}, \code{"markdown"}, \code{"wiki"},
+##'     \code{"none"}. Overwritten by argments below.
+##' @param inter.lines A named list which contains strings to be
+##'     placed between the rows of the table. An element with name
+##'     \code{"0"} is used to place a line before the first column,
+##'     elements with name \code{"r"} are placed between line r and
+##'     r+1.
 ##' @param latex If \code{TRUE} use latex table format
 ##' @param wiki If \code{TRUE} use mediawiki table format
 ##' @param org If \code{TRUE} use emacs orgmode table format
 ##' @param markdown If \code{TRUE} use markdown table format
-##' @param tabular For style \code{latex} only: if \code{TRUE} enclose the table in begin/end tabular environement.
-##' @param latex.table.format For style \code{latex} only: format of the tabular environement.
-##' @param latex.hline For style \code{latex} only: if \code{TRUE} add hline statements add the end of each line.
-##' @param latex.nodollar For style \code{latex} only: if \code{TRUE} do not enclose numbers in dollars.
-##' @param ... Used to transport arguments. Currently supports \code{wiki.class}.
+##' @param tabular For style \code{latex} only: if \code{TRUE} enclose
+##'     the table in begin/end tabular environement.
+##' @param latex.table.format For style \code{latex} only: format of
+##'     the tabular environement.
+##' @param latex.hline For style \code{latex} only: if \code{TRUE} add
+##'     hline statements add the end of each line.
+##' @param latex.nodollar For style \code{latex} only: if \code{TRUE}
+##'     do not enclose numbers in dollars.
+##' @param ... Used to transport arguments. Currently supports
+##'     \code{wiki.class}.
 ##' @examples
 ##'
 ##' x <- matrix(1:12,ncol=3)
@@ -46,6 +54,7 @@ publish.matrix <- function(object,
                            rownames=TRUE,
                            col1name="",
                            digits=4,
+                           try.convert=TRUE,
                            sep=" ",
                            endhead,
                            endrow,
@@ -174,7 +183,7 @@ publish.matrix <- function(object,
     # {{{ round object
     if (!missing(digits)){
         tmpx <- apply(object,2,function(u){
-            if (is.numeric(u) | canbe.numeric(u)){
+            if (is.numeric(u) | (try.convert==TRUE && canbe.numeric(u))){
                 format(as.numeric(u),digits=digits,nsmall=digits)}
             else{ u
               }

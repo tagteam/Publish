@@ -4,7 +4,8 @@
 \name{Diabetes}
 \alias{Diabetes}
 \title{Diabetes data of Dr John Schorling}
-\format{A data frame with 205 observations on the following 12 variables.
+\format{
+A data frame with 205 observations on the following 12 variables.
 \describe{
 \item{id}{subject id}
 \item{chol}{Total Cholesterol}
@@ -29,7 +30,8 @@
 \item{time.ppn}{Postprandial Time when Labs were Drawn in minutes}
 \item{AgeGroups}{Categorized age}
 \item{BMI}{Categorized BMI}
-}}
+}
+}
 \source{
 \url{http://192.38.117.59/~tag/Teaching/share/data/Diabetes.html}
 }

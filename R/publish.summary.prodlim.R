@@ -6,7 +6,7 @@ publish.summary.prodlim <- function(object,
                                     latex=FALSE,
                                     ...){
   otab <- object$table
-  if (class(otab)=="list"){
+  if (class(otab)[1]=="list"){
     onames <- names(otab)
     nix <- lapply(1:length(otab),function(i){
       ## publish(onames[i])

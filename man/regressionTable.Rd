@@ -4,11 +4,18 @@
 \alias{regressionTable}
 \title{Regression table}
 \usage{
-regressionTable(object, param.method = "coef",
+regressionTable(
+  object,
+  param.method = "coef",
   confint.method = c("default", "profile", "robust", "simultaneous"),
   pvalue.method = c("default", "robust", "simultaneous"),
-  factor.reference = "extraline", intercept = 0L, units = NULL,
-  noterms = NULL, probindex = 0L, ...)
+  factor.reference = "extraline",
+  intercept = 0L,
+  units = NULL,
+  noterms = NULL,
+  probindex = 0L,
+  ...
+)
 }
 \arguments{
 \item{object}{Fitted regression model obtained with \code{lm},

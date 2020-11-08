@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 17 2017 (09:52)
 ## Version:
-## Last-Updated: Mar 19 2018 (09:57) 
+## Last-Updated: Dec  4 2019 (18:15) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 49
+##     Update #: 50
 #----------------------------------------------------------------------
 ### Code:
 #' Regression tables after multiple imputations
@@ -168,8 +168,8 @@ publish.MIresult <- function(object,
     if (!missing(confint.method) && confint.method!="default") stop("Can only do simple Wald confidence intervals based on MIresults.")
     if (!missing(pvalue.method)) stop("Can only do simple Wald test p-values based on MIresults.")
     if (missing(intercept)){
-        intercept <- 1*(class(fit) == "lm" ||
-                        (class(fit)=="glm" && stats::family(fit)!="binomial"))
+        intercept <- 1*(class(fit)[1] == "lm" ||
+                        (class(fit)[1]=="glm" && stats::family(fit)!="binomial"))
     }
     rt <- regressionTable(object,
                           confint.method="default",

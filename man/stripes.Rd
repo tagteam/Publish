@@ -4,9 +4,18 @@
 \alias{stripes}
 \title{Background and grid color control.}
 \usage{
-stripes(xlim, ylim, col = "white", lwd = 1, gridcol = "gray77",
-  fill = "white", horizontal = NULL, vertical = NULL,
-  border = "black", xpd = FALSE)
+stripes(
+  xlim,
+  ylim,
+  col = "white",
+  lwd = 1,
+  gridcol = "gray77",
+  fill = "white",
+  horizontal = NULL,
+  vertical = NULL,
+  border = "black",
+  xpd = FALSE
+)
 }
 \arguments{
 \item{xlim}{Limits for the horizontal x-dimension. Defaults to

@@ -4,7 +4,8 @@
 \name{traceR}
 \alias{traceR}
 \title{traceR data}
-\format{A data frame with 1749 observations on the following variables.
+\format{
+A data frame with 1749 observations on the following variables.
 \describe{
 \item{weight}{Weight in kilo}
 \item{height}{Height in meters}
@@ -18,7 +19,8 @@
 \item{dead}{0=censor,1=dead}
 \item{treatment}{placebo or trandolapril}
 
-}}
+}
+}
 \description{
 These data are from the TRACE randomised trial,  a comparison between the angiotensin converting
 enzyme inhibitor trandolapril and placebo ford large myocardial infarctions. In all, 1749 patients

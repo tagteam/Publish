@@ -4,10 +4,21 @@
 \alias{formatCI}
 \title{Formatting confidence intervals}
 \usage{
-formatCI(x, lower, upper, show.x = FALSE, handler = "sprintf",
-  format = "[l;u]", degenerated = "asis", digits = 2,
-  nsmall = digits, trim = TRUE, sep = "", reference.pos,
-  reference.label = "", ...)
+formatCI(
+  x,
+  lower,
+  upper,
+  show.x = FALSE,
+  handler = "sprintf",
+  format = "[l;u]",
+  degenerated = "asis",
+  digits = 2,
+  nsmall = digits,
+  sep = "",
+  reference.pos,
+  reference.label = "",
+  ...
+)
 }
 \arguments{
 \item{x}{not used (for compatibility with format)}
@@ -38,10 +49,6 @@ format numeric vectors.}
 \item{nsmall}{If handler \code{format} or \code{prettyNum} used
 format numeric vectors.}
 
-\item{trim}{Used to aligning resulting intervals. Also, if handler
-\code{format} or \code{prettyNum} used format numeric vectors
-.}
-
 \item{sep}{Field separator}
 
 \item{reference.pos}{Position of factor reference}
@@ -68,11 +75,6 @@ formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884))
 formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="(l, u)")
 # show x
 formatCI(x=x$mean,lower=x$lower,upper=x$upper,format="(l, u)",show.x=TRUE)
-
-# if the first lower limit is shorter than the second (missing negative sign),
-# then, option trim will make a difference:
-formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=FALSE)
-formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=TRUE)
 
 # change of handler function
 l <- c(-0.0890139,0.0084736,144.898333,0.000000001)

@@ -21,9 +21,6 @@
 ##'     format numeric vectors.
 ##' @param nsmall If handler \code{format} or \code{prettyNum} used
 ##'     format numeric vectors.
-##' @param trim Used to aligning resulting intervals. Also, if handler
-##'     \code{format} or \code{prettyNum} used format numeric vectors
-##'     .
 ##' @param sep Field separator
 ##' @param reference.pos Position of factor reference  
 ##' @param reference.label Label for factor reference
@@ -39,11 +36,6 @@
 ##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="(l, u)")
 ##' # show x
 ##' formatCI(x=x$mean,lower=x$lower,upper=x$upper,format="(l, u)",show.x=TRUE)
-##'
-##' # if the first lower limit is shorter than the second (missing negative sign),
-##' # then, option trim will make a difference:
-##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=FALSE)
-##' formatCI(lower=c(0.001,-2.8413),upper=c(1,3.0008884),format="l--u",trim=TRUE)
 ##'
 ##' # change of handler function
 ##' l <- c(-0.0890139,0.0084736,144.898333,0.000000001)
@@ -63,7 +55,6 @@ formatCI <- function(x,
                      degenerated="asis",
                      digits=2,
                      nsmall=digits,
-                     trim=TRUE,
                      sep="",
                      reference.pos,
                      reference.label="",

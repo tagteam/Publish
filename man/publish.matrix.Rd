@@ -4,12 +4,29 @@
 \alias{publish.matrix}
 \title{Publishing a matrix in raw, org, latex, or muse format}
 \usage{
-\method{publish}{matrix}(object, title, colnames = TRUE,
-  rownames = TRUE, col1name = "", digits = 4, sep = " ", endhead,
-  endrow, style, inter.lines, latex = FALSE, wiki = FALSE,
-  org = FALSE, markdown = FALSE, tabular = TRUE,
-  latex.table.format = NA, latex.hline = 1, latex.nodollar = FALSE,
-  ...)
+\method{publish}{matrix}(
+  object,
+  title,
+  colnames = TRUE,
+  rownames = TRUE,
+  col1name = "",
+  digits = 4,
+  try.convert = TRUE,
+  sep = " ",
+  endhead,
+  endrow,
+  style,
+  inter.lines,
+  latex = FALSE,
+  wiki = FALSE,
+  org = FALSE,
+  markdown = FALSE,
+  tabular = TRUE,
+  latex.table.format = NA,
+  latex.hline = 1,
+  latex.nodollar = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{Matrix to be published}
@@ -24,6 +41,9 @@
 
 \item{digits}{Numbers are rounded according to digits}
 
+\item{try.convert}{Logical. If \code{TRUE} try to convert also non-numeric
+formats such as character to numeric before rounding. Default is \code{TRUE}.}
+
 \item{sep}{Field separator when style is \code{"none"}}
 
 \item{endhead}{String to be pasted at the end of the first row
@@ -35,10 +55,11 @@
 \code{"org"}, \code{"markdown"}, \code{"wiki"},
 \code{"none"}. Overwritten by argments below.}
 
-\item{inter.lines}{A named list which contains strings to be placed
-between the rows of the table. An element with name \code{"0"} is
-used to place a line before the first column, elements with name
-\code{"r"} are placed between line r and r+1.}
+\item{inter.lines}{A named list which contains strings to be
+placed between the rows of the table. An element with name
+\code{"0"} is used to place a line before the first column,
+elements with name \code{"r"} are placed between line r and
+r+1.}
 
 \item{latex}{If \code{TRUE} use latex table format}
 
@@ -48,15 +69,20 @@ used to place a line before the first column, elements with name
 
 \item{markdown}{If \code{TRUE} use markdown table format}
 
-\item{tabular}{For style \code{latex} only: if \code{TRUE} enclose the table in begin/end tabular environement.}
+\item{tabular}{For style \code{latex} only: if \code{TRUE} enclose
+the table in begin/end tabular environement.}
 
-\item{latex.table.format}{For style \code{latex} only: format of the tabular environement.}
+\item{latex.table.format}{For style \code{latex} only: format of
+the tabular environement.}
 
-\item{latex.hline}{For style \code{latex} only: if \code{TRUE} add hline statements add the end of each line.}
+\item{latex.hline}{For style \code{latex} only: if \code{TRUE} add
+hline statements add the end of each line.}
 
-\item{latex.nodollar}{For style \code{latex} only: if \code{TRUE} do not enclose numbers in dollars.}
+\item{latex.nodollar}{For style \code{latex} only: if \code{TRUE}
+do not enclose numbers in dollars.}
 
-\item{...}{Used to transport arguments. Currently supports \code{wiki.class}.}
+\item{...}{Used to transport arguments. Currently supports
+\code{wiki.class}.}
 }
 \description{
 This is the heart of the Publish package

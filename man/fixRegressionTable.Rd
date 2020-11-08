@@ -4,8 +4,16 @@
 \alias{fixRegressionTable}
 \title{Expand regression coefficient table}
 \usage{
-fixRegressionTable(x, varnames, reference.value, reference.style = NULL,
-  factorlevels, scale = NULL, nmiss, intercept)
+fixRegressionTable(
+  x,
+  varnames,
+  reference.value,
+  reference.style = NULL,
+  factorlevels,
+  scale = NULL,
+  nmiss,
+  intercept
+)
 }
 \arguments{
 \item{x}{object resulting from \code{lm}, \code{glm} or \code{coxph}.}

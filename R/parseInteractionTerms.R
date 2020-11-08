@@ -7,19 +7,19 @@
 ##' @param xlevels Factor levels corresponding to the variables in
 ##'     \code{terms}
 ##' @param units named list with unit labels. names should match variable names in formula.
-##' @param format.factor For categorical variables. A string which specifies the format for factor labels.
-##' The string should contain the keywords \code{"var"} and \code{"level"} which will be
+##' @param format.factor For categorical variables. A string which specifies the print format for factor labels.
+##' The string has to contain the keywords \code{"var"} and \code{"level"} which will be
 ##' replaced by the name of the variable and the current level, respectively.
 ##' Default is \code{"var(level)"}.
-##' @param format.contrast For categorical variables. A string which specifies the format for constrast statements.
-##' The string should contain the keywords \code{"var"}, \code{"level"} and \code{"ref"} which will be
+##' @param format.contrast For categorical variables. A string which specifies the print format for constrast statements.
+##' The string has to contain the keywords \code{"var"}, \code{"level"} and \code{"ref"} which will be
 ##' replaced by the name of the variable, the current level and the reference level, respectively.
-##' @param format.scale For continuous variables. For categorical variables. A string which specifies the format for factor labels.
-##' The string should contain the keywords \code{"var"} and \code{"level"} which will be
-##' replaced by the name of the variable and the current level, respectively.
-##' Default is \code{"var(level)"}.
-##' @param format.scale.unit For continuous variables which have a unit. A string which specifies the format for factor labels.
-##' The string should contain the keywords \code{"var"} and \code{"unit"} which will be
+##' @param format.scale A string which specifies the print format for continuous variables without units. 
+##' The string has to contain the keyword \code{"var"} which will be
+##' replaced by the name of the variable and the unit, respectively.
+##' Default is \code{"var"}.
+##' @param format.scale.unit A string which specifies the print format for continuous variables with units. 
+##' The string has to contain the keywords \code{"var"} and \code{"unit"} which will be
 ##' replaced by the name of the variable and the unit, respectively.
 ##' Default is \code{"var(unit)"}.
 ##' @param sep a character string to separate the terms. Default is \code{": "}.
@@ -46,7 +46,7 @@
 ##' parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels,
 ##'                       format.scale="var -- level:ref",units=list("age"='years'))
 ##' parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels,
-##'                       format.scale.unit="var -- level:ref",units=list("age"='years'))
+##'                       format.scale.unit="var [unit]",units=list("age"='years'))
 ##' it <- parseInteractionTerms(terms=terms(fit$formula),xlevels=fit$xlevels)
 ##' ivars <- unlist(lapply(it,function(x)attr(x,"variables")))
 ##' lava::estimate(fit,function(p)lapply(unlist(it),eval,envir=sys.parent(-1)))
@@ -70,14 +70,30 @@ parseInteractionTerms <- function(terms,
     intervars <- unique(unlist(inter.list))
     if (missing(units)) units <- NULL
     if (length(inter.list)>0){
-        if (missing(format.factor))
+        if (missing(format.factor)){
             format.factor <- "var(level)"
-        if (missing(format.scale.unit))
+        }else{
+            stopifnot(length(grep("var",format.factor))>0)
+            stopifnot(length(grep("level",format.factor))>0)            
+        }
+        if (missing(format.scale.unit)){
             format.scale.unit <- "var(unit)"
-        if (missing(format.scale))
+        }else{
+            stopifnot(length(grep("var",format.scale.unit))>0)
+            stopifnot(length(grep("unit",format.scale.unit))>0)
+        }
+        if (missing(format.scale)){
             format.scale <- "var"
-        if (missing(format.contrast))
+        }else{
+            stopifnot(length(grep("var",format.scale))>0)
+        }
+        if (missing(format.contrast)){
             format.contrast <- "var(level vs ref)"
+        }else{
+            stopifnot(length(grep("var",format.contrast))>0)
+            stopifnot(length(grep("level",format.contrast))>0)
+            stopifnot(length(grep("ref",format.contrast))>0)
+        }
         format.factor <- sub("var","%s",format.factor)
         format.factor <- sub("level","%s",format.factor)
         format.contrast <- sub("level","%s",format.contrast)

@@ -7,9 +7,16 @@
 ##' 
 ##' By default, 5 breaks are constructed according to the quantiles with of the input \code{x}.
 ##' The number of breaks can be adjusted, and default specifying breaks (as in \code{cut}) can be supplied instead.
+##'
+##' If \code{type} is changed from "\code{default}" to another option, a different formatting template is used.
+##' For now the only other option is "\code{age}", which is designed to be well suited to easily group age variables.
+##' When \code{type}="\code{age}" only the \code{breaks} argument is used, and it behaves different from otherwise.
+##' If a single number is supplied, intervals of length \code{breaks} will automatically be constructed (starting from 0).
+##' If a vector is supplied, the intervals are used as in \code{cut} but formatted differently, see examples. 
 ##' @title Automatic selection and formatting of breaks in \code{cut}
 ##' @param x a numeric vector which is to be converted to a factor by cutting (passed directly to \code{cut}).
 ##' @param n number of bins to create based on the empirical quantiles of x. This will be overruled if \code{breaks} is supplied.
+##' @param type a high-level formatting option. For now, the only other option than the default setting is "\code{age}". See details and examples.
 ##' @param format string used to make labels. \%l and \%u identifies the lower and upper value of the breaks respectively. See examples.
 ##' @param format.low string used specifically on the lowest label.
 ##' @param format.high string used specifically on the highest label.
@@ -65,10 +72,27 @@
 ##'                    format.high="BMI above %l")
 ##' table(BMI.groups)
 ##' org(as.data.frame(table(BMI=BMI.groups)))
+##'
+##' ## Using type="age"
+##' ## When using type="age", categories of 10 years are constructed by default.
+##' ## The are formatted to be easier to read when the values are ages.
+##' table(acut(Diabetes$age, type="age"))
+##'
+##' ## This can be changes with the breaks argument.
+##' ## Note that this is diffent from cut when breaks is a single number.
+##' table(acut(Diabetes$age, type="age", breaks=20))
+##'
+##' ## Of course We can also supply the breaks manually.
+##' ## The formatting depends on whether or not all the values fall within the breaks:
+##' ## All values within the breaks
+##' table(acut(Diabetes$age, type="age", breaks=c(0, 30, 50, 80, 100)))
+##' ## Some values below and above the breaks
+##' table(acut(Diabetes$age, type="age", breaks=c(30, 50, 80))) 
 ##' 
 ##' @author Anders Munch
 ##' @export
-acut <- function(x,n=5,format=NULL,format.low=NULL,format.high=NULL,dig.lab=3,right=TRUE,breaks,labels=TRUE,...){
+acut <- function(x,n=5,type="default",
+                 format=NULL,format.low=NULL,format.high=NULL,dig.lab=3,right=TRUE,breaks,labels=TRUE,...){
     stopifnot(n>1)
     update.label <- function(str,low=NULL,upper=NULL,low.str="%l",upper.str="%u"){
         if(is.null(low)) low <- low.str
@@ -77,6 +101,30 @@ acut <- function(x,n=5,format=NULL,format.low=NULL,format.high=NULL,dig.lab=3,ri
         new.label <- sub(low.str, low, new.label)
         new.label <- sub(upper.str, upper, new.label)
         return(new.label)
+    }
+    if(type=="age"){
+        min.x <- min(x, na.rm=TRUE)
+        max.x <- max(x, na.rm=TRUE)
+        if(missing(breaks))
+            breaks <- 10
+        if(length(breaks)==1){
+            if(as.integer(breaks)!=breaks)
+                warning("When using type=\"age\", it makes most sense with intervals with integer length.")
+            breaks <- seq(floor(min.x/breaks)*breaks, ceiling(max.x/breaks)*breaks, by=breaks)
+        }
+        if(any(!(as.integer(breaks) == breaks)))
+            warning("When using type=\"age\", it makes most sense with integer-valued breaks points.")
+        breaks <- sort(breaks)
+        if(min.x<breaks[1]) breaks <- c(-Inf, breaks)
+        if(max.x>breaks[length(breaks)]) breaks <- c(breaks, Inf)
+        ## Find way to handle right=FALSE -- maybe not relevant for the type?
+        pre.cut <- acut(x=x, breaks=breaks, right=FALSE)
+        age.labels <- paste0(breaks[-length(breaks)], "-", (breaks[-1]-1))
+        if(breaks[1] == -Inf) age.labels[1] <- paste("younger than", breaks[2])
+        if(breaks[length(breaks)] == Inf) age.labels[length(age.labels)] <- paste(breaks[length(breaks)-1], "or older")
+        pre.cut <- factor(pre.cut, levels=levels(pre.cut),
+                          labels=age.labels)
+        return(pre.cut)
     }
     if(missing(breaks)){
         breaks <- as.numeric(quantile(x, seq(0,1,length.out=n+1), na.rm=TRUE))

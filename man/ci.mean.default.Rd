@@ -4,8 +4,14 @@
 \alias{ci.mean.default}
 \title{Compute mean values with confidence intervals}
 \usage{
-\method{ci.mean}{default}(x, alpha = 0.05, normal = TRUE,
-  na.rm = TRUE, statistic = "arithmetic", ...)
+\method{ci.mean}{default}(
+  x,
+  alpha = 0.05,
+  normal = TRUE,
+  na.rm = TRUE,
+  statistic = "arithmetic",
+  ...
+)
 }
 \arguments{
 \item{x}{numeric vector}

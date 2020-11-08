@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Dec 31 2017 (11:04)
 ## Version: 1
-## Last-Updated: Nov  6 2018 (08:01) 
+## Last-Updated: Jun 14 2020 (10:39) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 16
+##     Update #: 17
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -29,6 +29,7 @@
 ##' @param xlab x-axis labels
 ##' @param ylab y-axis labels
 ##' @param col color of the line
+##' @param lty line style
 ##' @param lwd line width
 ##' @param confint Logical. If \code{TRUE} show confidence shadows
 ##' @param newdata How to adjust
@@ -52,6 +53,7 @@ splinePlot.lrm <- function(object,
                            xlab=xvar,
                            ylab=scale[[1]],
                            col=1,
+                           lty=1,
                            lwd=3,
                            confint=TRUE,
                            newdata=NULL,
@@ -74,7 +76,7 @@ splinePlot.lrm <- function(object,
     if(!add){
         plot(0,0,type="n",ylim=ylim,xlim=xlim,xlab=xlab,ylab=ylab,...)
     }
-    pframe[,graphics::lines(xvalues,yhat,lwd=lwd,col=col,type="l",ylim=ylim)]
+    pframe[,graphics::lines(xvalues,yhat,lwd=lwd,lty=lty,col=col,type="l",ylim=ylim)]
     if (confint==TRUE){
         pframe[,polygon(x=c(xvalues,rev(xvalues)),y=c(lower,rev(upper)),col=prodlim::dimColor(col),border=NA)]
     }
