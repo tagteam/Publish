@@ -28,7 +28,7 @@
 #' @param factor.reference "extraline" creates an extraline for the reference,
 #' "inline" avoids this line.
 #' @details 
-#' The function can only handle a bivariate treatment, which must coded as
+#' The function can only handle a bivariate treatment, which MUST coded as
 #' zero or one. The p-value for interaction is obtained with a likelihood ratio test
 #' comparing the main regression analysis with the interaction model. 
 #' 
