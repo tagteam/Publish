@@ -19,7 +19,7 @@
 #' @param object - glm, coxph or cph object for which subgroups should be
 #' analyzed.
 #' @param data - Dataset including all relevant variables
-#' @param treatment - Must be a factor
+#' @param treatment - Must be numeric - 0/1
 #' @param subgroups - A vector of variable names presenting the factor variables
 #' where subgroups should be formed. These variables should
 #' all be "factors"
@@ -28,7 +28,7 @@
 #' @param factor.reference "extraline" creates an extraline for the reference,
 #' "inline" avoids this line.
 #' @details 
-#' The function can only handle a bivariate treatment, most conviniently coded as
+#' The function can only handle a bivariate treatment, which MUST coded as
 #' zero or one. The p-value for interaction is obtained with a likelihood ratio test
 #' comparing the main regression analysis with the interaction model. 
 #' 
@@ -96,6 +96,7 @@
 #'            data=traceR)
 #' sub_pois <- subgroupAnalysis(fit_p,traceR,treatment="treatment",
 #'   subgroups=~smoking+sex+wmi2+abd2) 
+
 #' # Analysis with logistic regression - and very wrongly ignoring censoring
 #' fit_log <- glm(dead~treatment+age,family="binomial",data=traceR)
 #' sub_log <- subgroupAnalysis(fit_log,traceR,treatment="treatment",
@@ -113,11 +114,11 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
   else if(!(class(subgroups)[1]=="character")) stop ("Error - subgroups must be formula or character")
   if (!(class(data)[1] %in% c("data.frame","data.table"))) stop ("Error - data must be data.frame og data.table")
   else{
-    datt <- copy(data)
+    datt <- data.table::copy(data)
     data.table::setDT(datt)
   }
   classes <- sapply(datt,class)
-  if (!classes[treatment]=="factor") stop("Error - treatment must be a factor variable")
+  if (!classes[treatment] =="factor") stop("Error - treatment must be a factor variable")
   for(i in 1:length(subgroups)) if (!classes[subgroups[i]]=="factor") stop("Error - subgroups must be a factor variables")
   ## if (!all(stats::complete.cases(data[,.SD,.SDcols=c(subgroups,all.vars(object$formula),treatment)]))) 
     ## warning("data has missing values in columns used, may cause problems")
@@ -140,6 +141,7 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
       fit2 <- coxph(ff2,data=datt)
       pinteraction <- anova(fit1,fit2)[4][2,]
       lhs <- all.vars(object$formula[[2]])
+      if(!class(datt[,eval(parse(text=lhs[2]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
       if (length(lhs)==2){ # time fixed model
         eventtime <- datt[,list(sample=.N,
                                 event=sum(eval(parse(text=lhs[2])),na.rm=TRUE),
@@ -148,6 +150,7 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
         
       }
       else{ # Time varying model
+        if(!class(datt[,eval(parse(text=lhs[3]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
           eventtime <- datt[,list(sample=.N,
                                   event=sum(eval(parse(text=lhs[3])),na.rm=TRUE),
                                   time=sum(eval(parse(text=lhs[2]))-eval(parse(text=lhs[1])),na.rm=TRUE)),
@@ -162,6 +165,7 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
             fit2 <- glm(ff2,family="poisson",data=datt)
             tt1 <- terms(ff1)
             timevar <- all.vars(ff1)[[attributes(tt1)$offset]]
+            if(!class(datt[,eval(parse(text=all.vars(object$formula)[[1]]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
             eventtime <- datt[,list(sample=.N,
                                     event=sum(eval(parse(text=all.vars(object$formula)[[1]])),na.rm=TRUE),
                                     time=sum(eval(parse(text=timevar))),na.rm=TRUE),
@@ -170,6 +174,7 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
                                            value.var=list("sample","event","time")) 
         }
         else{ #no offset
+            if(!class(datt[,eval(parse(text=all.vars(object$formula)[[1]]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
             fit1 <- glm(ff1,family="poisson",data=datt)
             fit2 <- glm(ff2,family="poisson",data=datt)
             eventtime <- datt[,list(sample=.N,
@@ -183,6 +188,7 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
     else if(model=="logistic"){
         fit1 <- glm(ff1,family="binomial",data=datt)
         fit2 <- glm(ff2,family="binomial",data=datt)
+        if(!class(datt[,eval(parse(text=all.vars(object$formula)[[1]]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
         eventtime <- datt[,list(sample=.N,
                                 event=sum(eval(parse(text=all.vars(object$formula)[[1]])),na.rm=TRUE)),
                           by=c(var,treatment)]
@@ -197,7 +203,6 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
     rt <- suppressMessages(data.table::setDT(summary(regressionTable(fit1),print=FALSE)$rawTable)[,tail(.SD,length)])
     rt <- rt[,Variable:=NULL]
     OUT <- cbind(variable,eventtime,rt,pinteraction) 
-    OUT[,pinteraction:=pinteraction]
     OUT
   }
   ) ,fill=TRUE) # end rbindlist
