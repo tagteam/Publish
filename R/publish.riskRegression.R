@@ -10,8 +10,9 @@
 ##' @return Table with regression coefficients, confidence intervals and p-values
 ##' @seealso ARR LRR
 ##' @examples
-##' library(prodlim)
+##' if (requireNamespace("riskRegression",quietly=TRUE)){
 ##' library(riskRegression)
+##' library(prodlim)
 ##' library(lava)
 ##' library(survival)
 ##' set.seed(20)
@@ -19,6 +20,7 @@
 ##' f <- ARR(Hist(time,event)~X1+X2,data=d,cause=1)
 ##' publish(f)
 ##' publish(f,digits=c(1,3))
+##' }
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 publish.riskRegression <- function(object,

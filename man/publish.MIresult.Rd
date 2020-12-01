@@ -56,9 +56,14 @@ Show results of smcfcs based multiple imputations of missing covariates in publi
 \examples{
 
 \dontrun{
+if (requireNamespace("riskRegression",quietly=TRUE)
+  & requireNamespace("mitools",quietly=TRUE)
+  & requireNamespace("smcfcs",quietly=TRUE)){
+library(riskRegression)
+library(mitools)
+library(smcfcs)
 ## continuous outcome: linear regression
 # lava some data with missing values
-library(riskRegression)
 set.seed(7)
 d=sampleData(78)
 ## generate missing values
@@ -69,8 +74,6 @@ sapply(d,function(x)sum(is.na(x)))
 
 # multiple imputation (should set m to a large value)
 
-library(smcfcs)
-library(mitools)
 set.seed(17)
 f= smcfcs(d,smtype="lm",
            smformula=X8~X4+X3+X6+X7,
@@ -83,7 +86,6 @@ publish(ccfit)
 
 ## binary outcome
 # lava some data with missing values
-library(riskRegression)
 set.seed(7)
 db=sampleData(78,outcome="binary")
 ## generate missing values
@@ -93,8 +95,6 @@ db=db[,.(Y,X4,X3,X6,X7)]
 sapply(db,function(x)sum(is.na(x)))
 
 # multiple imputation (should set m to a large value)
-library(smcfcs)
-library(mitools)
 set.seed(17)
 fb= smcfcs(db,smtype="logistic",
            smformula=Y~X4+X3+X6+X7,
@@ -106,11 +106,8 @@ publish(mifit,fit=ccfit)
 publish(ccfit)
 
 ## survival: Cox regression
-library(smcfcs)
-library(mitools)
 library(survival)
 # lava some data with missing values
-library(riskRegression)
 set.seed(7)
 ds=sampleData(78,outcome="survival")
 ## generate missing values
@@ -131,10 +128,7 @@ publish(ccfit)
 
 ## competing risks: Cause-specific Cox regression 
 library(survival)
-library(smcfcs)
-library(mitools)
 # lava some data with missing values
-library(riskRegression)
 set.seed(7)
 dcr=sampleData(78,outcome="competing.risks")
 ## generate missing values
@@ -154,6 +148,7 @@ mifit2=MIcombine(with(imputationList(fcr$impDatasets),
                 coxph(Surv(time,event==2)~X4+X3+X6+X7)))
 publish(mifit2,fit=ccfit2,data=dcr)
 publish(ccfit2)
+}
 } 
 
 }

@@ -46,9 +46,9 @@ Publish cause-specific Cox models
 The cause-specific hazard ratio's are combined into one table.
 }
 \examples{
+if (requireNamespace("riskRegression",quietly=TRUE)){
 library(riskRegression)
 library(prodlim)
-library(pec)
 library(survival)
 data(Melanoma,package="riskRegression")
 fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
@@ -65,7 +65,7 @@ publish(fit2)
 x <- publish(fit2,print=FALSE)
 table <- cbind(x[[1]]$regressionTable,
            x[[2]]$regressionTable[,-c(1,2)])
-
+}
 
 }
 \author{

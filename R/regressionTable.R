@@ -83,9 +83,10 @@
 ##' regressionTable(c3)
 ##'
 ##'
+##' if (requireNamespace("nmle",quietly=TRUE)){ 
 ##' ## gls regression
-##' library(nlme)
 ##' library(lava)
+##' library(nmle)
 ##' m <- lvm(Y ~ X1 + gender + group + Interaction)
 ##' distribution(m, ~gender) <- binomial.lvm()
 ##' distribution(m, ~group) <- binomial.lvm(size = 2)
@@ -98,6 +99,7 @@
 ##'              weights = varIdent(form = ~1|group))
 ##' regressionTable(e.gls)
 ##' summary(regressionTable(e.gls))
+##' }
 ##' @export
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 regressionTable <- function(object,

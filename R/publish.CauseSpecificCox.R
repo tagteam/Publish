@@ -17,9 +17,9 @@
 ##' @return Table with cause-specific hazard ratios, confidence limits and p-values.
 ##' @author Thomas Alexander Gerds <tab@@biostat.ku.dk>
 ##' @examples
+##' if (requireNamespace("riskRegression",quietly=TRUE)){
 ##' library(riskRegression)
 ##' library(prodlim)
-##' library(pec)
 ##' library(survival)
 ##' data(Melanoma,package="riskRegression")
 ##' fit1 <- CSC(list(Hist(time,status)~sex,Hist(time,status)~invasion+epicel+age),
@@ -36,7 +36,7 @@
 ##' x <- publish(fit2,print=FALSE)
 ##' table <- cbind(x[[1]]$regressionTable,
 ##'            x[[2]]$regressionTable[,-c(1,2)])
-##' 
+##' }
 ##' 
 ##' @export
 publish.CauseSpecificCox <- function(object,

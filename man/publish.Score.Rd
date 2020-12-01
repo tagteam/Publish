@@ -33,6 +33,7 @@ Write output of \code{riskRegression::Score} in tables
 Collect prediction accuracy results in tables
 }
 \examples{
+if (requireNamespace("riskRegression",quietly=TRUE)){
 library(riskRegression)
 library(survival)
 learn = sampleData(100)
@@ -41,7 +42,7 @@ f1=CSC(Hist(time,event)~X1+X8,data=learn)
 f2=CSC(Hist(time,event)~X1+X5+X6+X8,learn)
 xs=Score(list(f1,f2),data=val,formula=Hist(time,event)~1)
 publish(xs)
-
+}
 }
 \author{
 Thomas A. Gerds <tag@biostat.ku.dk>

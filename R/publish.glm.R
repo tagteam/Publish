@@ -60,8 +60,10 @@
 ##' publish(fit)
 ##'
 ##' ## gls regression
-##' library(nlme)
+##' if (requireNamespace("nmle",quietly=TRUE)){
+##'     requireNamespace("lava",quietly=TRUE)
 ##' library(lava)
+##' library(nmle)
 ##' m <- lvm(Y ~ X1 + gender + group + Interaction)
 ##' distribution(m, ~gender) <- binomial.lvm()
 ##' distribution(m, ~group) <- binomial.lvm(size = 2)
@@ -75,11 +77,11 @@
 ##' publish(e.gls)
 ##' 
 ##' ## lme
-##' library(nlme)
 ##' fm1 <- lme(distance ~ age*Sex, 
 ##'             random = ~1|Subject,
 ##'             data = Orthodont) 
 ##' res <- publish(fm1)
+##' }
 ##' @export
 publish.glm <- function(object,
                         confint.method,

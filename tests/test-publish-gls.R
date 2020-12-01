@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 14 2017 (18:56) 
 ## Version: 
-## Last-Updated: Aug 18 2017 (15:57) 
+## Last-Updated: Dec  1 2020 (07:26) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 4
+##     Update #: 5
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -14,20 +14,21 @@
 #----------------------------------------------------------------------
 ## 
 ### Code:
-library(testthat)
-context("publish: gls regression")
+if (requireNamespace("nmle",quietly=TRUE)){ 
+    library(testthat)
+    context("publish: gls regression")
 
-## simulation
-library(nlme)
-library(Publish)
-library(lava)
-m <- lvm(Y ~ X1 + gender + group + Interaction)
-distribution(m, ~gender) <- binomial.lvm()
-distribution(m, ~group) <- binomial.lvm(size = 2)
-constrain(m, Interaction ~ gender + group) <- function(x){x[,1]*x[,2]}
-d <- sim(m, 1e2)
-d$gender <- factor(d$gender, labels = letters[1:2])
-d$group <- factor(d$group)
+    ## simulation
+    library(nlme)
+    library(Publish)
+    library(lava)
+    m <- lvm(Y ~ X1 + gender + group + Interaction)
+    distribution(m, ~gender) <- binomial.lvm()
+    distribution(m, ~group) <- binomial.lvm(size = 2)
+    constrain(m, Interaction ~ gender + group) <- function(x){x[,1]*x[,2]}
+    d <- sim(m, 1e2)
+    d$gender <- factor(d$gender, labels = letters[1:2])
+    d$group <- factor(d$group)
 
 ## model
 test_that("publish matches gls", {
@@ -56,7 +57,7 @@ test_that("publish matches lme", {
                  as.double(summary(fm1)$tTable[1:3,5]))
 })
 
-
+}
 
 ######################################################################
 ### test-publish-gls.R ends here

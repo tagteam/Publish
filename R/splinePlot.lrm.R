@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Dec 31 2017 (11:04)
 ## Version: 1
-## Last-Updated: Jun 14 2020 (10:39) 
+## Last-Updated: Dec  1 2020 (16:52) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 17
+##     Update #: 24
 #----------------------------------------------------------------------
 ##
 ### Commentary:
@@ -61,7 +61,7 @@ splinePlot.lrm <- function(object,
                            add=FALSE,...){
     lower=upper=yhat=NULL
     expit <- function (x){exp(x)/(1 + exp(x))}
-    input <- list(x=object,xvalues)
+    input <- list(object=object,xvalues)
     if (!is.null(newdata) && is.list(newdata)){
         input <- c(input,newdata)
     }
@@ -70,7 +70,7 @@ splinePlot.lrm <- function(object,
     else{ ## set reference level for odds 
         input$fun <- exp
     }
-    pframe <- do.call("Predict",input)
+    pframe <- do.call(rms::Predict,input)
     data.table::setDT(pframe)
     if (missing(ylim)) ylim <- pframe[,c(min(lower),max(upper))]
     if(!add){

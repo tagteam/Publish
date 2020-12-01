@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Jun 10 2017 (17:47) 
 ## Version: 
-## Last-Updated: Dec 21 2017 (09:53) 
+## Last-Updated: Dec  1 2020 (16:49) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 14
+##     Update #: 17
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -30,6 +30,7 @@
 ##' @param ... Passed to publish
 ##' @return Results of Score in tabular form
 ##' @examples
+##' if (requireNamespace("riskRegression",quietly=TRUE)){
 ##' library(riskRegression)
 ##' library(survival)
 ##' learn = sampleData(100)
@@ -38,7 +39,7 @@
 ##' f2=CSC(Hist(time,event)~X1+X5+X6+X8,learn)
 ##' xs=Score(list(f1,f2),data=val,formula=Hist(time,event)~1)
 ##' publish(xs)
-##' 
+##' }
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
 publish.Score <- function(object,metrics,score=TRUE,contrasts=TRUE,level=3,...){

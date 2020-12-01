@@ -92,8 +92,10 @@ summary(rtf)
 publish(fit)
 
 ## gls regression
-library(nlme)
+if (requireNamespace("nmle",quietly=TRUE)){
+    requireNamespace("lava",quietly=TRUE)
 library(lava)
+library(nmle)
 m <- lvm(Y ~ X1 + gender + group + Interaction)
 distribution(m, ~gender) <- binomial.lvm()
 distribution(m, ~group) <- binomial.lvm(size = 2)
@@ -107,11 +109,11 @@ e.gls <- gls(Y ~ X1 + gender*group, data = d,
 publish(e.gls)
 
 ## lme
-library(nlme)
 fm1 <- lme(distance ~ age*Sex, 
             random = ~1|Subject,
             data = Orthodont) 
 res <- publish(fm1)
+}
 }
 \author{
 Thomas Alexander Gerds <tag@biostat.ku.dk>
