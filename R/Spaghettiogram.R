@@ -39,21 +39,20 @@
 ##'                data=SpaceT)
 ##' @export
 spaghettiogram <- function(formula,
-                           data,
-                           xlim,
-                           ylim,
-                           xlab="",
-                           ylab="",
-                           axes=TRUE,
-                           col,
-                           lwd,
-                           lty,
-                           pch,
-                           legend=FALSE,
-                           add=FALSE,
-                           background=TRUE,
-                           ...){
-
+                            data,
+                            xlim,
+                            ylim,
+                            xlab="",
+                            ylab="",
+                            axes=TRUE,
+                            col,
+                            lwd,
+                            lty,
+                            pch,
+                            legend=FALSE,
+                            add=FALSE,
+                            background=TRUE,
+                            ...){
     # {{{ read formula and split data
     cl <- match.call(expand.dots=TRUE)
     sf <- specialFrame(formula,
@@ -157,25 +156,25 @@ spaghettiogram <- function(formula,
     # {{{ adding spaghetti's
     nix <- sapply(1:length(object),function(i){
         a=object[[i]]
-        a <- a[order(a["X"]),]
+        data.table::setDT(a)
+        setkey(a,X)
+        ## a <- a[order(a["X"]),]
         a <- na.omit(a)
-        tvar <- a[,"X"]
-        do.call("lines",c(list(x=tvar,
-                               y=a[,"Y"],
+        do.call("lines",c(list(x=a[["X"]],
+                               y=a[["Y"]],
                                pch=pch[i],
                                col=col[i],
                                lty=lty[i],
                                lwd=lwd[i]),smartA$lines))
         do.call("lines",
-                c(list(x=tvar,
-                       y=a[,"Y"],
+                c(list(x=a[["X"]],
+                       y=a[["Y"]],
                        pch=pch[i],
                        col=col[i],
                        lty=lty[i],
                        lwd=lwd[i]),
                   replace(smartA$lines,"type","l")))
     })
-
     # }}}
     invisible(object)
 }

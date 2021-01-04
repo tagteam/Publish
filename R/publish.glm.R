@@ -60,10 +60,10 @@
 ##' publish(fit)
 ##'
 ##' ## gls regression
-##' if (requireNamespace("nmle",quietly=TRUE)){
+##' if (requireNamespace("nlme",quietly=TRUE)){
 ##'     requireNamespace("lava",quietly=TRUE)
 ##' library(lava)
-##' library(nmle)
+##' library(nlme)
 ##' m <- lvm(Y ~ X1 + gender + group + Interaction)
 ##' distribution(m, ~gender) <- binomial.lvm()
 ##' distribution(m, ~group) <- binomial.lvm(size = 2)

@@ -117,10 +117,10 @@ c3 <- coxph(Surv(time,status!=0)~edema*log(bili)+age+protime+sex+edema+edema:sex
 regressionTable(c3)
 
 
-if (requireNamespace("nmle",quietly=TRUE)){ 
+if (requireNamespace("nlme",quietly=TRUE)){ 
 ## gls regression
 library(lava)
-library(nmle)
+library(nlme)
 m <- lvm(Y ~ X1 + gender + group + Interaction)
 distribution(m, ~gender) <- binomial.lvm()
 distribution(m, ~group) <- binomial.lvm(size = 2)

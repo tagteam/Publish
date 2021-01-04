@@ -3,9 +3,9 @@
 ## Author: Thomas Alexander Gerds
 ## Created: Aug 14 2017 (18:56) 
 ## Version: 
-## Last-Updated: Dec  1 2020 (07:26) 
+## Last-Updated: Dec  1 2020 (17:12) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 5
+##     Update #: 6
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -14,7 +14,7 @@
 #----------------------------------------------------------------------
 ## 
 ### Code:
-if (requireNamespace("nmle",quietly=TRUE)){ 
+if (requireNamespace("nlme",quietly=TRUE)){ 
     library(testthat)
     context("publish: gls regression")
 

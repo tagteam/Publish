@@ -13,7 +13,7 @@ analyzed.}
 
 \item{data}{- Dataset including all relevant variables}
 
-\item{treatment}{- Must be a factor}
+\item{treatment}{- Must be numeric - 0/1}
 
 \item{subgroups}{- A vector of variable names presenting the factor variables
 where subgroups should be formed. These variables should
@@ -43,7 +43,7 @@ other variables including those which may modify the effect of the variable
 of interest.
 }
 \details{
-The function can only handle a bivariate treatment, most conviniently coded as
+The function can only handle a bivariate treatment, which MUST coded as
 zero or one. The p-value for interaction is obtained with a likelihood ratio test
 comparing the main regression analysis with the interaction model. 
 
