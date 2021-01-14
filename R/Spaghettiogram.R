@@ -158,7 +158,6 @@ spaghettiogram <- function(formula,
         a=object[[i]]
         data.table::setDT(a)
         setkey(a,X)
-        ## a <- a[order(a["X"]),]
         a <- na.omit(a)
         do.call("lines",c(list(x=a[["X"]],
                                y=a[["Y"]],
