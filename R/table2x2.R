@@ -4,6 +4,7 @@
 ##' @title 2x2 table calculus for teaching
 ##' @param x 2x2 table
 ##' @param digits rounding digits
+##' @param conf.level Confidence level used for constructing confidence intervals. Default is 0.95.
 ##' @param stats subset or all of \code{c("table","rd","or","rr","chisq","fisher")} where rd= risk difference, rr = risk ratio, or = odds ratio, chisq = chi-square test, fisher= fisher's exact test and table = the 2x2 table
 ##' @return see example
 ##' @examples
@@ -12,7 +13,10 @@
 ##' table2x2(matrix(c(71,18,38,8),ncol=2),stats=c("rr","fisher"))
 ##' @export 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
-table2x2 <- function(x,digits=1,stats=c("table","rd","rr","or","chisq","fisher")){
+table2x2 <- function(x,
+                     digits=1,
+                     conf.level=0.95,
+                     stats=c("table","rd","rr","or","chisq","fisher")){
     if (class(x)[1]=="data.frame"){
         table2x2 <- as.matrix(x)
     } else{
@@ -39,22 +43,22 @@ table2x2 <- function(x,digits=1,stats=c("table","rd","rr","or","chisq","fisher")
     if ("rd" %in% stats){
         rd <- (p1-p2)
         se.rd <- sqrt(p1*(1-p1)/(a+b)+p2*(1-p2)/(c+d))
-        rd.lower <- rd - qnorm(1-0.05/2)*se.rd
-        rd.upper <- rd + qnorm(1-0.05/2)*se.rd
+        rd.lower <- rd - qnorm(1-(1-conf.level)/2)*se.rd
+        rd.upper <- rd + qnorm(1-(1-conf.level)/2)*se.rd
         out <- c(out,list(rd=rd,se.rd=se.rd,rd.lower=rd.lower,rd.upper=rd.upper))
     }
     if ("rr" %in% stats){
         rr <- p1/p2
         se.rr <- sqrt((1-p1)/a+(1-p2)/c)
-        rr.lower <- rr * exp(- qnorm(1-0.05/2) * se.rr)
-        rr.upper <- rr * exp(  qnorm(1-0.05/2) * se.rr)
+        rr.lower <- rr * exp(- qnorm(1-(1-conf.level)/2) * se.rr)
+        rr.upper <- rr * exp(  qnorm(1-(1-conf.level)/2) * se.rr)
         out <- c(out,list(rr=rr,se.rr=se.rr,rr.lower=rr.lower,rr.upper=rr.upper))
     }
     if ("or" %in% stats){
         or <- (a*d)/(b*c)
         se.or <- sqrt(1/a+1/b+1/c+1/d)
-        or.lower <- exp(log(or) - qnorm(1-0.05/2)*se.or)
-        or.upper <- exp(log(or) + qnorm(1-0.05/2)*se.or)
+        or.lower <- exp(log(or) - qnorm(1-(1-conf.level)/2)*se.or)
+        or.upper <- exp(log(or) + qnorm(1-(1-conf.level)/2)*se.or)
         out <- c(out,list(or=or,se.or=se.or,or.lower=or.lower,or.upper=or.upper))
     }
     class(out) <- "table2x2"
