@@ -41,7 +41,7 @@ glmSeries <- function(formula,data,vars,...){
         gf <- glm(form.v,data=data,...)
         ## gf$call$data <- data
         gf$model <- data
-        nv <- length(gf$xlevels[[v]])
+        ## nv <- length(gf$xlevels[[v]])
         rtab <- regressionTable(gf)
         rtab[[v]]
     })

@@ -48,7 +48,7 @@ table2x2 <- function(x,digits=1,stats=c("table","rd","rr","or","chisq","fisher")
         se.rr <- sqrt((1-p1)/a+(1-p2)/c)
         rr.lower <- rr * exp(- qnorm(1-0.05/2) * se.rr)
         rr.upper <- rr * exp(  qnorm(1-0.05/2) * se.rr)
-        out <- c(out,list(rr=rr,se.rr=rr,rr.lower=rr.lower,rr.upper=rr.upper))
+        out <- c(out,list(rr=rr,se.rr=se.rr,rr.lower=rr.lower,rr.upper=rr.upper))
     }
     if ("or" %in% stats){
         or <- (a*d)/(b*c)
