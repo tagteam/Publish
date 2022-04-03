@@ -317,9 +317,9 @@ regressionTable <- function(object,
         }
         coef.vn <- coef[parms]
         ci.vn <- ci[parms,,drop=FALSE]
-        if (is.matrix(pval))
+        if (is.matrix(pval)){
             p.vn <- pval[parms,,drop=TRUE]
-        else{
+        } else{
             p.vn <- pval[parms]
         }
         # {{{ factor variables

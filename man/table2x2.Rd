@@ -7,6 +7,7 @@
 table2x2(
   x,
   digits = 1,
+  conf.level = 0.95,
   stats = c("table", "rd", "rr", "or", "chisq", "fisher")
 )
 }
@@ -14,6 +15,8 @@ table2x2(
 \item{x}{2x2 table}
 
 \item{digits}{rounding digits}
+
+\item{conf.level}{Confidence level used for constructing confidence intervals. Default is 0.95.}
 
 \item{stats}{subset or all of \code{c("table","rd","or","rr","chisq","fisher")} where rd= risk difference, rr = risk ratio, or = odds ratio, chisq = chi-square test, fisher= fisher's exact test and table = the 2x2 table}
 }

@@ -2,6 +2,7 @@
 ##'
 ##' Collects results of univariate table in a matrix. 
 ##' @title Preparing univariate tables for publication
+##' @aliases summary.utable summary.univariateTable
 ##' @param object \code{univariateTable} object as obtained with
 ##' function \code{univariateTable}.
 ##' @param n If not missing, show the number of subjects in each
@@ -26,6 +27,7 @@
 ##' \code{object$show.totals} is used.
 ##' @param ... passed on to \code{labelUnits}. This overwrites labels
 ##' stored in \code{object$labels}
+##' @export summary.univariateTable
 ##' @export
 ##' @return Summary table 
 ##' @author Thomas A. Gerds <tag@@biostat.ku.dk>
@@ -159,7 +161,10 @@ summary.univariateTable <- function(object,
     # {{{ column names and n
     if (length(n)>0 && !(is.null(object$groups))){
         if (n=="inNames"){
-            object$groups <- paste(object$groups," (n=",object$n.groups[-length(object$n.groups)],")",sep="")
+            if (object$big.mark!="")
+                object$groups <- paste(object$groups," (n=",format(object$n.groups[-length(object$n.groups)],big.mark=object$big.mark,scientific=FALSE),")",sep="")
+            else
+                object$groups <- paste(object$groups," (n=",object$n.groups[-length(object$n.groups)],")",sep="")
         }
         else{
             XXtab <- rbind(c("n","",object$n.groups,""),XXtab)
@@ -181,7 +186,10 @@ summary.univariateTable <- function(object,
         }else pname <- NULL
         if (show.totals[[1]]==TRUE){
             if (length(n)>0 && (n=="inNames"))
-                totalName <- paste("Total"," (n=",object$n.groups[length(object$n.groups)],")",sep="")
+                if (object$big.mark!="")
+                    totalName <- paste("Total"," (n=",format(object$n.groups[length(object$n.groups)],big.mark=object$big.mark,scientific=FALSE),")",sep="")
+                else
+                    totalName <- paste("Total"," (n=",object$n.groups[length(object$n.groups)],")",sep="")
             else
                 totalName <- "Total"
         } else totalName <- NULL
@@ -196,3 +204,7 @@ summary.univariateTable <- function(object,
     XXtab
 }
 
+## the name utable is more handy
+##' @export summary.utable
+##' @export 
+summary.utable <- summary.univariateTable

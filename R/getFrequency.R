@@ -64,7 +64,7 @@ getFrequency <- function(matrix,
                     else{
                         vals <- as.list(unlist(values))
                         if (pos.count <- match("count",stats,nomatch=FALSE)){
-                            if (big.mark!="") vals[[pos.count]] <- format(vals[[pos.count]],big.mark=big.mark,scientific=FALSE)
+                            if (big.mark!="") vals[["Freq"]] <- format(as.numeric(vals[["Freq"]]),big.mark=big.mark,scientific=FALSE)
                             if (pos.count==1)
                                 do.call("sprintf",c(format,vals))
                             else # pos.count==2
@@ -87,12 +87,13 @@ getFrequency <- function(matrix,
                     # format percent
                     colp <- sprintf(fmt=paste("%1.",digits,"f",sep=""),colp)
                     if (pos.count <- match("count",stats,nomatch=FALSE)){
-                        if (big.mark!="") val[[pos.count]] <- format(val[[pos.count]],big.mark=big.mark,scientific=FALSE)
+                        if (big.mark!="") val <- format(val,big.mark=big.mark,scientific=FALSE)
                         sapply(1:length(val),function(i){
-                            if (pos.count==1)
+                            if (pos.count==1){
                                 do.call("sprintf",c(format,as.list(c(val[i],colp[i]))))
-                            else # pos.count==2
+                            } else{ # pos.count==2
                                 do.call("sprintf",c(format,as.list(c(colp[i],val[i]))))
+                            }
                         })
                     }else{ ## show colpercent without count
                         sapply(1:length(val),function(i){

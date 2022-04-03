@@ -231,7 +231,6 @@ univariateTable <- function(formula,
         else
             grouplabels <- paste(groupname,"=",groups)
     }
-
     # }}}
     # {{{ classify variables into continuous numerics and grouping factors
     automatrix <- FRAME$design
@@ -455,6 +454,7 @@ univariateTable <- function(formula,
                 ## dots are passed to labelUnits without suitability checks
                 show.totals=show.totals,
                 n=n,
+                big.mark=big.mark,
                 labels=list(...))
     class(out) <- "univariateTable"
     out

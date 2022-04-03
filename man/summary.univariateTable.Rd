@@ -2,6 +2,7 @@
 % Please edit documentation in R/summary.univariateTable.R
 \name{summary.univariateTable}
 \alias{summary.univariateTable}
+\alias{summary.utable}
 \title{Preparing univariate tables for publication}
 \usage{
 \method{summary}{univariateTable}(
