@@ -27,6 +27,7 @@
 #' creates creates robust standard errors - see regressionTable function.
 #' @param factor.reference "extraline" creates an extraline for the reference,
 #' "inline" avoids this line.
+#' @param ... additional arguments, such as case weights, which are passed on to \code{glm} and \code{coxph}.
 #' @details 
 #' The function can only handle a bivariate treatment, which MUST coded as
 #' zero or one. The p-value for interaction is obtained with a likelihood ratio test
@@ -106,7 +107,7 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
                              treatment, # max 2 values
                              subgroups, # Character vector or Formula. Factor list of subgroups variables
                              confint.method="default", # Wald type confidence interval
-                             factor.reference="extraline"){
+                             factor.reference="extraline",...){
   level=tail=Variable=NULL
   if(!(class(object)[1] %in% c("coxph","cph","glm"))) stop ("Error - Object must be coxph, cph or glm")
   if(!(class(treatment)[1]=="character")) stop("Error - Variable treament must be character")
@@ -137,8 +138,8 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
     ff1 <- update.formula(object$formula, paste("~ . +",var, "*", treatment)) #with interaction
     ff2 <- update.formula(object$formula, paste("~ . +",var, "+", treatment)) #without interaction
     if (model=='cox'){
-      fit1 <- coxph(ff1,data=datt)
-      fit2 <- coxph(ff2,data=datt)
+      fit1 <- coxph(ff1,data=datt,...)
+      fit2 <- coxph(ff2,data=datt,...)
       pinteraction <- anova(fit1,fit2)[4][2,]
       lhs <- all.vars(object$formula[[2]])
       if(!class(datt[,eval(parse(text=lhs[2]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
@@ -161,8 +162,8 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
     }
     else if(model=="poisson"){
         if (!is.null(object$offset)){
-            fit1 <- glm(ff1,family="poisson",data=datt)
-            fit2 <- glm(ff2,family="poisson",data=datt)
+            fit1 <- glm(ff1,family="poisson",data=datt,...)
+            fit2 <- glm(ff2,family="poisson",data=datt,...)
             tt1 <- terms(ff1)
             timevar <- all.vars(ff1)[[attributes(tt1)$offset]]
             if(!class(datt[,eval(parse(text=all.vars(object$formula)[[1]]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
@@ -175,8 +176,8 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
         }
         else{ #no offset
             if(!class(datt[,eval(parse(text=all.vars(object$formula)[[1]]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
-            fit1 <- glm(ff1,family="poisson",data=datt)
-            fit2 <- glm(ff2,family="poisson",data=datt)
+            fit1 <- glm(ff1,family="poisson",data=datt,...)
+            fit2 <- glm(ff2,family="poisson",data=datt,...)
             eventtime <- datt[,list(sample=.N,
                                     event=sum(eval(parse(text=all.vars(object$formula)[[1]])),na.rm=TRUE)),
                               by=c(var,treatment)]
@@ -186,8 +187,8 @@ subgroupAnalysis <- function(object, # glm, lrm, coxph or cph object
         pinteraction <- anova(fit1,fit2,test="Chisq")$"Pr(>Chi)"[2]
     }
     else if(model=="logistic"){
-        fit1 <- glm(ff1,family="binomial",data=datt)
-        fit2 <- glm(ff2,family="binomial",data=datt)
+        fit1 <- glm(ff1,family="binomial",data=datt,...)
+        fit2 <- glm(ff2,family="binomial",data=datt,...)
         if(!class(datt[,eval(parse(text=all.vars(object$formula)[[1]]))]) %in% c("numeric","integer")) stop("Outcome must be provided as 0/1 numeric")
         eventtime <- datt[,list(sample=.N,
                                 event=sum(eval(parse(text=all.vars(object$formula)[[1]])),na.rm=TRUE)),

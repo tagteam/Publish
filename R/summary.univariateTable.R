@@ -160,7 +160,7 @@ summary.univariateTable <- function(object,
     # }}}
     # {{{ column names and n
     if (length(n)>0 && !(is.null(object$groups))){
-        if (n=="inNames"){
+        if (n[[1]]=="inNames"){
             if (object$big.mark!="")
                 object$groups <- paste(object$groups," (n=",format(object$n.groups[-length(object$n.groups)],big.mark=object$big.mark,scientific=FALSE),")",sep="")
             else
@@ -185,7 +185,7 @@ summary.univariateTable <- function(object,
                 pname <- "p-value"
         }else pname <- NULL
         if (show.totals[[1]]==TRUE){
-            if (length(n)>0 && (n=="inNames"))
+            if (length(n)>0 && (n[[1]]=="inNames"))
                 if (object$big.mark!="")
                     totalName <- paste("Total"," (n=",format(object$n.groups[length(object$n.groups)],big.mark=object$big.mark,scientific=FALSE),")",sep="")
                 else

@@ -3,9 +3,9 @@
 ## author: Thomas Alexander Gerds
 ## created: May  9 2015 (07:55) 
 ## Version: 
-## last-updated: Mar 26 2021 (09:50) 
+## last-updated: Apr  3 2022 (11:57) 
 ##           By: Thomas Alexander Gerds
-##     Update #: 9
+##     Update #: 10
 #----------------------------------------------------------------------
 ## 
 ### Commentary: 
@@ -85,12 +85,6 @@ test_that("Univariate table with stupid function",{
 }
 
 
-test_that("univariateTable big numbers",{
-    d <- riskRegression::sampleData(10000)
-    u1 <- summary(univariateTable(X1~ + X2 + X8,data=d,big.mark=""))
-    a <- summary(u1,show.missing=1L)
-    expect_equal(a1,a2)
-})
 
 
 #----------------------------------------------------------------------
