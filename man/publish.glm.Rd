@@ -11,8 +11,8 @@
   digits = c(2, 4),
   print = TRUE,
   factor.reference = "extraline",
-  intercept = ifelse((is.null(object$family) || object$family$family == "gaussian"),
-    1L, 0L),
+  intercept = ifelse((is.null(object$family) || object$family$family == "gaussian"), 1L,
+    0L),
   units = NULL,
   ...
 )

@@ -4,8 +4,15 @@
 \alias{subgroupAnalysis}
 \title{Subgroup Analysis - Interactions and estimates}
 \usage{
-subgroupAnalysis(object,data,treatment,
-   subgroups, confint.method="default",factor.reference="extraline")
+subgroupAnalysis(
+  object,
+  data,
+  treatment,
+  subgroups,
+  confint.method = "default",
+  factor.reference = "extraline",
+  ...
+)
 }
 \arguments{
 \item{object}{- glm, coxph or cph object for which subgroups should be
@@ -24,6 +31,8 @@ creates creates robust standard errors - see regressionTable function.}
 
 \item{factor.reference}{"extraline" creates an extraline for the reference,
 "inline" avoids this line.}
+
+\item{...}{additional arguments such as case weights, which are passed on to \code{glm} and \code{coxph}.}
 }
 \value{
 A data.frame with subsgroup specifications, number in each subgroup,

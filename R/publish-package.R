@@ -58,8 +58,6 @@ NULL
 #' @references
 #' Willems JP, Saunders JT, DE Hunt, JB Schorling: Prevalence of coronary heart disease risk factors among rural blacks: A community-based study. Southern Medical Journal 90:814-820; 1997
 #' Schorling JB, Roach J, Siegel M, Baturka N, Hunt DE, Guterbock TM, Stewart HL: A trial of church-based smoking cessation interventions for rural African Americans. Preventive Medicine 26:92-101; 1997.
-#' @source
-#' \url{http://192.38.117.59/~tag/Teaching/share/data/Diabetes.html}
 #' @keywords datasets
 ##' @examples
 ##'

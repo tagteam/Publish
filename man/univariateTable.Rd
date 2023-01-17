@@ -184,11 +184,11 @@ u2 <- summary(univariateTable(frame~BMI,
 publish(rbind(u1,u2),digits=2)
 
 ## Large number format (big.mark)
-Diabetes$AGE <- 1000*Diabetes$age
-u3 <- summary(univariateTable(frame~AGE,
-                              data=Diabetes,big.mark="'"))
-
-
+n=100000
+dat=data.frame(id=1:n,z=rbinom(n,1,.3),x=factor(sample(1:8,size=n,replace=TRUE)))
+u3 <- summary(univariateTable(z~x,
+                              data=dat,big.mark=","))
+u3
 
 }
 \seealso{

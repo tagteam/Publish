@@ -13,9 +13,6 @@
 #' of interest.
 #' 
 #' @author Christian Torp-Pedersen
-#' @usage
-#' subgroupAnalysis(object,data,treatment,
-#'    subgroups, confint.method="default",factor.reference="extraline")
 #' @param object - glm, coxph or cph object for which subgroups should be
 #' analyzed.
 #' @param data - Dataset including all relevant variables

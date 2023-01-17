@@ -96,7 +96,8 @@ publish(x)
 y <- cbind(matrix(letters[1:12],ncol=3),x,matrix(rnorm(12),ncol=3))
 publish(y,digits=1)
 
-publish(x,inter.lines=list("1"="text between line 1 and line 2",
+publish(x,latex=TRUE,
+inter.lines=list("1"="text between line 1 and line 2",
                           "3"="text between line 3 and line 4"))
 
 }
