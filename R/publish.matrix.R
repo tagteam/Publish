@@ -44,7 +44,8 @@
 ##' y <- cbind(matrix(letters[1:12],ncol=3),x,matrix(rnorm(12),ncol=3))
 ##' publish(y,digits=1)
 ##' 
-##' publish(x,inter.lines=list("1"="text between line 1 and line 2",
+##' publish(x,latex=TRUE,
+##' inter.lines=list("1"="text between line 1 and line 2",
 ##'                           "3"="text between line 3 and line 4"))
 ##' 
 ##' @export
@@ -231,6 +232,8 @@ publish.matrix <- function(object,
     if (!is.null(inter.lines[[as.character(0)]]))
         cat(inter.lines[[as.character(0)]],"\n")
     if (!is.null(ccc) && colnames==TRUE){
+        # protect %
+        ## if (latex == TRUE) ccc = gsub("\\%","\\\\%",ccc)
         cat(starthead,paste(ccc,collapse=collapse.head),endhead)
         if (org==TRUE){
             cat("\n|")
@@ -259,7 +262,7 @@ publish.matrix <- function(object,
     # {{{ Cat by row
     if (is.null(dim(object))){
         if (latex && latex.nodollar==FALSE){
-            object[grep("<|>|[0-9.]+",object)] <- paste("$",object[grep("<|>|[0-9.]+",object)],"$")
+            object[grep("<|>|^[ 0-9.]+",object)] <- paste("$",object[grep("<|>|^[ 0-9.]+",object)],"$")
         }
         cat(startrow,paste(object,collapse=collapse.row),endrow)
     }
@@ -270,9 +273,9 @@ publish.matrix <- function(object,
             ## extra lines
             if (!is.null(inter.lines[[as.character(r)]]))
                 cat(inter.lines[[as.character(r)]],"\n")
-            ## protect numbers
+            ## protect numbers 
             if (latex && latex.nodollar==FALSE){#      if (latex)
-                row.x[grep("<|>|[0-9.]+",row.x)]=paste("$",row.x[grep("<|>|[0-9.]+",row.x)],"$")
+                row.x[grep("<|>|^[ 0-9.]+",row.x)]=paste("$",row.x[grep("<|>|^[ 0-9.]+",row.x)],"$")
             }
             if (latex && latex.hline && object[[1]]!="") cat("\\hline\n")
             cat(startrow,paste(row.x,collapse=collapse.row),endrow)
