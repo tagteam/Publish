@@ -2,8 +2,24 @@
 % Please edit documentation in R/publish-package.R
 \docType{package}
 \name{Publish-package}
+\alias{Publish}
 \alias{Publish-package}
 \title{Publish package}
 \description{
 This package processes results of descriptive statistcs and regression analysis into final tables and figures of a manuscript
+}
+\author{
+\strong{Maintainer}: Thomas A. Gerds \email{tag@biostat.ku.dk}
+
+Authors:
+\itemize{
+  \item Brice Ozenne \email{broz@sund.ku.dk}
+}
+
+Other contributors:
+\itemize{
+  \item Christian Torp-Pedersen [contributor]
+  \item Klaus K Holst [contributor]
+}
+
 }
