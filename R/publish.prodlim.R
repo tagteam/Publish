@@ -6,7 +6,7 @@ publish.prodlim <- function(object,times,intervals=TRUE,percent=TRUE,digits=ifel
     if (match("cuminc",colnames(so),nomatch=FALSE)==0){
         nn = "surv"
         se = "se.surv"
-        nn = "Survival probability"
+        NN = "Survival probability"
         data.table::set(so,j = "Survival probability",value = format(so[["surv"]],digits=digits,nsmall=digits))
     } else{
         nn = "cuminc"
